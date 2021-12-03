@@ -6,11 +6,10 @@ module Main
 import Prelude
 
 import Data.Maybe (Maybe)
-import Data.String as String
 import Effect (Effect)
 import Effect.Aff (Milliseconds(..), delay)
 import Effect.Class (liftEffect)
-import Elmish (Dispatch, ReactElement, Transition, (<?|))
+import Elmish (Dispatch, ReactElement, (<?|))
 import Elmish.Boot (defaultMain)
 import Elmish.Foreign (class CanReceiveFromJavaScript, readForeign)
 import Elmish.HTML.Styled as H
@@ -19,29 +18,22 @@ import Foreign (Foreign)
 import Foreign.Object as F
 
 main :: Effect Unit
-main = defaultMain { def: { init, view, update }, elementId: "app" }
+main = defaultMain
+  { def:
+      { init: pure unit
+      , update: \_ msg -> absurd msg
+      , view
+      }
+  , elementId: "app"
+  }
 
--- Nothing happens in our UI so far, so there are no messages
-data Message
-
--- The UI is just static text, so there is no initial state
-type State = Unit
-
--- Since there is no state, there is nothing to initialize
-init :: Transition Message State
-init = pure unit
-
--- Since there are no messages, the `update` function is also trivial
-update :: State -> Message -> Transition Message State
-update _ _ = pure unit
-
-view :: State -> Dispatch Message -> ReactElement
+view :: Unit -> Dispatch Void -> ReactElement
 view _ _ = withHooks do
   { state: name, setState: setName } <- useState (Name "Name") ""
 
   useEffect (Name "SetName") do
     delay $ Milliseconds 2000.0
-    liftEffect $ when (String.null name) $ setName "World"
+    liftEffect $ setName "World"
 
   pure $
     H.div "container"
