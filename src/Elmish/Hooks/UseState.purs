@@ -19,15 +19,9 @@ type Args state =
   , render :: RenderArgs state -> ReactElement
   }
 
-data Message state = SetState state
-
 useState :: forall state. ComponentName -> Args state -> ReactElement
 useState name = wrapWithLocalState name \{ initialState, render } ->
   { init: pure initialState
-  , update: \_ (SetState state) -> pure state
-  , view: \state dispatch ->
-      render
-        { state
-        , setState: dispatch <<< SetState
-        }
+  , update: \_ newState -> pure newState
+  , view: \state setState -> render { state, setState }
   }
