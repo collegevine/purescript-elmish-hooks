@@ -1,0 +1,29 @@
+{
+  "name": "purescript-elmish-hooks",
+  "version": "1.0.0",
+  "description": "React Hooks for Elmish",
+  "main": "index.js",
+  "scripts": {
+    "test": "spago test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/collegevine/purescript-elmish-hooks.git"
+  },
+  "keywords": [
+    "PureScript",
+    "Elmish",
+    "React",
+    "Hooks"
+  ],
+  "author": "Marc Cordova",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/collegevine/purescript-elmish-hooks/issues"
+  },
+  "homepage": "https://github.com/collegevine/purescript-elmish-hooks#readme",
+  "devDependencies": {
+    "purescript": "^0.14.5",
+    "spago": "^0.20.3"
+  }
+}
