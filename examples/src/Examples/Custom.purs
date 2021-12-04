@@ -4,7 +4,7 @@ module Examples.Custom
 
 import Prelude
 
-import Data.Maybe (Maybe)
+import Data.Maybe (Maybe(..))
 import Effect.Class (liftEffect)
 import Elmish (ReactElement, Dispatch, (<?|))
 import Elmish.Foreign (readForeign)
@@ -13,7 +13,7 @@ import Elmish.Hooks (Hook, HookName(..), useEffect, useState, withHooks)
 import Foreign (Foreign)
 import Web.HTML (window)
 import Web.HTML.Window (localStorage)
-import Web.Storage.Storage (setItem)
+import Web.Storage.Storage (getItem, setItem)
 
 view :: ReactElement
 view = withHooks do
@@ -33,15 +33,19 @@ view = withHooks do
     ]
 
 useLocalStorage :: HookName -> String -> String -> Hook { value :: String, setValue :: Dispatch String }
-useLocalStorage (HookName name) key value = do
-  { state, setState } <- useState (HookName $ name <> ".State") value
-  let
-    setValue v = do
-      setState v
-      setItem key v =<< localStorage =<< window
-  useEffect (HookName $ name <> ".Effect") $
-    liftEffect $ setValue value
-  pure { value: state, setValue }
+useLocalStorage (HookName name) key defaultValue = do
+  { state, setState } <- useState (HookName $ name <> ".State") defaultValue
+  useEffect (HookName $ name <> ".Effect") $ liftEffect do
+    v <- getItem key =<< localStorage =<< window
+    case v of
+      Just v' -> setState v'
+      Nothing -> setItem key defaultValue =<< localStorage =<< window
+  pure
+    { value: state
+    , setValue: \v -> do
+        setState v
+        setItem key v =<< localStorage =<< window
+    }
 
 eventTargetValue :: Foreign -> Maybe String
 eventTargetValue = toEvent >>> map _.target.value
