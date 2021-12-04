@@ -23,9 +23,7 @@ view = withHooks do
     [ H.h2 "" "Custom hook"
     , H.div "form-group"
       [ H.label_ "form-label" { htmlFor: "foo" }
-        [ H.text "Typing here will set the "
-        , H.code "" "foo"
-        , H.text " key’s value in "
+        [ H.text "Typing here will update the state and save to "
         , H.code "" "localStorage"
         ]
       , H.input_ "form-control" { value: foo, onChange: setFoo <?| eventTargetValue, id: "foo" }
