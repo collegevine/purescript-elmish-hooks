@@ -16,10 +16,8 @@ to generate this file without the comments in this block.
   , "console"
   , "effect"
   , "elmish"
-  , "newtype"
   , "prelude"
   , "psci-support"
-  , "transformers"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
