@@ -26,8 +26,7 @@ module Elmish.Hooks
 
 import Prelude
 
-import Control.Monad.Cont (Cont, ContT(..), runCont)
-import Data.Newtype (unwrap)
+import Control.Monad.Cont (Cont, cont, runCont)
 import Effect.Aff (Aff)
 import Elmish (ReactElement)
 import Elmish.Component (ComponentName(..))
@@ -42,9 +41,9 @@ withHooks :: Hook ReactElement -> ReactElement
 withHooks comp = runCont comp identity
 
 useState :: forall state. HookName -> state -> Hook (UseState.RenderArgs state)
-useState (HookName name) initialState = ContT \render ->
-  pure $ UseState.useState (ComponentName name) { initialState, render: unwrap <<< render }
+useState (HookName name) initialState = cont \render ->
+  UseState.useState (ComponentName name) { initialState, render }
 
 useEffect :: HookName -> Aff Unit -> Hook Unit
-useEffect (HookName name) init = ContT \render ->
-  pure $ UseEffect.useEffect (ComponentName name) { init, render: unwrap <<< render }
+useEffect (HookName name) init = cont \render ->
+  UseEffect.useEffect (ComponentName name) { init, render }
