@@ -1,6 +1,6 @@
 let config = ../spago.dhall
 
 in config // {
-  sources = [ "../src/**/*.purs", "../test/**/*.purs", "./examples/**/*.purs" ],
-  dependencies = config.dependencies # [ "elmish-html" ]
+  sources = [ "../src/**/*.purs", "../test/**/*.purs", "./src/**/*.purs" ],
+  dependencies = config.dependencies # [ "elmish-html", "foreign", "foreign-object", "maybe" ]
 }

@@ -3,9 +3,9 @@
 -- | ```purescript
 -- | collapsibleComponent :: ReactElement
 -- | collapsibleComponent = withHooks do
--- |   { state: expanded, setState: setExpanded } <- useState (Name "Collapsible") false
+-- |   { state: expanded, setState: setExpanded } <- useState (HookName "Collapsible") false
 -- |
--- |   useEffect (Name "Expand") do
+-- |   useEffect (HookName "Expand") do
 -- |     delay $ Milliseconds 1000.0
 -- |     setExpanded true
 -- |
@@ -17,7 +17,7 @@
 -- | ```
 module Elmish.Hooks
   ( Hook
-  , Name(..)
+  , HookName(..)
   , useEffect
   , useState
   , withHooks
@@ -36,15 +36,15 @@ import Elmish.Hooks.UseState as UseState
 
 type Hook = Cont ReactElement
 
-newtype Name = Name String
+newtype HookName = HookName String
 
 withHooks :: Hook ReactElement -> ReactElement
 withHooks comp = runCont comp identity
 
-useState :: forall state. Name -> state -> Hook (UseState.RenderArgs state)
-useState (Name name) initialState = ContT \render ->
+useState :: forall state. HookName -> state -> Hook (UseState.RenderArgs state)
+useState (HookName name) initialState = ContT \render ->
   pure $ UseState.useState (ComponentName name) { initialState, render: unwrap <<< render }
 
-useEffect :: Name -> Aff Unit -> Hook Unit
-useEffect (Name name) init = ContT \render ->
+useEffect :: HookName -> Aff Unit -> Hook Unit
+useEffect (HookName name) init = ContT \render ->
   pure $ UseEffect.useEffect (ComponentName name) { init, render: unwrap <<< render }
