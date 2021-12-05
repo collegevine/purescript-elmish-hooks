@@ -23,10 +23,8 @@ view =
       { value: foo, setValue: setFoo } <- useLocalStorage (HookName "Foo") "foo" ""
       pure $
         H.div ""
-        [ H.h3 ""
-          [ H.code "" "useLocalStorage"
-          , H.text " hook"
-          ]
+        [ H.h4 "" $
+            H.code "" "useLocalStorage"
         , H.div "form-group"
           [ H.label_ "form-label" { htmlFor: "foo" }
             [ H.text "Typing here will update the state and save to "
