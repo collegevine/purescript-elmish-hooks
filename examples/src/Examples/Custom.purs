@@ -16,19 +16,26 @@ import Web.HTML.Window (localStorage)
 import Web.Storage.Storage (getItem, setItem)
 
 view :: ReactElement
-view = withHooks do
-  { value: foo, setValue: setFoo } <- useLocalStorage (HookName "Foo") "foo" ""
-  pure $
-    H.div ""
-    [ H.h2 "" "Custom hook"
-    , H.div "form-group"
-      [ H.label_ "form-label" { htmlFor: "foo" }
-        [ H.text "Typing here will update the state and save to "
-        , H.code "" "localStorage"
+view =
+  H.div ""
+  [ H.h2 "" "Custom hooks"
+  , withHooks do
+      { value: foo, setValue: setFoo } <- useLocalStorage (HookName "Foo") "foo" ""
+      pure $
+        H.div ""
+        [ H.h3 ""
+          [ H.code "" "useLocalStorage"
+          , H.text " hook"
+          ]
+        , H.div "form-group"
+          [ H.label_ "form-label" { htmlFor: "foo" }
+            [ H.text "Typing here will update the state and save to "
+            , H.code "" "localStorage"
+            ]
+          , H.input_ "form-control" { value: foo, onChange: setFoo <?| eventTargetValue, id: "foo" }
+          ]
         ]
-      , H.input_ "form-control" { value: foo, onChange: setFoo <?| eventTargetValue, id: "foo" }
-      ]
-    ]
+  ]
 
 useLocalStorage :: HookName -> String -> String -> Hook { value :: String, setValue :: Dispatch String }
 useLocalStorage (HookName name) key defaultValue = do
