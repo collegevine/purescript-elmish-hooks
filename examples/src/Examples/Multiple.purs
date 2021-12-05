@@ -4,39 +4,38 @@ module Examples.Multiple
 
 import Prelude
 
-import Data.Maybe (Maybe)
+import Data.Maybe (Maybe(..))
 import Effect.Aff (Milliseconds(..), delay)
 import Effect.Class (liftEffect)
-import Elmish (ReactElement, (<?|))
-import Elmish.Foreign (readForeign)
+import Elmish (ReactElement)
 import Elmish.HTML.Styled as H
 import Elmish.Hooks (HookName(..), useEffect, useState, withHooks)
-import Foreign (Foreign)
 
 view :: ReactElement
 view = withHooks do
-  { state: name, setState: setName } <- useState (HookName "Name") "World"
+  { state: todos, setState: setTodos } <- useState (HookName "Todos") Nothing
 
-  useEffect (HookName "SetName") do
+  useEffect (HookName "FetchTodos") do
     delay $ Milliseconds 2000.0
-    liftEffect $ setName "useEffect"
+    liftEffect $ setTodos $ Just ["Do thing", "Do another thing", "Some more stuff"]
 
   pure $
-    H.div ""
-    [ H.h2 "" "Combine multiple hooks"
-    , H.div "form-group"
-      [ H.label_ "form-label" { htmlFor: "name" } "What’s your name?"
-      , H.input_ "form-control" { value: name, onChange: setName <?| eventTargetValue, id: "name" }
-      ]
-    , H.blockquote "blockquote mt-4"
-      [ H.text "Hello, "
-      , H.strong "bg-warning" name
-      , H.text "!"
+    H.div "row"
+    [ H.div "col-12 col-md-6 col-lg-4"
+      [ H.h2 ""
+        [ H.code "" "useEffect"
+        , H.text " hook"
+        ]
+      , H.h4 "mb-3" "Todos"
+      , case todos of
+          Nothing ->
+            H.div ""
+            [ H.div "progress" $
+                H.div_ "progress-bar progress-bar-striped progress-bar-animated" { role: "progressbar", style: H.css { width: "100%" } } H.empty
+            , H.div "mt-2" "Loading todos…"
+            ]
+          Just todos' ->
+            H.div "ul" $
+              H.li "" <$> todos'
       ]
     ]
-
-eventTargetValue :: Foreign -> Maybe String
-eventTargetValue = toEvent >>> map _.target.value
-  where
-    toEvent :: Foreign -> Maybe { target :: { value :: String } }
-    toEvent = readForeign
