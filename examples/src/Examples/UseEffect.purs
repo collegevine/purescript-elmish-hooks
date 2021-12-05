@@ -1,4 +1,4 @@
-module Examples.Multiple
+module Examples.UseEffect
   ( view
   ) where
 

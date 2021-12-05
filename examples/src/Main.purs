@@ -10,7 +10,7 @@ import Elmish (Dispatch, ReactElement)
 import Elmish.Boot (defaultMain)
 import Elmish.HTML.Styled as H
 import Examples.Custom as Custom
-import Examples.Multiple as Multiple
+import Examples.UseEffect as UseEffect
 import Examples.UseState as UseState
 
 main :: Effect Unit
@@ -33,7 +33,7 @@ view _ _ =
   , H.hr "my-4"
   , UseState.view
   , H.hr "my-4"
-  , Multiple.view
+  , UseEffect.view
   , H.hr "my-4"
   , Custom.view
   ]
