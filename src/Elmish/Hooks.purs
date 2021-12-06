@@ -23,9 +23,12 @@ module Elmish.Hooks
 
 import Prelude
 
+import Control.Alternative (guard)
 import Control.Monad.Cont (Cont, cont, runCont)
 import Control.Monad.Writer (WriterT(..), runWriterT, tell)
-import Data.Array (length, nub)
+import Data.Array (filter, fold, group, intercalate, null, sort)
+import Data.Array.NonEmpty as NE
+import Data.Maybe (Maybe(..))
 import Data.Tuple (Tuple(..))
 import Effect.Aff (Aff)
 import Effect.Class.Console as Console
@@ -68,10 +71,21 @@ withHooks hooks = runCont (runWriterT hooks) toElem
   where
     toElem (Tuple elem names) =
       let
-        _ =
-          unsafePerformEffect $ when (length (nub names) < length names) $
-            Console.error "Error: Two or more hooks have the same name" -- TODO: Specify which hooks
+        _ = case error names of
+          Just err -> unsafePerformEffect $ Console.error err
+          Nothing -> unit
       in elem
+
+    error names = do
+      guard (nodeEnv == "development")
+      let duplicates = names # sort # group # filter ((_ > 1) <<< NE.length) <#> NE.head
+      guard (not null duplicates)
+      pure $ fold
+        [ "Error in Elmish Hook: Hooks must have unique names. The following "
+        , "hook names appear more than once in a `withHooks` block: '" -- TODO: Specify which hooks
+        , intercalate "', '" duplicates
+        , "'"
+        ]
 
 -- | The `useState` hook takes an initial state and its callback has access to
 -- | the current state and a setter for the state.
@@ -89,3 +103,5 @@ hook :: forall a. HookName -> (ComponentName -> (a -> ReactElement) -> ReactElem
 hook (HookName name) mkHook = do
   tell [name]
   WriterT $ cont \render -> mkHook (ComponentName name) \args -> render $ Tuple args []
+
+foreign import nodeEnv :: String
