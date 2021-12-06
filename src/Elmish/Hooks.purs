@@ -14,6 +14,7 @@
 module Elmish.Hooks
   ( Hook
   , HookName(..)
+  , hook
   , useEffect
   , useState
   , withHooks
@@ -22,7 +23,13 @@ module Elmish.Hooks
 
 import Prelude
 
+import Control.Monad.Cont (Cont, cont, runCont)
+import Control.Monad.Writer (WriterT(..), runWriterT, tell)
+import Data.Array (length, nub)
+import Data.Tuple (Tuple(..))
 import Effect.Aff (Aff)
+import Effect.Class.Console as Console
+import Effect.Unsafe (unsafePerformEffect)
 import Elmish (ReactElement)
 import Elmish.Component (ComponentName(..))
 import Elmish.Hooks.UseEffect as UseEffect
@@ -51,38 +58,34 @@ newtype HookName = HookName String
 -- |   { state: foo, setState: setFoo } <- useState (HookName "Foo") ""
 -- |   pure …
 -- | ```
-newtype Hook a = Hook ((a -> ReactElement) -> ReactElement)
 
-instance Functor Hook where
-  map fn (Hook hookA) = Hook \renderB ->
-    hookA \a -> renderB $ fn a
-
-instance Apply Hook where
-  apply (Hook hookFn) (Hook hookA) = Hook \renderB ->
-    hookA \a -> hookFn \fn -> renderB $ fn a
-
-instance Applicative Hook where
-  pure a = Hook (_ $ a)
-
-instance Bind Hook where
-  bind (Hook hookA) cb = Hook \renderB ->
-    hookA \a -> case cb a of
-      Hook hookB -> hookB renderB
-
-instance Monad Hook
+-- type Hook = ContT ReactElement (Writer (Array String))
+type Hook = WriterT (Array String) (Cont ReactElement)
 
 -- | Unwraps a `Hook ReactElement` by passing `identity` as the callback.
 withHooks :: Hook ReactElement -> ReactElement
-withHooks (Hook hookElem) = hookElem identity
+withHooks hooks = runCont (runWriterT hooks) toElem
+  where
+    toElem (Tuple elem names) =
+      let
+        _ =
+          unsafePerformEffect $ when (length (nub names) < length names) $
+            Console.error "Error: Two or more hooks have the same name" -- TODO: Specify which hooks
+      in elem
 
--- The `useState` hook takes an initial state and its callback has access to the
--- current state and a setter for the state.
+-- | The `useState` hook takes an initial state and its callback has access to
+-- | the current state and a setter for the state.
 useState :: forall state. HookName -> state -> Hook (UseState.RenderArgs state)
-useState (HookName name) initialState = Hook \render ->
-  UseState.useState (ComponentName name) { initialState, render }
+useState name initialState =
+  hook name \n render -> UseState.useState n { initialState, render }
 
--- The `useEffect` hook takes an effect (`Aff`) to run and runs it in the `init`
--- of the resulting component.
+-- | The `useEffect` hook takes an effect (`Aff`) to run and runs it in the
+-- | `init` of the resulting component.
 useEffect :: HookName -> Aff Unit -> Hook Unit
-useEffect (HookName name) init = Hook \render ->
-  UseEffect.useEffect (ComponentName name) { init, render }
+useEffect name init =
+  hook name \n render -> UseEffect.useEffect n { init, render }
+
+hook :: forall a. HookName -> (ComponentName -> (a -> ReactElement) -> ReactElement) -> Hook a
+hook (HookName name) mkHook = do
+  tell [name]
+  WriterT $ cont \render -> mkHook (ComponentName name) \args -> render $ Tuple args []

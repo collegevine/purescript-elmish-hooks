@@ -13,11 +13,14 @@ to generate this file without the comments in this block.
 { name = "my-project"
 , dependencies =
   [ "aff"
+  , "arrays"
   , "console"
   , "effect"
   , "elmish"
   , "prelude"
   , "psci-support"
+  , "transformers"
+  , "tuples"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
