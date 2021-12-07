@@ -11,6 +11,6 @@ import Elmish.Component (ComponentName, wrapWithLocalState)
 useEffect :: ComponentName -> { init :: Aff Unit, render :: Unit -> ReactElement } -> ReactElement
 useEffect name = wrapWithLocalState name \{ init, render } ->
   { init: forkVoid init
-  , update: \_ _ -> pure unit
+  , update: \_ msg -> absurd msg
   , view: \_ _ -> render unit
   }
