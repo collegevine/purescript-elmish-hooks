@@ -82,7 +82,7 @@ withHooks hooks = runCont (runWriterT hooks) toElem
       guard (not null duplicates)
       pure $ fold
         [ "Error in Elmish Hook: Hooks must have unique names. The following "
-        , "hook names appear more than once in a `withHooks` block: '" -- TODO: Specify which hooks
+        , "hook names appear more than once in a `withHooks` block: '"
         , intercalate "', '" duplicates
         , "'"
         ]
