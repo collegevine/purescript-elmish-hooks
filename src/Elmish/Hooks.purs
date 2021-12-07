@@ -76,7 +76,6 @@ withHooks hooks = runCont (runWriterT hooks) toElem
       in elem
 
     error names = do
-      guard (nodeEnv == "development")
       let duplicates = names # sort # group # filter ((_ > 1) <<< NE.length) <#> NE.head
       guard (not null duplicates)
       pure $ fold
@@ -102,5 +101,3 @@ hook :: forall a. HookName -> (ComponentName -> (a -> ReactElement) -> ReactElem
 hook (HookName name) mkHook = do
   tell [name]
   WriterT $ cont \render -> mkHook (ComponentName name) \args -> render $ Tuple args []
-
-foreign import nodeEnv :: String
