@@ -61,11 +61,10 @@ newtype HookName = HookName String
 -- |   { state: foo, setState: setFoo } <- useState (HookName "Foo") ""
 -- |   pure …
 -- | ```
-
--- type Hook = ContT ReactElement (Writer (Array String))
 type Hook = WriterT (Array String) (Cont ReactElement)
 
--- | Unwraps a `Hook ReactElement` by passing `identity` as the callback.
+-- | Unwraps a `Hook ReactElement` and logs an error to the console if two hooks
+-- | with the same name have been used.
 withHooks :: Hook ReactElement -> ReactElement
 withHooks hooks = runCont (runWriterT hooks) toElem
   where
