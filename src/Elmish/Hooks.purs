@@ -14,7 +14,7 @@
 module Elmish.Hooks
   ( Hook
   , HookName(..)
-  , hook
+  , mkHook
   , useEffect
   , useState
   , withHooks
@@ -42,12 +42,11 @@ import Elmish.Hooks.UseState as UseState
 newtype HookName = HookName String
 
 -- | The type of a hook, e.g. the result of calling `useState`. It turns out
--- | that hooks can be modeled as a continuation (isomorphic to `Cont
--- | ReactElement`), where the callback function returns a new component
--- | (usually created with `wrapWithLocalState`) given the encapsulated value.
--- | E.g., in the case of `useState`, you can think of it as accepting a
--- | callback function, which gets passed the current state and a setter for the
--- | current state:
+-- | that hooks can be modeled as a continuation, where the callback function
+-- | returns a new component (usually created with `wrapWithLocalState`) given
+-- | the encapsulated value. E.g., in the case of `useState`, you can think of
+-- | it as accepting a callback function, which gets passed the current state
+-- | and a setter for the current state:
 -- |
 -- | ```purescript
 -- | useState (HookName "Foo") "" \{ state: foo, setState: setFoo } -> …
@@ -61,6 +60,12 @@ newtype HookName = HookName String
 -- |   { state: foo, setState: setFoo } <- useState (HookName "Foo") ""
 -- |   pure …
 -- | ```
+-- |
+-- | Wrapping it in a `WriterT (Array String)` allows us to keep track of all of
+-- | the hook names so `withHooks` can log an error if there are any duplicate
+-- | names. If two names are duplicated and can appear in the same spot in the
+-- | DOM, React might confuse one for the other, causing unexpected
+-- | side-effects.
 type Hook = WriterT (Array String) (Cont ReactElement)
 
 -- | Unwraps a `Hook ReactElement` and logs an error to the console if two hooks
@@ -89,15 +94,17 @@ withHooks hooks = runCont (runWriterT hooks) toElem
 -- | the current state and a setter for the state.
 useState :: forall state. HookName -> state -> Hook (UseState.RenderArgs state)
 useState name initialState =
-  hook name \n render -> UseState.useState n { initialState, render }
+  mkHook name \n render -> UseState.useState n { initialState, render }
 
 -- | The `useEffect` hook takes an effect (`Aff`) to run and runs it in the
 -- | `init` of the resulting component.
 useEffect :: HookName -> Aff Unit -> Hook Unit
 useEffect name init =
-  hook name \n render -> UseEffect.useEffect n { init, render }
+  mkHook name \n render -> UseEffect.useEffect n { init, render }
 
-hook :: forall a. HookName -> (ComponentName -> (a -> ReactElement) -> ReactElement) -> Hook a
-hook (HookName name) mkHook = do
+-- | Given a name and a function to create a component (from a name and a
+-- | callback of `a`), `mkHook` creates a `Hook a` and keep track of the name.
+mkHook :: forall a. HookName -> (ComponentName -> (a -> ReactElement) -> ReactElement) -> Hook a
+mkHook (HookName name) mkComponent = do
   tell [name]
-  WriterT $ cont \render -> mkHook (ComponentName name) \args -> render $ Tuple args []
+  WriterT $ cont \render -> mkComponent (ComponentName name) \args -> render $ Tuple args []
