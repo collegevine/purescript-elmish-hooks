@@ -9,8 +9,9 @@ import Effect (Effect)
 import Elmish (Dispatch, ReactElement)
 import Elmish.Boot (defaultMain)
 import Elmish.HTML.Styled as H
-import Examples.Custom as Custom
 import Examples.UseEffect as UseEffect
+import Examples.UseLocalStorage as UseLocalStorage
+import Examples.UseMouseMove as UseMouseMove
 import Examples.UseState as UseState
 
 main :: Effect Unit
@@ -35,5 +36,7 @@ view _ _ =
   , H.hr "my-4"
   , UseEffect.view
   , H.hr "my-4"
-  , Custom.view
+  , H.h2 "" "Custom hooks"
+  , UseLocalStorage.view
+  , UseMouseMove.view
   ]
