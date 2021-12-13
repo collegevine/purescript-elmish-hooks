@@ -7,17 +7,7 @@
     "start": "spago build && esbuild ./output/Main/index.js --bundle --serve --servedir=. --outfile=output/index.js --global-name=Main",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": {
-    "name": "Marc Cordova",
-    "url": "https://github.com/mcordova47"
-  },
-  "contributors": [
-    {
-      "name": "Fyodor Soikin",
-      "email": "fyodor@collegevine.com",
-      "url": "https://github.com/fsoikin"
-    }
-  ],
+  "author": "Marc Cordova",
   "license": "MIT",
   "dependencies": {
     "esbuild": "^0.14.1",
