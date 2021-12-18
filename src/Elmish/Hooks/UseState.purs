@@ -5,7 +5,8 @@ module Elmish.Hooks.UseState
 
 import Prelude
 
-import Data.Tuple.Nested (type (/\), (/\))
+import Data.Tuple (curry)
+import Data.Tuple.Nested (type (/\))
 import Elmish (Dispatch, ReactElement)
 import Elmish.Component (ComponentName, wrapWithLocalState)
 import Elmish.Hooks.Type (Hook, HookName, mkHook)
@@ -19,7 +20,7 @@ useState' :: forall state. ComponentName -> Args state -> ReactElement
 useState' name = wrapWithLocalState name \{ initialState, render } ->
   { init: pure initialState
   , update: \_ newState -> pure newState
-  , view: \state setState -> render (state /\ setState)
+  , view: curry render
   }
 
 -- | The `useState` hook takes an initial state and its callback has access to
