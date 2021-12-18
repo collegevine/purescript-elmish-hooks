@@ -24,7 +24,7 @@ newtype HookName = HookName String
 -- | and a setter for the current state:
 -- |
 -- | ```purescript
--- | useState (HookName "Foo") "" \{ state: foo, setState: setFoo } -> …
+-- | useState (HookName "Foo") "" \(foo /\ setFoo) -> …
 -- | ```
 -- |
 -- | Modeling it as a continuation allows us to make it a monad and write in
@@ -32,7 +32,7 @@ newtype HookName = HookName String
 -- |
 -- | ```purescript
 -- | withHooks do
--- |   { state: foo, setState: setFoo } <- useState (HookName "Foo") ""
+-- |   foo /\ setFoo <- useState (HookName "Foo") ""
 -- |   pure …
 -- | ```
 -- |

@@ -5,6 +5,7 @@ module Examples.UseLocalStorage
 import Prelude
 
 import Data.Maybe (Maybe(..))
+import Data.Tuple.Nested ((/\))
 import Effect.Class (liftEffect)
 import Elmish (ReactElement, Dispatch, (<?|))
 import Elmish.HTML.Styled as H
@@ -34,7 +35,7 @@ view = withHooks do
 
 useLocalStorage :: HookName -> String -> String -> Hook { value :: String, setValue :: Dispatch String }
 useLocalStorage (HookName name) key defaultValue = do
-  { state, setState } <- useState (HookName $ name <> ".State") defaultValue
+  state /\ setState <- useState (HookName $ name <> ".State") defaultValue
   useEffect (HookName $ name <> ".Effect") $ liftEffect do
     v <- getItem key =<< localStorage =<< window
     case v of

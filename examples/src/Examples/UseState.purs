@@ -4,13 +4,14 @@ module Examples.UseState
 
 import Prelude
 
+import Data.Tuple.Nested ((/\))
 import Elmish (ReactElement)
 import Elmish.HTML.Styled as H
 import Elmish.Hooks (HookName(..), useState, withHooks)
 
 view :: ReactElement
 view = withHooks do
-  { state: visible, setState: setVisible } <- useState (HookName "ModalVisible") false
+  visible /\ setVisible <- useState (HookName "ModalVisible") false
   pure $
     H.div ""
     [ H.h2 ""
