@@ -3,7 +3,7 @@
 -- | ```purescript
 -- | todos :: ReactElement
 -- | todos = withHooks do
--- |   { state: todos, setState: setTodos } <- useState (HookName "TodoState") []
+-- |   todos /\ setTodos <- useState (HookName "TodoState") []
 -- |
 -- |   useEffect (HookName "FetchTodos") do
 -- |     todos <- API.fetchTodos
