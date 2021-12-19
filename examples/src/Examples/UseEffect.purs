@@ -5,6 +5,7 @@ module Examples.UseEffect
 import Prelude
 
 import Data.Maybe (Maybe(..))
+import Data.Tuple.Nested ((/\))
 import Effect.Aff (Milliseconds(..), delay)
 import Effect.Class (liftEffect)
 import Elmish (ReactElement)
@@ -13,7 +14,7 @@ import Elmish.Hooks (HookName(..), useEffect, useState, withHooks)
 
 view :: ReactElement
 view = withHooks do
-  { state: todos, setState: setTodos } <- useState (HookName "Todos") Nothing
+  todos /\ setTodos <- useState (HookName "Todos") Nothing
 
   useEffect (HookName "FetchTodos") do
     delay $ Milliseconds 2000.0

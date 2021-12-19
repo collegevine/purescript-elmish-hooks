@@ -5,6 +5,7 @@ module Examples.UseLocalStorage
 import Prelude
 
 import Data.Maybe (Maybe(..))
+import Data.Tuple.Nested (type (/\), (/\))
 import Effect.Class (liftEffect)
 import Elmish (ReactElement, Dispatch, (<?|))
 import Elmish.HTML.Styled as H
@@ -16,7 +17,7 @@ import Web.Storage.Storage (getItem, setItem)
 
 view :: ReactElement
 view = withHooks do
-  { value: foo, setValue: setFoo } <- useLocalStorage (HookName "Foo") "foo" ""
+  foo /\ setFoo <- useLocalStorage (HookName "Foo") "foo" ""
   pure $
     H.div "row"
     [ H.div "col-12 col-md-6 col-lg-4"
@@ -32,17 +33,14 @@ view = withHooks do
       ]
     ]
 
-useLocalStorage :: HookName -> String -> String -> Hook { value :: String, setValue :: Dispatch String }
+useLocalStorage :: HookName -> String -> String -> Hook (String /\ Dispatch String)
 useLocalStorage (HookName name) key defaultValue = do
-  { state, setState } <- useState (HookName $ name <> ".State") defaultValue
+  state /\ setState <- useState (HookName $ name <> ".State") defaultValue
   useEffect (HookName $ name <> ".Effect") $ liftEffect do
     v <- getItem key =<< localStorage =<< window
     case v of
       Just v' -> setState v'
       Nothing -> setItem key defaultValue =<< localStorage =<< window
-  pure
-    { value: state
-    , setValue: \v -> do
-        setState v
-        setItem key v =<< localStorage =<< window
-    }
+  pure $ state /\ \v -> do
+    setState v
+    setItem key v =<< localStorage =<< window
