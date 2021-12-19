@@ -1,4 +1,4 @@
-(() => {
+var Main = (() => {
   var __commonJS = (cb, mod) => function __require() {
     return mod || (0, cb[Object.keys(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
   };
@@ -63321,7 +63321,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       };
     }
   });
-  require_Main();
+  return require_Main();
 })();
 /*
 object-assign
