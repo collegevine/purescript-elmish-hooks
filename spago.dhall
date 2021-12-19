@@ -18,6 +18,7 @@ to generate this file without the comments in this block.
   , "control"
   , "effect"
   , "elmish"
+  , "maybe"
   , "prelude"
   , "psci-support"
   , "transformers"
