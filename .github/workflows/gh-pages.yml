@@ -17,9 +17,6 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: |
-            .spago
-            output
-            node_modules
             examples/.spago
             examples/output
             examples/node_modules
@@ -28,12 +25,9 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 10.15
-      - run:
-          working-directory: ./examples
-          shell: npm i
-      - run:
-          working-directory: ./examples
-          shell: npm run build
+      - run: cd examples
+      - run: npm i
+      - run: npm run build
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
