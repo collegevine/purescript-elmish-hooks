@@ -33,7 +33,7 @@ view = withHooks do
       ]
     ]
 
-useLocalStorage :: HookName -> String -> String -> Hook (String /\ (Dispatch String))
+useLocalStorage :: HookName -> String -> String -> Hook (String /\ Dispatch String)
 useLocalStorage (HookName name) key defaultValue = do
   state /\ setState <- useState (HookName $ name <> ".State") defaultValue
   useEffect (HookName $ name <> ".Effect") $ liftEffect do
