@@ -25,9 +25,8 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 10.15
-      - run: cd examples
-      - run: npm i
-      - run: npm run build
+      - run: cd examples && npm i
+      - run: cd examples && npm run build
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
