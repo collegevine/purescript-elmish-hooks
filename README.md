@@ -9,6 +9,8 @@ view = withHooks do
   pure $
     H.fragment
     [ H.button_ "" { onClick: setVisible $ not visible } "Toggle visibility"
-    , H.div "" "Content"
+    , if visible
+        then H.div "" "Content"
+        else H.empty
     ]
 ```
