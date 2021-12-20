@@ -14,3 +14,7 @@ view = withHooks do
         else H.empty
     ]
 ```
+
+### Examples
+
+There are some examples in the [`examples`](https://github.com/collegevine/purescript-elmish-hooks/tree/main/examples) folder, which can be seen live [here](https://collegevine.github.io/purescript-elmish-hooks).
