@@ -27,6 +27,6 @@ to generate this file without the comments in this block.
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
 , license = "MIT"
-, repo = "https://github.com/collegevine/purescript-elmish-hooks.git"
+, repository = "https://github.com/collegevine/purescript-elmish-hooks.git"
 , version = "0.0.1"
 }
