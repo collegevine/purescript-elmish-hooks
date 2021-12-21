@@ -8,7 +8,6 @@ import Prelude
 import Data.Tuple (curry)
 import Data.Tuple.Nested (type (/\))
 import Elmish (Dispatch)
-import Elmish.Component (wrapWithLocalState)
 import Elmish.Hooks.Type (Hook, HookName, mkHook)
 
 -- | The `useState` hook takes an initial state and returns a `Hook`
@@ -28,11 +27,8 @@ import Elmish.Hooks.Type (Hook, HookName, mkHook)
 -- | ```
 useState :: forall state. HookName -> state -> Hook (state /\ Dispatch state)
 useState name initialState =
-  mkHook name \n render -> useState' n { initialState, render }
-  where
-    useState' n = wrapWithLocalState n \{ initialState: init, render } ->
-      { init: pure init
-      , update: \_ newState -> pure newState
-      , view: curry render
-      }
-
+  mkHook name \render ->
+    { init: pure initialState
+    , update: \_ newState -> pure newState
+    , view: curry render
+    }

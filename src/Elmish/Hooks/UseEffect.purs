@@ -6,7 +6,6 @@ import Prelude
 
 import Effect.Aff (Aff)
 import Elmish (forkVoid)
-import Elmish.Component (wrapWithLocalState)
 import Elmish.Hooks.Type (Hook, HookName, mkHook)
 
 -- | The `useEffect` hook takes an effect (`Aff`) to run and runs it in the
@@ -24,11 +23,9 @@ import Elmish.Hooks.Type (Hook, HookName, mkHook)
 -- |   pure $ H.fragment $ todoView <$> todos
 -- | ```
 useEffect :: HookName -> Aff Unit -> Hook Unit
-useEffect name initAff =
-  mkHook name \n render -> useEffect' n { init: initAff, render }
-  where
-    useEffect' n = wrapWithLocalState n \{ init, render } ->
-      { init: forkVoid init
-      , update: \_ msg -> absurd msg
-      , view: \_ _ -> render unit
-      }
+useEffect name init =
+  mkHook name \render ->
+    { init: forkVoid init
+    , update: \_ msg -> absurd msg
+    , view: \_ _ -> render unit
+    }

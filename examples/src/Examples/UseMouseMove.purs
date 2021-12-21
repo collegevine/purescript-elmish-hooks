@@ -6,7 +6,6 @@ import Prelude
 
 import Data.Maybe (Maybe(..))
 import Elmish (ReactElement, mkEffectFn1, (<|))
-import Elmish.Component (ComponentName, wrapWithLocalState)
 import Elmish.HTML.Styled as H
 import Elmish.Hooks (Hook, HookName(..), mkHook, withHooks)
 import Unsafe.Coerce (unsafeCoerce)
@@ -20,8 +19,6 @@ view =
   , H.p "text-muted"
     [ H.text "This example uses "
     , H.code "" "mkHook"
-    , H.text " and "
-    , H.code "" "wrapWithLocalState"
     , H.text " to make a custom hook."
     ]
   , H.div_ "w-100 py-6 rounded bg-light border position-relative"
@@ -39,18 +36,20 @@ view =
   ]
 
 useMousePosition :: HookName -> String -> Hook (Maybe { x :: Number, y :: Number })
-useMousePosition name className = mkHook name \n render -> useMousePosition' n { className, render }
-
-useMousePosition' :: ComponentName -> { className :: String, render :: Maybe { x :: Number, y :: Number } -> ReactElement } -> ReactElement
-useMousePosition' name = wrapWithLocalState name \{ className, render } ->
-  { init: pure Nothing
-  , update: \_ pos -> pure pos
-  , view: \pos dispatch ->
-      H.div_ className
-        { onMouseMove: unsafeCoerce $ mkEffectFn1 \(event :: { clientX :: Number, clientY :: Number, currentTarget :: HTMLElement }) -> do
-            { top, left } <- getBoundingClientRect event.currentTarget
-            dispatch $ Just { x: event.clientX - left, y: event.clientY - top }
-        , onMouseLeave: dispatch <| const Nothing
-        } $
-        render pos
-  }
+useMousePosition name className =
+  mkHook name \render ->
+    { init: pure Nothing
+    , update: \_ pos -> pure pos
+    , view: \pos dispatch ->
+        H.div_ className
+          { onMouseMove: unsafeCoerce $ mkEffectFn1 \(event :: { clientX :: Number, clientY :: Number, currentTarget :: HTMLElement }) -> do
+              { top, left, width, height } <- getBoundingClientRect event.currentTarget
+              let
+                x = event.clientX - left
+                y = event.clientY - top
+                mouseLeft = x < 0.0 || y < 0.0 || y > height || x > width
+              dispatch if mouseLeft then Nothing else Just { x, y }
+          , onMouseLeave: dispatch <| const Nothing
+          } $
+          render pos
+    }
