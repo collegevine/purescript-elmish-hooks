@@ -44,7 +44,20 @@ newtype HookName = HookName String
 type Hook = WriterT (Array String) (Cont ReactElement)
 
 -- | Given a name and a function to create a component (from a name and a
--- | callback of `a`), `mkHook` creates a `Hook a` and keep track of the name.
+-- | callback of `a`), `mkHook` creates a `Hook a` and keeps track of the name.
+-- | E.g. `useEffect` uses `mkHook` like so:
+-- |
+-- | ```purs
+-- | useEffect :: HookName -> Aff Unit -> Hook Unit
+-- | useEffect name initAff =
+-- |   mkHook name \n render -> useEffect' n { init: initAff, render }
+-- |   where
+-- |     useEffect' n = wrapWithLocalState n \{ init, render } ->
+-- |       { init: forkVoid init
+-- |       , update: \_ msg -> absurd msg
+-- |       , view: \_ _ -> render unit
+-- |       }
+-- | ```
 mkHook :: forall a. HookName -> (ComponentName -> (a -> ReactElement) -> ReactElement) -> Hook a
 mkHook (HookName name) mkComponent = do
   tell [name]
