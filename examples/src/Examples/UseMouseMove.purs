@@ -7,7 +7,7 @@ import Prelude
 import Data.Maybe (Maybe(..))
 import Elmish (ReactElement, mkEffectFn1, (<|))
 import Elmish.HTML.Styled as H
-import Elmish.Hooks (Hook, HookName(..), mkHook, withHooks)
+import Elmish.Hooks (Hook, mkHook, withHooks)
 import Unsafe.Coerce (unsafeCoerce)
 import Web.HTML.HTMLElement (HTMLElement, getBoundingClientRect)
 
@@ -24,7 +24,7 @@ view =
   , H.div_ "w-100 py-6 rounded bg-light border position-relative"
       { style: H.css { height: 200, cursor: "none" } }$
         withHooks do
-          pos <- useMousePosition (HookName "Examples.UseMouseMove.mousePosition") "position-absolute h-100 w-100"
+          pos <- useMousePosition "position-absolute h-100 w-100"
           pure $ case pos of
             Just { x, y } ->
               H.img_ "position-absolute"
@@ -35,9 +35,9 @@ view =
               H.empty
   ]
 
-useMousePosition :: HookName -> String -> Hook (Maybe { x :: Number, y :: Number })
-useMousePosition name className =
-  mkHook name \render ->
+useMousePosition :: String -> Hook (Maybe { x :: Number, y :: Number })
+useMousePosition className =
+  mkHook \render ->
     { init: pure Nothing
     , update: \_ pos -> pure pos
     , view: \pos dispatch ->

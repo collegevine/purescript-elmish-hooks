@@ -5,7 +5,7 @@ This library offers an analog of [React Hooks](https://reactjs.org/docs/hooks-in
 ```purs
 view :: ReactElement
 view = withHooks do
-  visible /\ setVisible <- useState (HookName "ContentVisible") false
+  visible /\ setVisible <- useState false
   pure $
     H.fragment
     [ H.button_ "" { onClick: setVisible $ not visible } "Toggle visibility"

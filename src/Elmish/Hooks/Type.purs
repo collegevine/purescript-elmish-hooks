@@ -1,6 +1,5 @@
 module Elmish.Hooks.Type
   ( Hook
-  , HookName(..)
   , mkHook
   )
   where
@@ -9,12 +8,10 @@ import Prelude
 
 import Control.Monad.Cont (Cont, cont)
 import Control.Monad.Writer (WriterT(..), tell)
+import Data.Function.Uncurried (Fn1)
 import Data.Tuple (Tuple(..))
 import Elmish (ReactElement, ComponentDef)
 import Elmish.Component (ComponentName(..), wrapWithLocalState)
-
--- | A unique name for a given hook.
-newtype HookName = HookName String
 
 -- | The type of a hook, e.g. the result of calling `useState`. It turns out
 -- | that hooks can be modeled as a continuation, where the callback function
@@ -24,7 +21,7 @@ newtype HookName = HookName String
 -- | setter for the current state:
 -- |
 -- | ```purescript
--- | useState (HookName "Foo") "" \(foo /\ setFoo) -> …
+-- | useState "" \(foo /\ setFoo) -> …
 -- | ```
 -- |
 -- | Modeling it as a continuation allows us to make it a monad and write in
@@ -32,7 +29,7 @@ newtype HookName = HookName String
 -- |
 -- | ```purescript
 -- | withHooks do
--- |   foo /\ setFoo <- useState (HookName "Foo") ""
+-- |   foo /\ setFoo <- useState ""
 -- |   pure …
 -- | ```
 -- |
@@ -43,23 +40,25 @@ newtype HookName = HookName String
 -- | side-effects.
 type Hook = WriterT (Array String) (Cont ReactElement)
 
--- | Given a name and a function to create a `ComponentDef` (from a render
--- | function `a -> ReactElement`), `mkHook` creates a `Hook a` and keeps track
--- | of the name so that it can track duplicates. E.g. `useEffect` uses `mkHook`
--- | like so:
+-- | Given a function to create a `ComponentDef` (from a render function `a ->
+-- | ReactElement`), `mkHook` creates a `Hook a` and keeps track of the name so
+-- | that it can track duplicates. E.g. `useEffect` uses `mkHook` like so:
 -- |
 -- | ```purs
--- | useEffect :: HookName -> Aff Unit -> Hook Unit
--- | useEffect name init =
--- |   mkHook name \render ->
+-- | useEffect :: Aff Unit -> Hook Unit
+-- | useEffect init =
+-- |   mkHook \render ->
 -- |     { init: forkVoid init
 -- |     , update: \_ msg -> absurd msg
 -- |     , view: \_ _ -> render unit
 -- |     }
 -- | ```
-mkHook :: forall msg state a. HookName -> ((a -> ReactElement) -> ComponentDef msg state) -> Hook a
-mkHook (HookName name) mkDef = do
+mkHook :: forall msg state a. ((a -> ReactElement) -> ComponentDef msg state) -> Hook a
+mkHook mkDef = do
+  let name = genStableUUID unit
   tell [name]
   WriterT $ cont \render ->
     wrapWithLocalState (ComponentName name) mkDef \args ->
       render $ Tuple args []
+
+foreign import genStableUUID :: Fn1 Unit String
