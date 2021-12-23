@@ -13,13 +13,10 @@ to generate this file without the comments in this block.
 { name = "elmish-hooks"
 , dependencies =
   [ "aff"
-  , "arrays"
   , "console"
-  , "control"
   , "effect"
   , "elmish"
   , "functions"
-  , "maybe"
   , "prelude"
   , "psci-support"
   , "transformers"
