@@ -20,13 +20,10 @@ to generate this file without the comments in this block.
   , "elmish"
   , "functions"
   , "maybe"
-  , "partial"
   , "prelude"
   , "psci-support"
   , "transformers"
   , "tuples"
-
-  , "debug"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
