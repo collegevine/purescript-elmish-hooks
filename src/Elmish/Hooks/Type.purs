@@ -7,9 +7,7 @@ module Elmish.Hooks.Type
 import Prelude
 
 import Control.Monad.Cont (Cont, cont)
-import Control.Monad.Writer (WriterT(..), tell)
 import Data.Function.Uncurried (Fn1)
-import Data.Tuple (Tuple(..))
 import Elmish (ReactElement, ComponentDef)
 import Elmish.Component (ComponentName(..), wrapWithLocalState)
 
@@ -32,17 +30,11 @@ import Elmish.Component (ComponentName(..), wrapWithLocalState)
 -- |   foo /\ setFoo <- useState ""
 -- |   pure …
 -- | ```
--- |
--- | Wrapping it in a `WriterT (Array String)` allows us to keep track of all of
--- | the hook names so `withHooks` can log an error if there are any duplicate
--- | names. If two names are duplicated and can appear in the same spot in the
--- | DOM, React might confuse one for the other, causing unexpected
--- | side-effects.
-type Hook = WriterT (Array String) (Cont ReactElement)
+type Hook = Cont ReactElement
 
 -- | Given a function to create a `ComponentDef` (from a render function `a ->
--- | ReactElement`), `mkHook` creates a `Hook a` and keeps track of the name so
--- | that it can track duplicates. E.g. `useEffect` uses `mkHook` like so:
+-- | ReactElement`), `mkHook` creates a `Hook a`. E.g. `useEffect` uses `mkHook`
+-- | like so:
 -- |
 -- | ```purs
 -- | useEffect :: Aff Unit -> Hook Unit
@@ -54,11 +46,7 @@ type Hook = WriterT (Array String) (Cont ReactElement)
 -- |     }
 -- | ```
 mkHook :: forall msg state a. ((a -> ReactElement) -> ComponentDef msg state) -> Hook a
-mkHook mkDef = do
-  let name = genStableUUID unit
-  tell [name]
-  WriterT $ cont \render ->
-    wrapWithLocalState (ComponentName name) mkDef \args ->
-      render $ Tuple args []
+mkHook mkDef =
+  cont \render -> wrapWithLocalState (ComponentName $ genStableUUID unit) mkDef render
 
 foreign import genStableUUID :: Fn1 Unit String
