@@ -1,12 +1,15 @@
 module Elmish.Hooks.UseEffect
-  ( useEffect
+  ( traced
+  , useEffect
   ) where
 
 import Prelude
 
+import Debug (class DebugWarning)
 import Effect.Aff (Aff)
-import Elmish (forkVoid)
-import Elmish.Hooks.Type (Hook, mkHook, uniqueNameFromCurrentCallStack)
+import Elmish (ComponentDef, forkVoid, withTrace)
+import Elmish.Component (ComponentName)
+import Elmish.Hooks.Type (Hook, mkHook, uniqueNameFromCurrentCallStack, uniqueNameFromCurrentCallStackTraced)
 
 -- | The `useEffect` hook takes an effect (`Aff`) to run and runs it in the
 -- | `init` of the resulting component. E.g.:
@@ -23,11 +26,24 @@ import Elmish.Hooks.Type (Hook, mkHook, uniqueNameFromCurrentCallStack)
 -- |   pure $ H.fragment $ todoView <$> todos
 -- | ```
 useEffect :: Aff Unit -> Hook Unit
-useEffect init =
-  mkHook name \render ->
+useEffect = useEffect' identity uniqueNameFromCurrentCallStack
+
+-- | A version of `useEffect` that logs messages, state changes, render times,
+-- | and info from the name-generating function. Intended to be used with
+-- | qualified imports: `UseEffect.traced`.
+traced :: DebugWarning => Aff Unit -> Hook Unit
+traced = useEffect' withTrace uniqueNameFromCurrentCallStackTraced
+
+useEffect' ::
+  (ComponentDef Void Unit -> ComponentDef Void Unit)
+  -> ({ skipFrames :: Int } -> ComponentName)
+  -> Aff Unit
+  -> Hook Unit
+useEffect' f genName init =
+  mkHook name \render -> f
     { init: forkVoid init
     , update: \_ msg -> absurd msg
     , view: \_ _ -> render unit
     }
   where
-    name = uniqueNameFromCurrentCallStack { skipFrames: 2 }
+    name = genName { skipFrames: 2 }
