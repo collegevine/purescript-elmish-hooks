@@ -1,6 +1,5 @@
 {
   "name": "purescript-elmish-hooks",
-  "version": "1.0.0",
   "description": "React Hooks for Elmish",
   "main": "index.js",
   "scripts": {
@@ -37,5 +36,8 @@
   "devDependencies": {
     "purescript": "^0.14.5",
     "spago": "^0.20.3"
+  },
+  "dependencies": {
+    "uuid": "^8.3.2"
   }
 }

@@ -10,13 +10,13 @@ import Effect.Aff (Milliseconds(..), delay)
 import Effect.Class (liftEffect)
 import Elmish (ReactElement)
 import Elmish.HTML.Styled as H
-import Elmish.Hooks (HookName(..), useEffect, useState, withHooks)
+import Elmish.Hooks (useEffect, useState, withHooks)
 
 view :: ReactElement
 view = withHooks do
-  todos /\ setTodos <- useState (HookName "Todos") Nothing
+  todos /\ setTodos <- useState Nothing
 
-  useEffect (HookName "FetchTodos") do
+  useEffect do
     delay $ Milliseconds 2000.0
     liftEffect $ setTodos $ Just ["Do thing", "Do another thing", "Some more stuff"]
 

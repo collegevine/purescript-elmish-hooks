@@ -7,11 +7,11 @@ import Prelude
 import Data.Tuple.Nested ((/\))
 import Elmish (ReactElement)
 import Elmish.HTML.Styled as H
-import Elmish.Hooks (HookName(..), useState, withHooks)
+import Elmish.Hooks (useState, withHooks)
 
 view :: ReactElement
 view = withHooks do
-  visible /\ setVisible <- useState (HookName "ModalVisible") false
+  visible /\ setVisible <- useState false
   pure $
     H.div ""
     [ H.h2 ""

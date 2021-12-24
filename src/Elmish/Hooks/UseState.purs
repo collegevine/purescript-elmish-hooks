@@ -1,14 +1,13 @@
 module Elmish.Hooks.UseState
   ( useState
-  )
-  where
+  ) where
 
 import Prelude
 
 import Data.Tuple (curry)
 import Data.Tuple.Nested (type (/\))
 import Elmish (Dispatch)
-import Elmish.Hooks.Type (Hook, HookName, mkHook)
+import Elmish.Hooks.Type (Hook, genComponentName, mkHook)
 
 -- | The `useState` hook takes an initial state and returns a `Hook`
 -- | encapsulating the current state and a `setState` function. E.g.:
@@ -16,7 +15,7 @@ import Elmish.Hooks.Type (Hook, HookName, mkHook)
 -- | ```purs
 -- | view :: ReactElement
 -- | view = withHooks do
--- |   visible /\ setVisible <- useState (HookName "ContentVisible") false
+-- |   visible /\ setVisible <- useState false
 -- |   pure $
 -- |     H.fragment
 -- |     [ H.button_ "" { onClick: setVisible $ not visible } "Toggle visibility"
@@ -25,10 +24,12 @@ import Elmish.Hooks.Type (Hook, HookName, mkHook)
 -- |         else H.empty
 -- |     ]
 -- | ```
-useState :: forall state. HookName -> state -> Hook (state /\ Dispatch state)
-useState name initialState =
+useState :: forall state. state -> Hook (state /\ Dispatch state)
+useState initialState =
   mkHook name \render ->
     { init: pure initialState
     , update: \_ newState -> pure newState
     , view: curry render
     }
+  where
+    name = genComponentName { skipFrames: 2 }

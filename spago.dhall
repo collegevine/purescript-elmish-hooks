@@ -13,12 +13,10 @@ to generate this file without the comments in this block.
 { name = "elmish-hooks"
 , dependencies =
   [ "aff"
-  , "arrays"
   , "console"
-  , "control"
+  , "debug"
   , "effect"
   , "elmish"
-  , "maybe"
   , "prelude"
   , "psci-support"
   , "transformers"
@@ -28,5 +26,5 @@ to generate this file without the comments in this block.
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
 , license = "MIT"
 , repository = "https://github.com/collegevine/purescript-elmish-hooks.git"
-, version = "0.0.1"
+, version = "0.1.0"
 }
