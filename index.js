@@ -56925,193 +56925,947 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }
   });
 
-  // output/Data.Array.NonEmpty.Internal/foreign.js
-  var require_foreign103 = __commonJS({
-    "output/Data.Array.NonEmpty.Internal/foreign.js"(exports) {
-      "use strict";
-      exports.foldr1Impl = function(f) {
-        return function(xs) {
-          var acc = xs[xs.length - 1];
-          for (var i = xs.length - 2; i >= 0; i--) {
-            acc = f(xs[i])(acc);
-          }
-          return acc;
-        };
-      };
-      exports.foldl1Impl = function(f) {
-        return function(xs) {
-          var acc = xs[0];
-          var len = xs.length;
-          for (var i = 1; i < len; i++) {
-            acc = f(acc)(xs[i]);
-          }
-          return acc;
-        };
-      };
-      exports.traverse1Impl = function() {
-        function Cont(fn) {
-          this.fn = fn;
-        }
-        var emptyList = {};
-        var ConsCell = function(head, tail) {
-          this.head = head;
-          this.tail = tail;
-        };
-        function finalCell(head) {
-          return new ConsCell(head, emptyList);
-        }
-        function consList(x) {
-          return function(xs) {
-            return new ConsCell(x, xs);
-          };
-        }
-        function listToArray(list) {
-          var arr = [];
-          var xs = list;
-          while (xs !== emptyList) {
-            arr.push(xs.head);
-            xs = xs.tail;
-          }
-          return arr;
-        }
-        return function(apply) {
-          return function(map) {
-            return function(f) {
-              var buildFrom = function(x, ys) {
-                return apply(map(consList)(f(x)))(ys);
-              };
-              var go = function(acc, currentLen, xs) {
-                if (currentLen === 0) {
-                  return acc;
-                } else {
-                  var last = xs[currentLen - 1];
-                  return new Cont(function() {
-                    var built = go(buildFrom(last, acc), currentLen - 1, xs);
-                    return built;
-                  });
-                }
-              };
-              return function(array) {
-                var acc = map(finalCell)(f(array[array.length - 1]));
-                var result = go(acc, array.length - 1, array);
-                while (result instanceof Cont) {
-                  result = result.fn();
-                }
-                return map(listToArray)(result);
-              };
-            };
-          };
-        };
-      }();
+  // node_modules/uuid/lib/bytesToUuid.js
+  var require_bytesToUuid = __commonJS({
+    "node_modules/uuid/lib/bytesToUuid.js"(exports, module) {
+      var byteToHex = [];
+      for (i = 0; i < 256; ++i) {
+        byteToHex[i] = (i + 256).toString(16).substr(1);
+      }
+      var i;
+      function bytesToUuid(buf, offset) {
+        var i2 = offset || 0;
+        var bth = byteToHex;
+        return [
+          bth[buf[i2++]],
+          bth[buf[i2++]],
+          bth[buf[i2++]],
+          bth[buf[i2++]],
+          "-",
+          bth[buf[i2++]],
+          bth[buf[i2++]],
+          "-",
+          bth[buf[i2++]],
+          bth[buf[i2++]],
+          "-",
+          bth[buf[i2++]],
+          bth[buf[i2++]],
+          "-",
+          bth[buf[i2++]],
+          bth[buf[i2++]],
+          bth[buf[i2++]],
+          bth[buf[i2++]],
+          bth[buf[i2++]],
+          bth[buf[i2++]]
+        ].join("");
+      }
+      module.exports = bytesToUuid;
     }
   });
 
-  // output/Data.Array.NonEmpty.Internal/index.js
-  var require_Data_Array_NonEmpty = __commonJS({
-    "output/Data.Array.NonEmpty.Internal/index.js"(exports, module) {
+  // node_modules/uuid/lib/v35.js
+  var require_v35 = __commonJS({
+    "node_modules/uuid/lib/v35.js"(exports, module) {
+      var bytesToUuid = require_bytesToUuid();
+      function uuidToBytes(uuid) {
+        var bytes = [];
+        uuid.replace(/[a-fA-F0-9]{2}/g, function(hex) {
+          bytes.push(parseInt(hex, 16));
+        });
+        return bytes;
+      }
+      function stringToBytes(str) {
+        str = unescape(encodeURIComponent(str));
+        var bytes = new Array(str.length);
+        for (var i = 0; i < str.length; i++) {
+          bytes[i] = str.charCodeAt(i);
+        }
+        return bytes;
+      }
+      module.exports = function(name, version, hashfunc) {
+        var generateUUID = function(value, namespace, buf, offset) {
+          var off = buf && offset || 0;
+          if (typeof value == "string")
+            value = stringToBytes(value);
+          if (typeof namespace == "string")
+            namespace = uuidToBytes(namespace);
+          if (!Array.isArray(value))
+            throw TypeError("value must be an array of bytes");
+          if (!Array.isArray(namespace) || namespace.length !== 16)
+            throw TypeError("namespace must be uuid string or an Array of 16 byte values");
+          var bytes = hashfunc(namespace.concat(value));
+          bytes[6] = bytes[6] & 15 | version;
+          bytes[8] = bytes[8] & 63 | 128;
+          if (buf) {
+            for (var idx = 0; idx < 16; ++idx) {
+              buf[off + idx] = bytes[idx];
+            }
+          }
+          return buf || bytesToUuid(bytes);
+        };
+        try {
+          generateUUID.name = name;
+        } catch (err) {
+        }
+        generateUUID.DNS = "6ba7b810-9dad-11d1-80b4-00c04fd430c8";
+        generateUUID.URL = "6ba7b811-9dad-11d1-80b4-00c04fd430c8";
+        return generateUUID;
+      };
+    }
+  });
+
+  // node_modules/uuid/lib/sha1-browser.js
+  var require_sha1_browser = __commonJS({
+    "node_modules/uuid/lib/sha1-browser.js"(exports, module) {
+      "use strict";
+      function f(s, x, y, z) {
+        switch (s) {
+          case 0:
+            return x & y ^ ~x & z;
+          case 1:
+            return x ^ y ^ z;
+          case 2:
+            return x & y ^ x & z ^ y & z;
+          case 3:
+            return x ^ y ^ z;
+        }
+      }
+      function ROTL(x, n) {
+        return x << n | x >>> 32 - n;
+      }
+      function sha1(bytes) {
+        var K = [1518500249, 1859775393, 2400959708, 3395469782];
+        var H = [1732584193, 4023233417, 2562383102, 271733878, 3285377520];
+        if (typeof bytes == "string") {
+          var msg = unescape(encodeURIComponent(bytes));
+          bytes = new Array(msg.length);
+          for (var i = 0; i < msg.length; i++)
+            bytes[i] = msg.charCodeAt(i);
+        }
+        bytes.push(128);
+        var l = bytes.length / 4 + 2;
+        var N = Math.ceil(l / 16);
+        var M = new Array(N);
+        for (var i = 0; i < N; i++) {
+          M[i] = new Array(16);
+          for (var j = 0; j < 16; j++) {
+            M[i][j] = bytes[i * 64 + j * 4] << 24 | bytes[i * 64 + j * 4 + 1] << 16 | bytes[i * 64 + j * 4 + 2] << 8 | bytes[i * 64 + j * 4 + 3];
+          }
+        }
+        M[N - 1][14] = (bytes.length - 1) * 8 / Math.pow(2, 32);
+        M[N - 1][14] = Math.floor(M[N - 1][14]);
+        M[N - 1][15] = (bytes.length - 1) * 8 & 4294967295;
+        for (var i = 0; i < N; i++) {
+          var W = new Array(80);
+          for (var t = 0; t < 16; t++)
+            W[t] = M[i][t];
+          for (var t = 16; t < 80; t++) {
+            W[t] = ROTL(W[t - 3] ^ W[t - 8] ^ W[t - 14] ^ W[t - 16], 1);
+          }
+          var a = H[0];
+          var b = H[1];
+          var c = H[2];
+          var d = H[3];
+          var e = H[4];
+          for (var t = 0; t < 80; t++) {
+            var s = Math.floor(t / 20);
+            var T = ROTL(a, 5) + f(s, b, c, d) + e + K[s] + W[t] >>> 0;
+            e = d;
+            d = c;
+            c = ROTL(b, 30) >>> 0;
+            b = a;
+            a = T;
+          }
+          H[0] = H[0] + a >>> 0;
+          H[1] = H[1] + b >>> 0;
+          H[2] = H[2] + c >>> 0;
+          H[3] = H[3] + d >>> 0;
+          H[4] = H[4] + e >>> 0;
+        }
+        return [
+          H[0] >> 24 & 255,
+          H[0] >> 16 & 255,
+          H[0] >> 8 & 255,
+          H[0] & 255,
+          H[1] >> 24 & 255,
+          H[1] >> 16 & 255,
+          H[1] >> 8 & 255,
+          H[1] & 255,
+          H[2] >> 24 & 255,
+          H[2] >> 16 & 255,
+          H[2] >> 8 & 255,
+          H[2] & 255,
+          H[3] >> 24 & 255,
+          H[3] >> 16 & 255,
+          H[3] >> 8 & 255,
+          H[3] & 255,
+          H[4] >> 24 & 255,
+          H[4] >> 16 & 255,
+          H[4] >> 8 & 255,
+          H[4] & 255
+        ];
+      }
+      module.exports = sha1;
+    }
+  });
+
+  // node_modules/uuid/v5.js
+  var require_v5 = __commonJS({
+    "node_modules/uuid/v5.js"(exports, module) {
+      var v35 = require_v35();
+      var sha1 = require_sha1_browser();
+      module.exports = v35("v5", 80, sha1);
+    }
+  });
+
+  // output/Elmish.Hooks.Type/foreign.js
+  var require_foreign103 = __commonJS({
+    "output/Elmish.Hooks.Type/foreign.js"(exports) {
+      var uuidV5 = require_v5();
+      var genStableUUID_ = ({ trace }) => ({ skipFrames }) => {
+        const stack = new Error().stack;
+        const stackLines = stack.split("\n");
+        const hookCallSite = stackLines[skipFrames + 1];
+        if (trace) {
+          console.log("Hook Call Site:");
+          console.log(hookCallSite);
+          console.log("Full Stack Trace:");
+          console.log(stack);
+        }
+        return uuidV5(hookCallSite, "31877c6f-998d-44e6-99e6-3cd31a643f1d");
+      };
+      exports.genStableUUID_ = genStableUUID_({ trace: false });
+      exports.genStableUUIDWithTrace_ = genStableUUID_({ trace: true });
+    }
+  });
+
+  // output/Elmish.Hooks.Type/index.js
+  var require_Elmish_Hooks = __commonJS({
+    "output/Elmish.Hooks.Type/index.js"(exports, module) {
       "use strict";
       var $foreign = require_foreign103();
-      var Control_Alt = require_Control6();
-      var Control_Applicative = require_Control4();
-      var Control_Apply = require_Control3();
-      var Control_Bind = require_Control5();
-      var Control_Monad = require_Control7();
-      var Data_Eq = require_Data8();
-      var Data_Foldable = require_Data27();
-      var Data_FoldableWithIndex = require_Data36();
-      var Data_Functor = require_Data4();
-      var Data_FunctorWithIndex = require_Data35();
-      var Data_Ord = require_Data12();
-      var Data_Semigroup = require_Data7();
-      var Data_Semigroup_Foldable = require_Data_Semigroup();
-      var Data_Semigroup_Traversable = require_Data_Semigroup2();
-      var Data_Show = require_Data14();
-      var Data_Traversable = require_Data29();
-      var Data_TraversableWithIndex = require_Data37();
-      var Data_Unfoldable1 = require_Data31();
-      var NonEmptyArray = function(x) {
-        return x;
-      };
-      var unfoldable1NonEmptyArray = Data_Unfoldable1.unfoldable1Array;
-      var traversableWithIndexNonEmptyArray = Data_TraversableWithIndex.traversableWithIndexArray;
-      var traversableNonEmptyArray = Data_Traversable.traversableArray;
-      var showNonEmptyArray = function(dictShow) {
-        return {
-          show: function(v) {
-            return "(NonEmptyArray " + (Data_Show.show(Data_Show.showArray(dictShow))(v) + ")");
-          }
+      var Control_Monad_Cont = require_Control_Monad();
+      var Elmish_Component = require_Elmish4();
+      var mkHook = function(name) {
+        return function(mkDef) {
+          return Control_Monad_Cont.cont(function(render) {
+            return Elmish_Component.wrapWithLocalState(name)(mkDef)(render);
+          });
         };
       };
-      var semigroupNonEmptyArray = Data_Semigroup.semigroupArray;
-      var ordNonEmptyArray = function(dictOrd) {
-        return Data_Ord.ordArray(dictOrd);
+      var genComponentNameWithTrace = function(dictDebugWarning) {
+        return function($1) {
+          return Elmish_Component.ComponentName($foreign.genStableUUIDWithTrace_($1));
+        };
       };
-      var ord1NonEmptyArray = Data_Ord.ord1Array;
-      var monadNonEmptyArray = Control_Monad.monadArray;
-      var functorWithIndexNonEmptyArray = Data_FunctorWithIndex.functorWithIndexArray;
-      var functorNonEmptyArray = Data_Functor.functorArray;
-      var foldableWithIndexNonEmptyArray = Data_FoldableWithIndex.foldableWithIndexArray;
-      var foldableNonEmptyArray = Data_Foldable.foldableArray;
-      var foldable1NonEmptyArray = {
-        foldMap1: function(dictSemigroup) {
-          return Data_Semigroup_Foldable.foldMap1DefaultL(foldable1NonEmptyArray)(functorNonEmptyArray)(dictSemigroup);
-        },
-        foldr1: $foreign.foldr1Impl,
-        foldl1: $foreign.foldl1Impl,
-        Foldable0: function() {
-          return foldableNonEmptyArray;
-        }
+      var genComponentName = function($2) {
+        return Elmish_Component.ComponentName($foreign.genStableUUID_($2));
       };
-      var traversable1NonEmptyArray = {
-        traverse1: function(dictApply) {
-          return $foreign.traverse1Impl(Control_Apply.apply(dictApply))(Data_Functor.map(dictApply.Functor0()));
-        },
-        sequence1: function(dictApply) {
-          return Data_Semigroup_Traversable.sequence1Default(traversable1NonEmptyArray)(dictApply);
-        },
-        Foldable10: function() {
-          return foldable1NonEmptyArray;
-        },
-        Traversable1: function() {
-          return traversableNonEmptyArray;
-        }
-      };
-      var eqNonEmptyArray = function(dictEq) {
-        return Data_Eq.eqArray(dictEq);
-      };
-      var eq1NonEmptyArray = Data_Eq.eq1Array;
-      var bindNonEmptyArray = Control_Bind.bindArray;
-      var applyNonEmptyArray = Control_Apply.applyArray;
-      var applicativeNonEmptyArray = Control_Applicative.applicativeArray;
-      var altNonEmptyArray = Control_Alt.altArray;
       module.exports = {
-        NonEmptyArray,
-        showNonEmptyArray,
-        eqNonEmptyArray,
-        eq1NonEmptyArray,
-        ordNonEmptyArray,
-        ord1NonEmptyArray,
-        semigroupNonEmptyArray,
-        functorNonEmptyArray,
-        functorWithIndexNonEmptyArray,
-        foldableNonEmptyArray,
-        foldableWithIndexNonEmptyArray,
-        foldable1NonEmptyArray,
-        unfoldable1NonEmptyArray,
-        traversableNonEmptyArray,
-        traversableWithIndexNonEmptyArray,
-        traversable1NonEmptyArray,
-        applyNonEmptyArray,
-        applicativeNonEmptyArray,
-        bindNonEmptyArray,
-        monadNonEmptyArray,
-        altNonEmptyArray
+        genComponentName,
+        genComponentNameWithTrace,
+        mkHook
+      };
+    }
+  });
+
+  // output/Elmish.Hooks.UseEffect/index.js
+  var require_Elmish_Hooks2 = __commonJS({
+    "output/Elmish.Hooks.UseEffect/index.js"(exports, module) {
+      "use strict";
+      var Data_Unit = require_Data3();
+      var Data_Void = require_Data5();
+      var Elmish_Component = require_Elmish4();
+      var Elmish_Hooks_Type = require_Elmish_Hooks();
+      var useEffect = function(init) {
+        var name = Elmish_Hooks_Type.genComponentName({
+          skipFrames: 2
+        });
+        return Elmish_Hooks_Type.mkHook(name)(function(render) {
+          return {
+            init: Elmish_Component.forkVoid(init),
+            update: function(v) {
+              return function(msg) {
+                return Data_Void.absurd(msg);
+              };
+            },
+            view: function(v) {
+              return function(v1) {
+                return render(Data_Unit.unit);
+              };
+            }
+          };
+        });
+      };
+      module.exports = {
+        useEffect
+      };
+    }
+  });
+
+  // output/Elmish.Hooks.UseState/index.js
+  var require_Elmish_Hooks3 = __commonJS({
+    "output/Elmish.Hooks.UseState/index.js"(exports, module) {
+      "use strict";
+      var Control_Applicative = require_Control4();
+      var Data_Tuple = require_Data21();
+      var Elmish_Component = require_Elmish4();
+      var Elmish_Hooks_Type = require_Elmish_Hooks();
+      var useState = function(initialState) {
+        var name = Elmish_Hooks_Type.genComponentName({
+          skipFrames: 2
+        });
+        return Elmish_Hooks_Type.mkHook(name)(function(render) {
+          return {
+            init: Control_Applicative.pure(Elmish_Component.trApplicative)(initialState),
+            update: function(v) {
+              return function(newState) {
+                return Control_Applicative.pure(Elmish_Component.trApplicative)(newState);
+              };
+            },
+            view: Data_Tuple.curry(render)
+          };
+        });
+      };
+      module.exports = {
+        useState
+      };
+    }
+  });
+
+  // output/Elmish.Hooks/index.js
+  var require_Elmish6 = __commonJS({
+    "output/Elmish.Hooks/index.js"(exports, module) {
+      "use strict";
+      var Control_Category = require_Control2();
+      var Control_Monad_Cont = require_Control_Monad();
+      var Elmish_Hooks_Type = require_Elmish_Hooks();
+      var Elmish_Hooks_UseEffect = require_Elmish_Hooks2();
+      var Elmish_Hooks_UseState = require_Elmish_Hooks3();
+      var withHooks = function(hooks) {
+        return Control_Monad_Cont.runCont(hooks)(Control_Category.identity(Control_Category.categoryFn));
+      };
+      module.exports = {
+        withHooks,
+        genComponentName: Elmish_Hooks_Type.genComponentName,
+        mkHook: Elmish_Hooks_Type.mkHook,
+        useEffect: Elmish_Hooks_UseEffect.useEffect,
+        useState: Elmish_Hooks_UseState.useState
+      };
+    }
+  });
+
+  // output/Examples.UseEffect/index.js
+  var require_Examples = __commonJS({
+    "output/Examples.UseEffect/index.js"(exports, module) {
+      "use strict";
+      var Control_Applicative = require_Control4();
+      var Control_Bind = require_Control5();
+      var Control_Monad_Cont_Trans = require_Control_Monad_Cont2();
+      var Data_Functor = require_Data4();
+      var Data_Identity = require_Data23();
+      var Data_Maybe = require_Data15();
+      var Effect_Aff = require_Effect7();
+      var Effect_Class = require_Effect2();
+      var Elmish_HTML_Internal = require_Elmish_HTML();
+      var Elmish_HTML_Styled_Generated = require_Elmish_HTML_Styled();
+      var Elmish_Hooks = require_Elmish6();
+      var Elmish_Hooks_UseEffect = require_Elmish_Hooks2();
+      var Elmish_Hooks_UseState = require_Elmish_Hooks3();
+      var Elmish_React = require_Elmish();
+      var Elmish_React_DOM = require_Elmish_React();
+      var view = Elmish_Hooks.withHooks(Control_Bind.bind(Control_Monad_Cont_Trans.bindContT(Data_Identity.bindIdentity))(Elmish_Hooks_UseState.useState(Data_Maybe.Nothing.value))(function(v) {
+        return Control_Bind.discard(Control_Bind.discardUnit)(Control_Monad_Cont_Trans.bindContT(Data_Identity.bindIdentity))(Elmish_Hooks_UseEffect.useEffect(Control_Bind.discard(Control_Bind.discardUnit)(Effect_Aff.bindAff)(Effect_Aff.delay(2e3))(function() {
+          return Effect_Class.liftEffect(Effect_Aff.monadEffectAff)(v.value1(new Data_Maybe.Just(["Do thing", "Do another thing", "Some more stuff"])));
+        })))(function() {
+          return Control_Applicative.pure(Control_Monad_Cont_Trans.applicativeContT(Data_Identity.applicativeIdentity))(Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("row")([Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("col-12 col-md-6 col-lg-4")([Elmish_HTML_Styled_Generated.h2(Elmish_React.reactChildrenArray)("")([Elmish_HTML_Styled_Generated.code(Elmish_React.reactChildrenString)("")("useEffect"), Elmish_React_DOM.text(" hook")]), Elmish_HTML_Styled_Generated.h4(Elmish_React.reactChildrenString)("mb-3")("Todos"), function() {
+            if (v.value0 instanceof Data_Maybe.Nothing) {
+              return Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("")([Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenSingle)("progress")(Elmish_HTML_Styled_Generated.div_(Elmish_React.reactChildrenSingle)()()("progress-bar progress-bar-striped progress-bar-animated")({
+                role: "progressbar",
+                style: Elmish_HTML_Internal.css({
+                  width: "100%"
+                })
+              })(Elmish_React_DOM.empty)), Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenString)("mt-2")("Loading todos\u2026")]);
+            }
+            ;
+            if (v.value0 instanceof Data_Maybe.Just) {
+              return Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("ul")(Data_Functor.map(Data_Functor.functorArray)(Elmish_HTML_Styled_Generated.li(Elmish_React.reactChildrenString)(""))(v.value0.value0));
+            }
+            ;
+            throw new Error("Failed pattern match at Examples.UseEffect (line 31, column 9 - line 40, column 33): " + [v.value0.constructor.name]);
+          }()])]));
+        });
+      }));
+      module.exports = {
+        view
+      };
+    }
+  });
+
+  // output/Elmish.Dispatch/index.js
+  var require_Elmish7 = __commonJS({
+    "output/Elmish.Dispatch/index.js"(exports, module) {
+      "use strict";
+      var Control_Applicative = require_Control4();
+      var Data_Maybe = require_Data15();
+      var Data_Unit = require_Data3();
+      var Effect = require_Effect();
+      var Effect_Uncurried = require_Effect8();
+      var handleMaybe = function(dispatch) {
+        return function(fn) {
+          return Effect_Uncurried.mkEffectFn1(function() {
+            var $0 = Data_Maybe.maybe(Control_Applicative.pure(Effect.applicativeEffect)(Data_Unit.unit))(dispatch);
+            return function($1) {
+              return $0(fn($1));
+            };
+          }());
+        };
+      };
+      var handle = function(dispatch) {
+        return function(fn) {
+          return function($2) {
+            return dispatch(fn($2))();
+          };
+        };
+      };
+      module.exports = {
+        handle,
+        handleMaybe,
+        mkEffectFn1: Effect_Uncurried.mkEffectFn1,
+        mkEffectFn2: Effect_Uncurried.mkEffectFn2
+      };
+    }
+  });
+
+  // output/Elmish.Foreign/foreign.js
+  var require_foreign104 = __commonJS({
+    "output/Elmish.Foreign/foreign.js"(exports) {
+      exports.isString = function(s) {
+        return typeof s === "string";
+      };
+      exports.isNumber = function(s) {
+        return typeof s === "number";
+      };
+      exports.isBoolean = function(s) {
+        return typeof s === "boolean";
+      };
+      exports.isDate = function(s) {
+        return s instanceof Date;
+      };
+      exports.isObject = function(s) {
+        return s instanceof Object;
+      };
+      exports.isFunction = function(s) {
+        return s instanceof Function;
+      };
+      exports.showForeign = function(x) {
+        return x === null ? "<null>" : x === void 0 ? "<undefined>" : x instanceof Date ? x.toString() : typeof Blob !== "undefined" && x instanceof Blob ? "file[" + x.name + "]" : JSON.stringify(x);
+      };
+      exports.mkVarArgEff_ = function(k) {
+        return function() {
+          k(arguments)();
+        };
+      };
+      exports.getArgument_ = function(args) {
+        return function(index) {
+          return function(just) {
+            return function(nothing) {
+              return args.length > index ? just(args[index]) : nothing;
+            };
+          };
+        };
+      };
+      exports.argumentsToArray_ = function(args) {
+        return Array.from(args);
+      };
+    }
+  });
+
+  // output/Data.Int/foreign.js
+  var require_foreign105 = __commonJS({
+    "output/Data.Int/foreign.js"(exports) {
+      "use strict";
+      exports.fromNumberImpl = function(just) {
+        return function(nothing) {
+          return function(n) {
+            return (n | 0) === n ? just(n) : nothing;
+          };
+        };
+      };
+      exports.toNumber = function(n) {
+        return n;
+      };
+      exports.fromStringAsImpl = function(just) {
+        return function(nothing) {
+          return function(radix) {
+            var digits;
+            if (radix < 11) {
+              digits = "[0-" + (radix - 1).toString() + "]";
+            } else if (radix === 11) {
+              digits = "[0-9a]";
+            } else {
+              digits = "[0-9a-" + String.fromCharCode(86 + radix) + "]";
+            }
+            var pattern = new RegExp("^[\\+\\-]?" + digits + "+$", "i");
+            return function(s) {
+              if (pattern.test(s)) {
+                var i = parseInt(s, radix);
+                return (i | 0) === i ? just(i) : nothing;
+              } else {
+                return nothing;
+              }
+            };
+          };
+        };
+      };
+      exports.toStringAs = function(radix) {
+        return function(i) {
+          return i.toString(radix);
+        };
+      };
+      exports.quot = function(x) {
+        return function(y) {
+          return x / y | 0;
+        };
+      };
+      exports.rem = function(x) {
+        return function(y) {
+          return x % y;
+        };
+      };
+      exports.pow = function(x) {
+        return function(y) {
+          return Math.pow(x, y) | 0;
+        };
+      };
+    }
+  });
+
+  // output/Data.Number/foreign.js
+  var require_foreign106 = __commonJS({
+    "output/Data.Number/foreign.js"(exports) {
+      "use strict";
+      exports.nan = NaN;
+      exports.isNaN = isNaN;
+      exports.infinity = Infinity;
+      exports.isFinite = isFinite;
+      exports.fromStringImpl = function(str, isFinite2, just, nothing) {
+        var num = parseFloat(str);
+        if (isFinite2(num)) {
+          return just(num);
+        } else {
+          return nothing;
+        }
+      };
+    }
+  });
+
+  // output/Data.Number/index.js
+  var require_Data38 = __commonJS({
+    "output/Data.Number/index.js"(exports, module) {
+      "use strict";
+      var $foreign = require_foreign106();
+      var Data_Maybe = require_Data15();
+      var fromString = function(str) {
+        return $foreign.fromStringImpl(str, $foreign["isFinite"], Data_Maybe.Just.create, Data_Maybe.Nothing.value);
+      };
+      module.exports = {
+        fromString,
+        nan: $foreign.nan,
+        "isNaN": $foreign["isNaN"],
+        infinity: $foreign.infinity,
+        "isFinite": $foreign["isFinite"]
+      };
+    }
+  });
+
+  // output/Math/foreign.js
+  var require_foreign107 = __commonJS({
+    "output/Math/foreign.js"(exports) {
+      "use strict";
+      exports.abs = Math.abs;
+      exports.acos = Math.acos;
+      exports.asin = Math.asin;
+      exports.atan = Math.atan;
+      exports.atan2 = function(y) {
+        return function(x) {
+          return Math.atan2(y, x);
+        };
+      };
+      exports.ceil = Math.ceil;
+      exports.cos = Math.cos;
+      exports.exp = Math.exp;
+      exports.floor = Math.floor;
+      function nativeImul(a) {
+        return function(b) {
+          return Math.imul(a, b);
+        };
+      }
+      function emulatedImul(a) {
+        return function(b) {
+          var ah = a >>> 16 & 65535;
+          var al = a & 65535;
+          var bh = b >>> 16 & 65535;
+          var bl = b & 65535;
+          return al * bl + (ah * bl + al * bh << 16 >>> 0) | 0;
+        };
+      }
+      exports.imul = Math.imul ? nativeImul : emulatedImul;
+      exports.trunc = Math.trunc || function(n) {
+        return n < 0 ? Math.ceil(n) : Math.floor(n);
+      };
+      exports.log = Math.log;
+      exports.max = function(n1) {
+        return function(n2) {
+          return Math.max(n1, n2);
+        };
+      };
+      exports.min = function(n1) {
+        return function(n2) {
+          return Math.min(n1, n2);
+        };
+      };
+      exports.pow = function(n) {
+        return function(p) {
+          return Math.pow(n, p);
+        };
+      };
+      exports.remainder = function(n) {
+        return function(m) {
+          return n % m;
+        };
+      };
+      exports.round = Math.round;
+      exports.sin = Math.sin;
+      exports.sqrt = Math.sqrt;
+      exports.tan = Math.tan;
+      exports.e = Math.E;
+      exports.ln2 = Math.LN2;
+      exports.ln10 = Math.LN10;
+      exports.log2e = Math.LOG2E;
+      exports.log10e = Math.LOG10E;
+      exports.pi = Math.PI;
+      exports.tau = 2 * Math.PI;
+      exports.sqrt1_2 = Math.SQRT1_2;
+      exports.sqrt2 = Math.SQRT2;
+    }
+  });
+
+  // output/Math/index.js
+  var require_Math = __commonJS({
+    "output/Math/index.js"(exports, module) {
+      "use strict";
+      var $foreign = require_foreign107();
+      module.exports = {
+        abs: $foreign.abs,
+        acos: $foreign.acos,
+        asin: $foreign.asin,
+        atan: $foreign.atan,
+        atan2: $foreign.atan2,
+        ceil: $foreign.ceil,
+        cos: $foreign.cos,
+        exp: $foreign.exp,
+        floor: $foreign.floor,
+        imul: $foreign.imul,
+        log: $foreign.log,
+        max: $foreign.max,
+        min: $foreign.min,
+        pow: $foreign.pow,
+        round: $foreign.round,
+        sin: $foreign.sin,
+        sqrt: $foreign.sqrt,
+        tan: $foreign.tan,
+        trunc: $foreign.trunc,
+        remainder: $foreign.remainder,
+        e: $foreign.e,
+        ln2: $foreign.ln2,
+        ln10: $foreign.ln10,
+        log2e: $foreign.log2e,
+        log10e: $foreign.log10e,
+        pi: $foreign.pi,
+        tau: $foreign.tau,
+        sqrt1_2: $foreign.sqrt1_2,
+        sqrt2: $foreign.sqrt2
+      };
+    }
+  });
+
+  // output/Data.Int/index.js
+  var require_Data39 = __commonJS({
+    "output/Data.Int/index.js"(exports, module) {
+      "use strict";
+      var $foreign = require_foreign105();
+      var Control_Category = require_Control2();
+      var Data_Boolean = require_Data();
+      var Data_Bounded = require_Data13();
+      var Data_Eq = require_Data8();
+      var Data_Maybe = require_Data15();
+      var Data_Number = require_Data38();
+      var Data_Ordering = require_Data9();
+      var Data_Semiring = require_Data10();
+      var $$Math = require_Math();
+      var Even = function() {
+        function Even2() {
+        }
+        ;
+        Even2.value = new Even2();
+        return Even2;
+      }();
+      var Odd = function() {
+        function Odd2() {
+        }
+        ;
+        Odd2.value = new Odd2();
+        return Odd2;
+      }();
+      var showParity = {
+        show: function(v) {
+          if (v instanceof Even) {
+            return "Even";
+          }
+          ;
+          if (v instanceof Odd) {
+            return "Odd";
+          }
+          ;
+          throw new Error("Failed pattern match at Data.Int (line 111, column 1 - line 113, column 19): " + [v.constructor.name]);
+        }
+      };
+      var radix = function(n) {
+        if (n >= 2 && n <= 36) {
+          return new Data_Maybe.Just(n);
+        }
+        ;
+        if (Data_Boolean.otherwise) {
+          return Data_Maybe.Nothing.value;
+        }
+        ;
+        throw new Error("Failed pattern match at Data.Int (line 192, column 1 - line 192, column 28): " + [n.constructor.name]);
+      };
+      var odd = function(x) {
+        return (x & 1) !== 0;
+      };
+      var octal = 8;
+      var hexadecimal = 16;
+      var fromStringAs = $foreign.fromStringAsImpl(Data_Maybe.Just.create)(Data_Maybe.Nothing.value);
+      var fromString = fromStringAs(10);
+      var fromNumber = $foreign.fromNumberImpl(Data_Maybe.Just.create)(Data_Maybe.Nothing.value);
+      var unsafeClamp = function(x) {
+        if (!Data_Number["isFinite"](x)) {
+          return 0;
+        }
+        ;
+        if (x >= $foreign.toNumber(Data_Bounded.top(Data_Bounded.boundedInt))) {
+          return Data_Bounded.top(Data_Bounded.boundedInt);
+        }
+        ;
+        if (x <= $foreign.toNumber(Data_Bounded.bottom(Data_Bounded.boundedInt))) {
+          return Data_Bounded.bottom(Data_Bounded.boundedInt);
+        }
+        ;
+        if (Data_Boolean.otherwise) {
+          return Data_Maybe.fromMaybe(0)(fromNumber(x));
+        }
+        ;
+        throw new Error("Failed pattern match at Data.Int (line 66, column 1 - line 66, column 29): " + [x.constructor.name]);
+      };
+      var round = function($23) {
+        return unsafeClamp($$Math.round($23));
+      };
+      var floor = function($24) {
+        return unsafeClamp($$Math.floor($24));
+      };
+      var even = function(x) {
+        return (x & 1) === 0;
+      };
+      var parity = function(n) {
+        var $14 = even(n);
+        if ($14) {
+          return Even.value;
+        }
+        ;
+        return Odd.value;
+      };
+      var eqParity = {
+        eq: function(x) {
+          return function(y) {
+            if (x instanceof Even && y instanceof Even) {
+              return true;
+            }
+            ;
+            if (x instanceof Odd && y instanceof Odd) {
+              return true;
+            }
+            ;
+            return false;
+          };
+        }
+      };
+      var ordParity = {
+        compare: function(x) {
+          return function(y) {
+            if (x instanceof Even && y instanceof Even) {
+              return Data_Ordering.EQ.value;
+            }
+            ;
+            if (x instanceof Even) {
+              return Data_Ordering.LT.value;
+            }
+            ;
+            if (y instanceof Even) {
+              return Data_Ordering.GT.value;
+            }
+            ;
+            if (x instanceof Odd && y instanceof Odd) {
+              return Data_Ordering.EQ.value;
+            }
+            ;
+            throw new Error("Failed pattern match at Data.Int (line 109, column 1 - line 109, column 40): " + [x.constructor.name, y.constructor.name]);
+          };
+        },
+        Eq0: function() {
+          return eqParity;
+        }
+      };
+      var semiringParity = {
+        zero: Even.value,
+        add: function(x) {
+          return function(y) {
+            var $19 = Data_Eq.eq(eqParity)(x)(y);
+            if ($19) {
+              return Even.value;
+            }
+            ;
+            return Odd.value;
+          };
+        },
+        one: Odd.value,
+        mul: function(v) {
+          return function(v1) {
+            if (v instanceof Odd && v1 instanceof Odd) {
+              return Odd.value;
+            }
+            ;
+            return Even.value;
+          };
+        }
+      };
+      var ringParity = {
+        sub: Data_Semiring.add(semiringParity),
+        Semiring0: function() {
+          return semiringParity;
+        }
+      };
+      var divisionRingParity = {
+        recip: Control_Category.identity(Control_Category.categoryFn),
+        Ring0: function() {
+          return ringParity;
+        }
+      };
+      var decimal = 10;
+      var commutativeRingParity = {
+        Ring0: function() {
+          return ringParity;
+        }
+      };
+      var euclideanRingParity = {
+        degree: function(v) {
+          if (v instanceof Even) {
+            return 0;
+          }
+          ;
+          if (v instanceof Odd) {
+            return 1;
+          }
+          ;
+          throw new Error("Failed pattern match at Data.Int (line 131, column 1 - line 135, column 17): " + [v.constructor.name]);
+        },
+        div: function(x) {
+          return function(v) {
+            return x;
+          };
+        },
+        mod: function(v) {
+          return function(v1) {
+            return Even.value;
+          };
+        },
+        CommutativeRing0: function() {
+          return commutativeRingParity;
+        }
+      };
+      var ceil = function($25) {
+        return unsafeClamp($$Math.ceil($25));
+      };
+      var boundedParity = {
+        bottom: Even.value,
+        top: Odd.value,
+        Ord0: function() {
+          return ordParity;
+        }
+      };
+      var binary = 2;
+      var base36 = 36;
+      module.exports = {
+        fromNumber,
+        ceil,
+        floor,
+        round,
+        fromString,
+        radix,
+        binary,
+        octal,
+        decimal,
+        hexadecimal,
+        base36,
+        fromStringAs,
+        Even,
+        Odd,
+        parity,
+        even,
+        odd,
+        eqParity,
+        ordParity,
+        showParity,
+        boundedParity,
+        semiringParity,
+        ringParity,
+        commutativeRingParity,
+        euclideanRingParity,
+        divisionRingParity,
+        toNumber: $foreign.toNumber,
+        toStringAs: $foreign.toStringAs,
+        quot: $foreign.quot,
+        rem: $foreign.rem,
+        pow: $foreign.pow
+      };
+    }
+  });
+
+  // output/Foreign/foreign.js
+  var require_foreign108 = __commonJS({
+    "output/Foreign/foreign.js"(exports) {
+      "use strict";
+      exports.typeOf = function(value) {
+        return typeof value;
+      };
+      exports.tagOf = function(value) {
+        return Object.prototype.toString.call(value).slice(8, -1);
+      };
+      exports.isNull = function(value) {
+        return value === null;
+      };
+      exports.isUndefined = function(value) {
+        return value === void 0;
+      };
+      exports.isArray = Array.isArray || function(value) {
+        return Object.prototype.toString.call(value) === "[object Array]";
       };
     }
   });
 
   // output/Data.NonEmpty/index.js
-  var require_Data38 = __commonJS({
+  var require_Data40 = __commonJS({
     "output/Data.NonEmpty/index.js"(exports, module) {
       "use strict";
       var Control_Alt = require_Control6();
@@ -57437,1348 +58191,6 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }
   });
 
-  // output/Data.Array.NonEmpty/index.js
-  var require_Data_Array2 = __commonJS({
-    "output/Data.Array.NonEmpty/index.js"(exports, module) {
-      "use strict";
-      var Control_Bind = require_Control5();
-      var Data_Array = require_Data34();
-      var Data_Array_NonEmpty_Internal = require_Data_Array_NonEmpty();
-      var Data_Bifunctor = require_Data22();
-      var Data_Boolean = require_Data();
-      var Data_Eq = require_Data8();
-      var Data_Function = require_Data2();
-      var Data_Functor = require_Data4();
-      var Data_Maybe = require_Data15();
-      var Data_NonEmpty = require_Data38();
-      var Data_Ord = require_Data12();
-      var Data_Semigroup = require_Data7();
-      var Data_Semigroup_Foldable = require_Data_Semigroup();
-      var Data_Tuple = require_Data21();
-      var Data_Unfoldable1 = require_Data31();
-      var Unsafe_Coerce = require_Unsafe();
-      var unsafeFromArrayF = Unsafe_Coerce.unsafeCoerce;
-      var unsafeFromArray = Data_Array_NonEmpty_Internal.NonEmptyArray;
-      var toArray = function(v) {
-        return v;
-      };
-      var unionBy$prime = function(eq) {
-        return function(xs) {
-          var $50 = Data_Array.unionBy(eq)(toArray(xs));
-          return function($51) {
-            return unsafeFromArray($50($51));
-          };
-        };
-      };
-      var union$prime = function(dictEq) {
-        return unionBy$prime(Data_Eq.eq(dictEq));
-      };
-      var unionBy = function(eq) {
-        return function(xs) {
-          var $52 = unionBy$prime(eq)(xs);
-          return function($53) {
-            return $52(toArray($53));
-          };
-        };
-      };
-      var union = function(dictEq) {
-        return unionBy(Data_Eq.eq(dictEq));
-      };
-      var unzip = function() {
-        var $54 = Data_Bifunctor.bimap(Data_Bifunctor.bifunctorTuple)(unsafeFromArray)(unsafeFromArray);
-        return function($55) {
-          return $54(Data_Array.unzip(toArray($55)));
-        };
-      }();
-      var updateAt = function(i) {
-        return function(x) {
-          var $56 = Data_Array.updateAt(i)(x);
-          return function($57) {
-            return unsafeFromArrayF($56(toArray($57)));
-          };
-        };
-      };
-      var zip = function(xs) {
-        return function(ys) {
-          return unsafeFromArray(Data_Array.zip(toArray(xs))(toArray(ys)));
-        };
-      };
-      var zipWith = function(f) {
-        return function(xs) {
-          return function(ys) {
-            return unsafeFromArray(Data_Array.zipWith(f)(toArray(xs))(toArray(ys)));
-          };
-        };
-      };
-      var zipWithA = function(dictApplicative) {
-        return function(f) {
-          return function(xs) {
-            return function(ys) {
-              return unsafeFromArrayF(Data_Array.zipWithA(dictApplicative)(f)(toArray(xs))(toArray(ys)));
-            };
-          };
-        };
-      };
-      var splitAt = function(i) {
-        return function(xs) {
-          return Data_Array.splitAt(i)(toArray(xs));
-        };
-      };
-      var some = function(dictAlternative) {
-        return function(dictLazy) {
-          var $58 = Data_Array.some(dictAlternative)(dictLazy);
-          return function($59) {
-            return unsafeFromArrayF($58($59));
-          };
-        };
-      };
-      var snoc$prime = function(xs) {
-        return function(x) {
-          return unsafeFromArray(Data_Array.snoc(xs)(x));
-        };
-      };
-      var snoc = function(xs) {
-        return function(x) {
-          return unsafeFromArray(Data_Array.snoc(toArray(xs))(x));
-        };
-      };
-      var singleton = function($60) {
-        return unsafeFromArray(Data_Array.singleton($60));
-      };
-      var replicate = function(i) {
-        return function(x) {
-          return unsafeFromArray(Data_Array.replicate(Data_Ord.max(Data_Ord.ordInt)(1)(i))(x));
-        };
-      };
-      var range = function(x) {
-        return function(y) {
-          return unsafeFromArray(Data_Array.range(x)(y));
-        };
-      };
-      var modifyAt = function(i) {
-        return function(f) {
-          var $61 = Data_Array.modifyAt(i)(f);
-          return function($62) {
-            return unsafeFromArrayF($61(toArray($62)));
-          };
-        };
-      };
-      var intersectBy$prime = function(eq) {
-        return function(xs) {
-          return Data_Array.intersectBy(eq)(toArray(xs));
-        };
-      };
-      var intersectBy = function(eq) {
-        return function(xs) {
-          var $63 = intersectBy$prime(eq)(xs);
-          return function($64) {
-            return $63(toArray($64));
-          };
-        };
-      };
-      var intersect$prime = function(dictEq) {
-        return intersectBy$prime(Data_Eq.eq(dictEq));
-      };
-      var intersect = function(dictEq) {
-        return intersectBy(Data_Eq.eq(dictEq));
-      };
-      var intercalate = function(dictSemigroup) {
-        return Data_Semigroup_Foldable.intercalate(Data_Array_NonEmpty_Internal.foldable1NonEmptyArray)(dictSemigroup);
-      };
-      var insertAt = function(i) {
-        return function(x) {
-          var $65 = Data_Array.insertAt(i)(x);
-          return function($66) {
-            return unsafeFromArrayF($65(toArray($66)));
-          };
-        };
-      };
-      var fromFoldable1 = function(dictFoldable1) {
-        var $67 = Data_Array.fromFoldable(dictFoldable1.Foldable0());
-        return function($68) {
-          return unsafeFromArray($67($68));
-        };
-      };
-      var fromArray = function(xs) {
-        if (Data_Array.length(xs) > 0) {
-          return new Data_Maybe.Just(unsafeFromArray(xs));
-        }
-        ;
-        if (Data_Boolean.otherwise) {
-          return Data_Maybe.Nothing.value;
-        }
-        ;
-        throw new Error("Failed pattern match at Data.Array.NonEmpty (line 159, column 1 - line 159, column 58): " + [xs.constructor.name]);
-      };
-      var fromFoldable = function(dictFoldable) {
-        var $69 = Data_Array.fromFoldable(dictFoldable);
-        return function($70) {
-          return fromArray($69($70));
-        };
-      };
-      var foldr1 = Data_Semigroup_Foldable.foldr1(Data_Array_NonEmpty_Internal.foldable1NonEmptyArray);
-      var foldl1 = Data_Semigroup_Foldable.foldl1(Data_Array_NonEmpty_Internal.foldable1NonEmptyArray);
-      var foldMap1 = function(dictSemigroup) {
-        return Data_Semigroup_Foldable.foldMap1(Data_Array_NonEmpty_Internal.foldable1NonEmptyArray)(dictSemigroup);
-      };
-      var fold1 = function(dictSemigroup) {
-        return Data_Semigroup_Foldable.fold1(Data_Array_NonEmpty_Internal.foldable1NonEmptyArray)(dictSemigroup);
-      };
-      var difference$prime = function(dictEq) {
-        return function(xs) {
-          return Data_Array.difference(dictEq)(toArray(xs));
-        };
-      };
-      var cons$prime = function(x) {
-        return function(xs) {
-          return unsafeFromArray(Data_Array.cons(x)(xs));
-        };
-      };
-      var fromNonEmpty = function(v) {
-        return cons$prime(v.value0)(v.value1);
-      };
-      var concatMap = Data_Function.flip(Control_Bind.bind(Data_Array_NonEmpty_Internal.bindNonEmptyArray));
-      var concat = function() {
-        var $71 = Data_Functor.map(Data_Array_NonEmpty_Internal.functorNonEmptyArray)(toArray);
-        return function($72) {
-          return unsafeFromArray(Data_Array.concat(toArray($71($72))));
-        };
-      }();
-      var appendArray = function(xs) {
-        return function(ys) {
-          return unsafeFromArray(Data_Semigroup.append(Data_Semigroup.semigroupArray)(toArray(xs))(ys));
-        };
-      };
-      var alterAt = function(i) {
-        return function(f) {
-          var $73 = Data_Array.alterAt(i)(f);
-          return function($74) {
-            return $73(toArray($74));
-          };
-        };
-      };
-      var adaptMaybe = function(f) {
-        var $75 = Data_Maybe.fromJust();
-        return function($76) {
-          return $75(f(toArray($76)));
-        };
-      };
-      var head = adaptMaybe(Data_Array.head);
-      var init = adaptMaybe(Data_Array.init);
-      var last = adaptMaybe(Data_Array.last);
-      var tail = adaptMaybe(Data_Array.tail);
-      var uncons = adaptMaybe(Data_Array.uncons);
-      var toNonEmpty = function($77) {
-        return function(v) {
-          return new Data_NonEmpty.NonEmpty(v.head, v.tail);
-        }(uncons($77));
-      };
-      var unsnoc = adaptMaybe(Data_Array.unsnoc);
-      var adaptAny = function(f) {
-        return function($78) {
-          return f(toArray($78));
-        };
-      };
-      var all = function(p) {
-        return adaptAny(Data_Array.all(p));
-      };
-      var any = function(p) {
-        return adaptAny(Data_Array.any(p));
-      };
-      var catMaybes = adaptAny(Data_Array.catMaybes);
-      var $$delete = function(dictEq) {
-        return function(x) {
-          return adaptAny(Data_Array["delete"](dictEq)(x));
-        };
-      };
-      var deleteAt = function(i) {
-        return adaptAny(Data_Array.deleteAt(i));
-      };
-      var deleteBy = function(f) {
-        return function(x) {
-          return adaptAny(Data_Array.deleteBy(f)(x));
-        };
-      };
-      var difference = function(dictEq) {
-        return function(xs) {
-          return adaptAny(difference$prime(dictEq)(xs));
-        };
-      };
-      var drop = function(i) {
-        return adaptAny(Data_Array.drop(i));
-      };
-      var dropEnd = function(i) {
-        return adaptAny(Data_Array.dropEnd(i));
-      };
-      var dropWhile = function(f) {
-        return adaptAny(Data_Array.dropWhile(f));
-      };
-      var elem = function(dictEq) {
-        return function(x) {
-          return adaptAny(Data_Array.elem(dictEq)(x));
-        };
-      };
-      var elemIndex = function(dictEq) {
-        return function(x) {
-          return adaptAny(Data_Array.elemIndex(dictEq)(x));
-        };
-      };
-      var elemLastIndex = function(dictEq) {
-        return function(x) {
-          return adaptAny(Data_Array.elemLastIndex(dictEq)(x));
-        };
-      };
-      var filter = function(f) {
-        return adaptAny(Data_Array.filter(f));
-      };
-      var filterA = function(dictApplicative) {
-        return function(f) {
-          return adaptAny(Data_Array.filterA(dictApplicative)(f));
-        };
-      };
-      var find = function(p) {
-        return adaptAny(Data_Array.find(p));
-      };
-      var findIndex = function(p) {
-        return adaptAny(Data_Array.findIndex(p));
-      };
-      var findLastIndex = function(x) {
-        return adaptAny(Data_Array.findLastIndex(x));
-      };
-      var findMap = function(p) {
-        return adaptAny(Data_Array.findMap(p));
-      };
-      var foldM = function(dictMonad) {
-        return function(f) {
-          return function(acc) {
-            return adaptAny(Data_Array.foldM(dictMonad)(f)(acc));
-          };
-        };
-      };
-      var foldRecM = function(dictMonadRec) {
-        return function(f) {
-          return function(acc) {
-            return adaptAny(Data_Array.foldRecM(dictMonadRec)(f)(acc));
-          };
-        };
-      };
-      var index = adaptAny(Data_Array.index);
-      var length = adaptAny(Data_Array.length);
-      var mapMaybe = function(f) {
-        return adaptAny(Data_Array.mapMaybe(f));
-      };
-      var notElem = function(dictEq) {
-        return function(x) {
-          return adaptAny(Data_Array.notElem(dictEq)(x));
-        };
-      };
-      var partition = function(f) {
-        return adaptAny(Data_Array.partition(f));
-      };
-      var slice = function(start) {
-        return function(end) {
-          return adaptAny(Data_Array.slice(start)(end));
-        };
-      };
-      var span = function(f) {
-        return adaptAny(Data_Array.span(f));
-      };
-      var take = function(i) {
-        return adaptAny(Data_Array.take(i));
-      };
-      var takeEnd = function(i) {
-        return adaptAny(Data_Array.takeEnd(i));
-      };
-      var takeWhile = function(f) {
-        return adaptAny(Data_Array.takeWhile(f));
-      };
-      var toUnfoldable = function(dictUnfoldable) {
-        return adaptAny(Data_Array.toUnfoldable(dictUnfoldable));
-      };
-      var unsafeAdapt = function(f) {
-        var $79 = adaptAny(f);
-        return function($80) {
-          return unsafeFromArray($79($80));
-        };
-      };
-      var cons = function(x) {
-        return unsafeAdapt(Data_Array.cons(x));
-      };
-      var group = function(dictEq) {
-        return unsafeAdapt(Data_Array.group(dictEq));
-      };
-      var group$prime = function(dictWarn) {
-        return function(dictOrd) {
-          return unsafeAdapt(Data_Array.groupAll(dictOrd));
-        };
-      };
-      var groupAllBy = function(op) {
-        return unsafeAdapt(Data_Array.groupAllBy(op));
-      };
-      var groupAll = function(dictOrd) {
-        return groupAllBy(Data_Ord.compare(dictOrd));
-      };
-      var groupBy = function(op) {
-        return unsafeAdapt(Data_Array.groupBy(op));
-      };
-      var insert = function(dictOrd) {
-        return function(x) {
-          return unsafeAdapt(Data_Array.insert(dictOrd)(x));
-        };
-      };
-      var insertBy = function(f) {
-        return function(x) {
-          return unsafeAdapt(Data_Array.insertBy(f)(x));
-        };
-      };
-      var intersperse = function(x) {
-        return unsafeAdapt(Data_Array.intersperse(x));
-      };
-      var mapWithIndex = function(f) {
-        return unsafeAdapt(Data_Array.mapWithIndex(f));
-      };
-      var modifyAtIndices = function(dictFoldable) {
-        return function(is) {
-          return function(f) {
-            return unsafeAdapt(Data_Array.modifyAtIndices(dictFoldable)(is)(f));
-          };
-        };
-      };
-      var nub = function(dictOrd) {
-        return unsafeAdapt(Data_Array.nub(dictOrd));
-      };
-      var nubBy = function(f) {
-        return unsafeAdapt(Data_Array.nubBy(f));
-      };
-      var nubByEq = function(f) {
-        return unsafeAdapt(Data_Array.nubByEq(f));
-      };
-      var nubEq = function(dictEq) {
-        return unsafeAdapt(Data_Array.nubEq(dictEq));
-      };
-      var reverse = unsafeAdapt(Data_Array.reverse);
-      var scanl = function(f) {
-        return function(x) {
-          return unsafeAdapt(Data_Array.scanl(f)(x));
-        };
-      };
-      var scanr = function(f) {
-        return function(x) {
-          return unsafeAdapt(Data_Array.scanr(f)(x));
-        };
-      };
-      var sort = function(dictOrd) {
-        return unsafeAdapt(Data_Array.sort(dictOrd));
-      };
-      var sortBy = function(f) {
-        return unsafeAdapt(Data_Array.sortBy(f));
-      };
-      var sortWith = function(dictOrd) {
-        return function(f) {
-          return unsafeAdapt(Data_Array.sortWith(dictOrd)(f));
-        };
-      };
-      var updateAtIndices = function(dictFoldable) {
-        return function(pairs) {
-          return unsafeAdapt(Data_Array.updateAtIndices(dictFoldable)(pairs));
-        };
-      };
-      var unsafeIndex = function(dictPartial) {
-        return adaptAny(Data_Array.unsafeIndex());
-      };
-      var toUnfoldable1 = function(dictUnfoldable1) {
-        return function(xs) {
-          var len = length(xs);
-          var f = function(i) {
-            return Data_Tuple.Tuple.create(unsafeIndex()(xs)(i))(function() {
-              var $49 = i < (len - 1 | 0);
-              if ($49) {
-                return new Data_Maybe.Just(i + 1 | 0);
-              }
-              ;
-              return Data_Maybe.Nothing.value;
-            }());
-          };
-          return Data_Unfoldable1.unfoldr1(dictUnfoldable1)(f)(0);
-        };
-      };
-      module.exports = {
-        fromArray,
-        fromNonEmpty,
-        toArray,
-        toNonEmpty,
-        fromFoldable,
-        fromFoldable1,
-        toUnfoldable,
-        toUnfoldable1,
-        singleton,
-        range,
-        replicate,
-        some,
-        length,
-        cons,
-        "cons'": cons$prime,
-        snoc,
-        "snoc'": snoc$prime,
-        appendArray,
-        insert,
-        insertBy,
-        head,
-        last,
-        tail,
-        init,
-        uncons,
-        unsnoc,
-        index,
-        elem,
-        notElem,
-        elemIndex,
-        elemLastIndex,
-        find,
-        findMap,
-        findIndex,
-        findLastIndex,
-        insertAt,
-        deleteAt,
-        updateAt,
-        updateAtIndices,
-        modifyAt,
-        modifyAtIndices,
-        alterAt,
-        intersperse,
-        reverse,
-        concat,
-        concatMap,
-        filter,
-        partition,
-        splitAt,
-        filterA,
-        mapMaybe,
-        catMaybes,
-        mapWithIndex,
-        foldl1,
-        foldr1,
-        foldMap1,
-        fold1,
-        intercalate,
-        scanl,
-        scanr,
-        sort,
-        sortBy,
-        sortWith,
-        slice,
-        take,
-        takeEnd,
-        takeWhile,
-        drop,
-        dropEnd,
-        dropWhile,
-        span,
-        group,
-        groupAll,
-        "group'": group$prime,
-        groupBy,
-        groupAllBy,
-        nub,
-        nubBy,
-        nubEq,
-        nubByEq,
-        union,
-        "union'": union$prime,
-        unionBy,
-        "unionBy'": unionBy$prime,
-        "delete": $$delete,
-        deleteBy,
-        difference,
-        "difference'": difference$prime,
-        intersect,
-        "intersect'": intersect$prime,
-        intersectBy,
-        "intersectBy'": intersectBy$prime,
-        zipWith,
-        zipWithA,
-        zip,
-        unzip,
-        any,
-        all,
-        foldM,
-        foldRecM,
-        unsafeIndex
-      };
-    }
-  });
-
-  // output/Elmish.Hooks.Type/index.js
-  var require_Elmish_Hooks = __commonJS({
-    "output/Elmish.Hooks.Type/index.js"(exports, module) {
-      "use strict";
-      var Control_Bind = require_Control5();
-      var Control_Monad_Cont = require_Control_Monad();
-      var Control_Monad_Cont_Trans = require_Control_Monad_Cont2();
-      var Control_Monad_Writer_Class = require_Control_Monad_Writer();
-      var Control_Monad_Writer_Trans = require_Control_Monad_Writer2();
-      var Data_Identity = require_Data23();
-      var Data_Monoid = require_Data18();
-      var Data_Semigroup = require_Data7();
-      var Data_Tuple = require_Data21();
-      var Elmish_Component = require_Elmish4();
-      var HookName = function(x) {
-        return x;
-      };
-      var mkHook = function(v) {
-        return function(mkDef) {
-          return Control_Bind.discard(Control_Bind.discardUnit)(Control_Monad_Writer_Trans.bindWriterT(Data_Semigroup.semigroupArray)(Control_Monad_Cont_Trans.bindContT(Data_Identity.bindIdentity)))(Control_Monad_Writer_Class.tell(Control_Monad_Writer_Trans.monadTellWriterT(Data_Monoid.monoidArray)(Control_Monad_Cont_Trans.monadContT(Data_Identity.monadIdentity)))([v]))(function() {
-            return Control_Monad_Writer_Trans.WriterT(Control_Monad_Cont.cont(function(render) {
-              return Elmish_Component.wrapWithLocalState(v)(mkDef)(function(args) {
-                return render(new Data_Tuple.Tuple(args, []));
-              });
-            }));
-          });
-        };
-      };
-      module.exports = {
-        HookName,
-        mkHook
-      };
-    }
-  });
-
-  // output/Elmish.Hooks.UseEffect/index.js
-  var require_Elmish_Hooks2 = __commonJS({
-    "output/Elmish.Hooks.UseEffect/index.js"(exports, module) {
-      "use strict";
-      var Data_Unit = require_Data3();
-      var Data_Void = require_Data5();
-      var Elmish_Component = require_Elmish4();
-      var Elmish_Hooks_Type = require_Elmish_Hooks();
-      var useEffect = function(name) {
-        return function(init) {
-          return Elmish_Hooks_Type.mkHook(name)(function(render) {
-            return {
-              init: Elmish_Component.forkVoid(init),
-              update: function(v) {
-                return function(msg) {
-                  return Data_Void.absurd(msg);
-                };
-              },
-              view: function(v) {
-                return function(v1) {
-                  return render(Data_Unit.unit);
-                };
-              }
-            };
-          });
-        };
-      };
-      module.exports = {
-        useEffect
-      };
-    }
-  });
-
-  // output/Elmish.Hooks.UseState/index.js
-  var require_Elmish_Hooks3 = __commonJS({
-    "output/Elmish.Hooks.UseState/index.js"(exports, module) {
-      "use strict";
-      var Control_Applicative = require_Control4();
-      var Data_Tuple = require_Data21();
-      var Elmish_Component = require_Elmish4();
-      var Elmish_Hooks_Type = require_Elmish_Hooks();
-      var useState = function(name) {
-        return function(initialState) {
-          return Elmish_Hooks_Type.mkHook(name)(function(render) {
-            return {
-              init: Control_Applicative.pure(Elmish_Component.trApplicative)(initialState),
-              update: function(v) {
-                return function(newState) {
-                  return Control_Applicative.pure(Elmish_Component.trApplicative)(newState);
-                };
-              },
-              view: Data_Tuple.curry(render)
-            };
-          });
-        };
-      };
-      module.exports = {
-        useState
-      };
-    }
-  });
-
-  // output/Elmish.Hooks/index.js
-  var require_Elmish6 = __commonJS({
-    "output/Elmish.Hooks/index.js"(exports, module) {
-      "use strict";
-      var Control_Alternative = require_Control13();
-      var Control_Applicative = require_Control4();
-      var Control_Bind = require_Control5();
-      var Control_Monad_Cont = require_Control_Monad();
-      var Control_Monad_Writer_Trans = require_Control_Monad_Writer2();
-      var Data_Array = require_Data34();
-      var Data_Array_NonEmpty = require_Data_Array2();
-      var Data_Eq = require_Data8();
-      var Data_Functor = require_Data4();
-      var Data_HeytingAlgebra = require_Data20();
-      var Data_Maybe = require_Data15();
-      var Data_Monoid = require_Data18();
-      var Data_Ord = require_Data12();
-      var Data_Unit = require_Data3();
-      var Effect_Class = require_Effect2();
-      var Effect_Class_Console = require_Effect_Class();
-      var Effect_Unsafe = require_Effect6();
-      var Elmish_Hooks_Type = require_Elmish_Hooks();
-      var Elmish_Hooks_UseEffect = require_Elmish_Hooks2();
-      var Elmish_Hooks_UseState = require_Elmish_Hooks3();
-      var withHooks = function(hooks) {
-        var error = function(names) {
-          var duplicates = Data_Functor.mapFlipped(Data_Functor.functorArray)(Data_Array.filter(function($9) {
-            return function(v) {
-              return v > 1;
-            }(Data_Array_NonEmpty.length($9));
-          })(Data_Array.group(Data_Eq.eqString)(Data_Array.sort(Data_Ord.ordString)(names))))(Data_Array_NonEmpty.head);
-          return Control_Bind.discard(Control_Bind.discardUnit)(Data_Maybe.bindMaybe)(Control_Alternative.guard(Data_Maybe.alternativeMaybe)(Data_HeytingAlgebra.not(Data_HeytingAlgebra.heytingAlgebraFunction(Data_HeytingAlgebra.heytingAlgebraBoolean))(Data_Array["null"])(duplicates)))(function() {
-            return Control_Applicative.pure(Data_Maybe.applicativeMaybe)(Data_Array.fold(Data_Monoid.monoidString)(["Error in Elmish Hook: Hooks must have unique names. The following ", "hook names appear more than once in a `withHooks` block: '", Data_Array.intercalate(Data_Monoid.monoidString)("', '")(duplicates), "'"]));
-          });
-        };
-        var toElem = function(v) {
-          var v1 = function() {
-            var v2 = error(v.value1);
-            if (v2 instanceof Data_Maybe.Just) {
-              return Effect_Unsafe.unsafePerformEffect(Effect_Class_Console.error(Effect_Class.monadEffectEffect)(v2.value0));
-            }
-            ;
-            if (v2 instanceof Data_Maybe.Nothing) {
-              return Data_Unit.unit;
-            }
-            ;
-            throw new Error("Failed pattern match at Elmish.Hooks (line 45, column 13 - line 47, column 26): " + [v2.constructor.name]);
-          }();
-          return v.value0;
-        };
-        return Control_Monad_Cont.runCont(Control_Monad_Writer_Trans.runWriterT(hooks))(toElem);
-      };
-      module.exports = {
-        withHooks,
-        HookName: Elmish_Hooks_Type.HookName,
-        mkHook: Elmish_Hooks_Type.mkHook,
-        useEffect: Elmish_Hooks_UseEffect.useEffect,
-        useState: Elmish_Hooks_UseState.useState
-      };
-    }
-  });
-
-  // output/Examples.UseEffect/index.js
-  var require_Examples = __commonJS({
-    "output/Examples.UseEffect/index.js"(exports, module) {
-      "use strict";
-      var Control_Applicative = require_Control4();
-      var Control_Bind = require_Control5();
-      var Control_Monad_Cont_Trans = require_Control_Monad_Cont2();
-      var Control_Monad_Writer_Trans = require_Control_Monad_Writer2();
-      var Data_Functor = require_Data4();
-      var Data_Identity = require_Data23();
-      var Data_Maybe = require_Data15();
-      var Data_Monoid = require_Data18();
-      var Data_Semigroup = require_Data7();
-      var Effect_Aff = require_Effect7();
-      var Effect_Class = require_Effect2();
-      var Elmish_HTML_Internal = require_Elmish_HTML();
-      var Elmish_HTML_Styled_Generated = require_Elmish_HTML_Styled();
-      var Elmish_Hooks = require_Elmish6();
-      var Elmish_Hooks_UseEffect = require_Elmish_Hooks2();
-      var Elmish_Hooks_UseState = require_Elmish_Hooks3();
-      var Elmish_React = require_Elmish();
-      var Elmish_React_DOM = require_Elmish_React();
-      var view = Elmish_Hooks.withHooks(Control_Bind.bind(Control_Monad_Writer_Trans.bindWriterT(Data_Semigroup.semigroupArray)(Control_Monad_Cont_Trans.bindContT(Data_Identity.bindIdentity)))(Elmish_Hooks_UseState.useState("Todos")(Data_Maybe.Nothing.value))(function(v) {
-        return Control_Bind.discard(Control_Bind.discardUnit)(Control_Monad_Writer_Trans.bindWriterT(Data_Semigroup.semigroupArray)(Control_Monad_Cont_Trans.bindContT(Data_Identity.bindIdentity)))(Elmish_Hooks_UseEffect.useEffect("FetchTodos")(Control_Bind.discard(Control_Bind.discardUnit)(Effect_Aff.bindAff)(Effect_Aff.delay(2e3))(function() {
-          return Effect_Class.liftEffect(Effect_Aff.monadEffectAff)(v.value1(new Data_Maybe.Just(["Do thing", "Do another thing", "Some more stuff"])));
-        })))(function() {
-          return Control_Applicative.pure(Control_Monad_Writer_Trans.applicativeWriterT(Data_Monoid.monoidArray)(Control_Monad_Cont_Trans.applicativeContT(Data_Identity.applicativeIdentity)))(Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("row")([Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("col-12 col-md-6 col-lg-4")([Elmish_HTML_Styled_Generated.h2(Elmish_React.reactChildrenArray)("")([Elmish_HTML_Styled_Generated.code(Elmish_React.reactChildrenString)("")("useEffect"), Elmish_React_DOM.text(" hook")]), Elmish_HTML_Styled_Generated.h4(Elmish_React.reactChildrenString)("mb-3")("Todos"), function() {
-            if (v.value0 instanceof Data_Maybe.Nothing) {
-              return Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("")([Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenSingle)("progress")(Elmish_HTML_Styled_Generated.div_(Elmish_React.reactChildrenSingle)()()("progress-bar progress-bar-striped progress-bar-animated")({
-                role: "progressbar",
-                style: Elmish_HTML_Internal.css({
-                  width: "100%"
-                })
-              })(Elmish_React_DOM.empty)), Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenString)("mt-2")("Loading todos\u2026")]);
-            }
-            ;
-            if (v.value0 instanceof Data_Maybe.Just) {
-              return Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("ul")(Data_Functor.map(Data_Functor.functorArray)(Elmish_HTML_Styled_Generated.li(Elmish_React.reactChildrenString)(""))(v.value0.value0));
-            }
-            ;
-            throw new Error("Failed pattern match at Examples.UseEffect (line 31, column 9 - line 40, column 33): " + [v.value0.constructor.name]);
-          }()])]));
-        });
-      }));
-      module.exports = {
-        view
-      };
-    }
-  });
-
-  // output/Elmish.Dispatch/index.js
-  var require_Elmish7 = __commonJS({
-    "output/Elmish.Dispatch/index.js"(exports, module) {
-      "use strict";
-      var Control_Applicative = require_Control4();
-      var Data_Maybe = require_Data15();
-      var Data_Unit = require_Data3();
-      var Effect = require_Effect();
-      var Effect_Uncurried = require_Effect8();
-      var handleMaybe = function(dispatch) {
-        return function(fn) {
-          return Effect_Uncurried.mkEffectFn1(function() {
-            var $0 = Data_Maybe.maybe(Control_Applicative.pure(Effect.applicativeEffect)(Data_Unit.unit))(dispatch);
-            return function($1) {
-              return $0(fn($1));
-            };
-          }());
-        };
-      };
-      var handle = function(dispatch) {
-        return function(fn) {
-          return function($2) {
-            return dispatch(fn($2))();
-          };
-        };
-      };
-      module.exports = {
-        handle,
-        handleMaybe,
-        mkEffectFn1: Effect_Uncurried.mkEffectFn1,
-        mkEffectFn2: Effect_Uncurried.mkEffectFn2
-      };
-    }
-  });
-
-  // output/Elmish.Foreign/foreign.js
-  var require_foreign104 = __commonJS({
-    "output/Elmish.Foreign/foreign.js"(exports) {
-      exports.isString = function(s) {
-        return typeof s === "string";
-      };
-      exports.isNumber = function(s) {
-        return typeof s === "number";
-      };
-      exports.isBoolean = function(s) {
-        return typeof s === "boolean";
-      };
-      exports.isDate = function(s) {
-        return s instanceof Date;
-      };
-      exports.isObject = function(s) {
-        return s instanceof Object;
-      };
-      exports.isFunction = function(s) {
-        return s instanceof Function;
-      };
-      exports.showForeign = function(x) {
-        return x === null ? "<null>" : x === void 0 ? "<undefined>" : x instanceof Date ? x.toString() : typeof Blob !== "undefined" && x instanceof Blob ? "file[" + x.name + "]" : JSON.stringify(x);
-      };
-      exports.mkVarArgEff_ = function(k) {
-        return function() {
-          k(arguments)();
-        };
-      };
-      exports.getArgument_ = function(args) {
-        return function(index) {
-          return function(just) {
-            return function(nothing) {
-              return args.length > index ? just(args[index]) : nothing;
-            };
-          };
-        };
-      };
-      exports.argumentsToArray_ = function(args) {
-        return Array.from(args);
-      };
-    }
-  });
-
-  // output/Data.Int/foreign.js
-  var require_foreign105 = __commonJS({
-    "output/Data.Int/foreign.js"(exports) {
-      "use strict";
-      exports.fromNumberImpl = function(just) {
-        return function(nothing) {
-          return function(n) {
-            return (n | 0) === n ? just(n) : nothing;
-          };
-        };
-      };
-      exports.toNumber = function(n) {
-        return n;
-      };
-      exports.fromStringAsImpl = function(just) {
-        return function(nothing) {
-          return function(radix) {
-            var digits;
-            if (radix < 11) {
-              digits = "[0-" + (radix - 1).toString() + "]";
-            } else if (radix === 11) {
-              digits = "[0-9a]";
-            } else {
-              digits = "[0-9a-" + String.fromCharCode(86 + radix) + "]";
-            }
-            var pattern = new RegExp("^[\\+\\-]?" + digits + "+$", "i");
-            return function(s) {
-              if (pattern.test(s)) {
-                var i = parseInt(s, radix);
-                return (i | 0) === i ? just(i) : nothing;
-              } else {
-                return nothing;
-              }
-            };
-          };
-        };
-      };
-      exports.toStringAs = function(radix) {
-        return function(i) {
-          return i.toString(radix);
-        };
-      };
-      exports.quot = function(x) {
-        return function(y) {
-          return x / y | 0;
-        };
-      };
-      exports.rem = function(x) {
-        return function(y) {
-          return x % y;
-        };
-      };
-      exports.pow = function(x) {
-        return function(y) {
-          return Math.pow(x, y) | 0;
-        };
-      };
-    }
-  });
-
-  // output/Data.Number/foreign.js
-  var require_foreign106 = __commonJS({
-    "output/Data.Number/foreign.js"(exports) {
-      "use strict";
-      exports.nan = NaN;
-      exports.isNaN = isNaN;
-      exports.infinity = Infinity;
-      exports.isFinite = isFinite;
-      exports.fromStringImpl = function(str, isFinite2, just, nothing) {
-        var num = parseFloat(str);
-        if (isFinite2(num)) {
-          return just(num);
-        } else {
-          return nothing;
-        }
-      };
-    }
-  });
-
-  // output/Data.Number/index.js
-  var require_Data39 = __commonJS({
-    "output/Data.Number/index.js"(exports, module) {
-      "use strict";
-      var $foreign = require_foreign106();
-      var Data_Maybe = require_Data15();
-      var fromString = function(str) {
-        return $foreign.fromStringImpl(str, $foreign["isFinite"], Data_Maybe.Just.create, Data_Maybe.Nothing.value);
-      };
-      module.exports = {
-        fromString,
-        nan: $foreign.nan,
-        "isNaN": $foreign["isNaN"],
-        infinity: $foreign.infinity,
-        "isFinite": $foreign["isFinite"]
-      };
-    }
-  });
-
-  // output/Math/foreign.js
-  var require_foreign107 = __commonJS({
-    "output/Math/foreign.js"(exports) {
-      "use strict";
-      exports.abs = Math.abs;
-      exports.acos = Math.acos;
-      exports.asin = Math.asin;
-      exports.atan = Math.atan;
-      exports.atan2 = function(y) {
-        return function(x) {
-          return Math.atan2(y, x);
-        };
-      };
-      exports.ceil = Math.ceil;
-      exports.cos = Math.cos;
-      exports.exp = Math.exp;
-      exports.floor = Math.floor;
-      function nativeImul(a) {
-        return function(b) {
-          return Math.imul(a, b);
-        };
-      }
-      function emulatedImul(a) {
-        return function(b) {
-          var ah = a >>> 16 & 65535;
-          var al = a & 65535;
-          var bh = b >>> 16 & 65535;
-          var bl = b & 65535;
-          return al * bl + (ah * bl + al * bh << 16 >>> 0) | 0;
-        };
-      }
-      exports.imul = Math.imul ? nativeImul : emulatedImul;
-      exports.trunc = Math.trunc || function(n) {
-        return n < 0 ? Math.ceil(n) : Math.floor(n);
-      };
-      exports.log = Math.log;
-      exports.max = function(n1) {
-        return function(n2) {
-          return Math.max(n1, n2);
-        };
-      };
-      exports.min = function(n1) {
-        return function(n2) {
-          return Math.min(n1, n2);
-        };
-      };
-      exports.pow = function(n) {
-        return function(p) {
-          return Math.pow(n, p);
-        };
-      };
-      exports.remainder = function(n) {
-        return function(m) {
-          return n % m;
-        };
-      };
-      exports.round = Math.round;
-      exports.sin = Math.sin;
-      exports.sqrt = Math.sqrt;
-      exports.tan = Math.tan;
-      exports.e = Math.E;
-      exports.ln2 = Math.LN2;
-      exports.ln10 = Math.LN10;
-      exports.log2e = Math.LOG2E;
-      exports.log10e = Math.LOG10E;
-      exports.pi = Math.PI;
-      exports.tau = 2 * Math.PI;
-      exports.sqrt1_2 = Math.SQRT1_2;
-      exports.sqrt2 = Math.SQRT2;
-    }
-  });
-
-  // output/Math/index.js
-  var require_Math = __commonJS({
-    "output/Math/index.js"(exports, module) {
-      "use strict";
-      var $foreign = require_foreign107();
-      module.exports = {
-        abs: $foreign.abs,
-        acos: $foreign.acos,
-        asin: $foreign.asin,
-        atan: $foreign.atan,
-        atan2: $foreign.atan2,
-        ceil: $foreign.ceil,
-        cos: $foreign.cos,
-        exp: $foreign.exp,
-        floor: $foreign.floor,
-        imul: $foreign.imul,
-        log: $foreign.log,
-        max: $foreign.max,
-        min: $foreign.min,
-        pow: $foreign.pow,
-        round: $foreign.round,
-        sin: $foreign.sin,
-        sqrt: $foreign.sqrt,
-        tan: $foreign.tan,
-        trunc: $foreign.trunc,
-        remainder: $foreign.remainder,
-        e: $foreign.e,
-        ln2: $foreign.ln2,
-        ln10: $foreign.ln10,
-        log2e: $foreign.log2e,
-        log10e: $foreign.log10e,
-        pi: $foreign.pi,
-        tau: $foreign.tau,
-        sqrt1_2: $foreign.sqrt1_2,
-        sqrt2: $foreign.sqrt2
-      };
-    }
-  });
-
-  // output/Data.Int/index.js
-  var require_Data40 = __commonJS({
-    "output/Data.Int/index.js"(exports, module) {
-      "use strict";
-      var $foreign = require_foreign105();
-      var Control_Category = require_Control2();
-      var Data_Boolean = require_Data();
-      var Data_Bounded = require_Data13();
-      var Data_Eq = require_Data8();
-      var Data_Maybe = require_Data15();
-      var Data_Number = require_Data39();
-      var Data_Ordering = require_Data9();
-      var Data_Semiring = require_Data10();
-      var $$Math = require_Math();
-      var Even = function() {
-        function Even2() {
-        }
-        ;
-        Even2.value = new Even2();
-        return Even2;
-      }();
-      var Odd = function() {
-        function Odd2() {
-        }
-        ;
-        Odd2.value = new Odd2();
-        return Odd2;
-      }();
-      var showParity = {
-        show: function(v) {
-          if (v instanceof Even) {
-            return "Even";
-          }
-          ;
-          if (v instanceof Odd) {
-            return "Odd";
-          }
-          ;
-          throw new Error("Failed pattern match at Data.Int (line 111, column 1 - line 113, column 19): " + [v.constructor.name]);
-        }
-      };
-      var radix = function(n) {
-        if (n >= 2 && n <= 36) {
-          return new Data_Maybe.Just(n);
-        }
-        ;
-        if (Data_Boolean.otherwise) {
-          return Data_Maybe.Nothing.value;
-        }
-        ;
-        throw new Error("Failed pattern match at Data.Int (line 192, column 1 - line 192, column 28): " + [n.constructor.name]);
-      };
-      var odd = function(x) {
-        return (x & 1) !== 0;
-      };
-      var octal = 8;
-      var hexadecimal = 16;
-      var fromStringAs = $foreign.fromStringAsImpl(Data_Maybe.Just.create)(Data_Maybe.Nothing.value);
-      var fromString = fromStringAs(10);
-      var fromNumber = $foreign.fromNumberImpl(Data_Maybe.Just.create)(Data_Maybe.Nothing.value);
-      var unsafeClamp = function(x) {
-        if (!Data_Number["isFinite"](x)) {
-          return 0;
-        }
-        ;
-        if (x >= $foreign.toNumber(Data_Bounded.top(Data_Bounded.boundedInt))) {
-          return Data_Bounded.top(Data_Bounded.boundedInt);
-        }
-        ;
-        if (x <= $foreign.toNumber(Data_Bounded.bottom(Data_Bounded.boundedInt))) {
-          return Data_Bounded.bottom(Data_Bounded.boundedInt);
-        }
-        ;
-        if (Data_Boolean.otherwise) {
-          return Data_Maybe.fromMaybe(0)(fromNumber(x));
-        }
-        ;
-        throw new Error("Failed pattern match at Data.Int (line 66, column 1 - line 66, column 29): " + [x.constructor.name]);
-      };
-      var round = function($23) {
-        return unsafeClamp($$Math.round($23));
-      };
-      var floor = function($24) {
-        return unsafeClamp($$Math.floor($24));
-      };
-      var even = function(x) {
-        return (x & 1) === 0;
-      };
-      var parity = function(n) {
-        var $14 = even(n);
-        if ($14) {
-          return Even.value;
-        }
-        ;
-        return Odd.value;
-      };
-      var eqParity = {
-        eq: function(x) {
-          return function(y) {
-            if (x instanceof Even && y instanceof Even) {
-              return true;
-            }
-            ;
-            if (x instanceof Odd && y instanceof Odd) {
-              return true;
-            }
-            ;
-            return false;
-          };
-        }
-      };
-      var ordParity = {
-        compare: function(x) {
-          return function(y) {
-            if (x instanceof Even && y instanceof Even) {
-              return Data_Ordering.EQ.value;
-            }
-            ;
-            if (x instanceof Even) {
-              return Data_Ordering.LT.value;
-            }
-            ;
-            if (y instanceof Even) {
-              return Data_Ordering.GT.value;
-            }
-            ;
-            if (x instanceof Odd && y instanceof Odd) {
-              return Data_Ordering.EQ.value;
-            }
-            ;
-            throw new Error("Failed pattern match at Data.Int (line 109, column 1 - line 109, column 40): " + [x.constructor.name, y.constructor.name]);
-          };
-        },
-        Eq0: function() {
-          return eqParity;
-        }
-      };
-      var semiringParity = {
-        zero: Even.value,
-        add: function(x) {
-          return function(y) {
-            var $19 = Data_Eq.eq(eqParity)(x)(y);
-            if ($19) {
-              return Even.value;
-            }
-            ;
-            return Odd.value;
-          };
-        },
-        one: Odd.value,
-        mul: function(v) {
-          return function(v1) {
-            if (v instanceof Odd && v1 instanceof Odd) {
-              return Odd.value;
-            }
-            ;
-            return Even.value;
-          };
-        }
-      };
-      var ringParity = {
-        sub: Data_Semiring.add(semiringParity),
-        Semiring0: function() {
-          return semiringParity;
-        }
-      };
-      var divisionRingParity = {
-        recip: Control_Category.identity(Control_Category.categoryFn),
-        Ring0: function() {
-          return ringParity;
-        }
-      };
-      var decimal = 10;
-      var commutativeRingParity = {
-        Ring0: function() {
-          return ringParity;
-        }
-      };
-      var euclideanRingParity = {
-        degree: function(v) {
-          if (v instanceof Even) {
-            return 0;
-          }
-          ;
-          if (v instanceof Odd) {
-            return 1;
-          }
-          ;
-          throw new Error("Failed pattern match at Data.Int (line 131, column 1 - line 135, column 17): " + [v.constructor.name]);
-        },
-        div: function(x) {
-          return function(v) {
-            return x;
-          };
-        },
-        mod: function(v) {
-          return function(v1) {
-            return Even.value;
-          };
-        },
-        CommutativeRing0: function() {
-          return commutativeRingParity;
-        }
-      };
-      var ceil = function($25) {
-        return unsafeClamp($$Math.ceil($25));
-      };
-      var boundedParity = {
-        bottom: Even.value,
-        top: Odd.value,
-        Ord0: function() {
-          return ordParity;
-        }
-      };
-      var binary = 2;
-      var base36 = 36;
-      module.exports = {
-        fromNumber,
-        ceil,
-        floor,
-        round,
-        fromString,
-        radix,
-        binary,
-        octal,
-        decimal,
-        hexadecimal,
-        base36,
-        fromStringAs,
-        Even,
-        Odd,
-        parity,
-        even,
-        odd,
-        eqParity,
-        ordParity,
-        showParity,
-        boundedParity,
-        semiringParity,
-        ringParity,
-        commutativeRingParity,
-        euclideanRingParity,
-        divisionRingParity,
-        toNumber: $foreign.toNumber,
-        toStringAs: $foreign.toStringAs,
-        quot: $foreign.quot,
-        rem: $foreign.rem,
-        pow: $foreign.pow
-      };
-    }
-  });
-
-  // output/Foreign/foreign.js
-  var require_foreign108 = __commonJS({
-    "output/Foreign/foreign.js"(exports) {
-      "use strict";
-      exports.typeOf = function(value) {
-        return typeof value;
-      };
-      exports.tagOf = function(value) {
-        return Object.prototype.toString.call(value).slice(8, -1);
-      };
-      exports.isNull = function(value) {
-        return value === null;
-      };
-      exports.isUndefined = function(value) {
-        return value === void 0;
-      };
-      exports.isArray = Array.isArray || function(value) {
-        return Object.prototype.toString.call(value) === "[object Array]";
-      };
-    }
-  });
-
   // output/Data.List.Types/index.js
   var require_Data_List = __commonJS({
     "output/Data.List.Types/index.js"(exports, module) {
@@ -58795,7 +58207,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var Data_FunctorWithIndex = require_Data35();
       var Data_Maybe = require_Data15();
       var Data_Monoid = require_Data18();
-      var Data_NonEmpty = require_Data38();
+      var Data_NonEmpty = require_Data40();
       var Data_Ord = require_Data12();
       var Data_Ordering = require_Data9();
       var Data_Semigroup = require_Data7();
@@ -60075,7 +59487,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var Data_List_Internal = require_Data_List2();
       var Data_List_Types = require_Data_List();
       var Data_Maybe = require_Data15();
-      var Data_NonEmpty = require_Data38();
+      var Data_NonEmpty = require_Data40();
       var Data_Ord = require_Data12();
       var Data_Ordering = require_Data9();
       var Data_Semigroup = require_Data7();
@@ -61384,7 +60796,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var Data_List = require_Data41();
       var Data_List_Types = require_Data_List();
       var Data_Maybe = require_Data15();
-      var Data_NonEmpty = require_Data38();
+      var Data_NonEmpty = require_Data40();
       var Data_Ord = require_Data12();
       var Data_Semigroup = require_Data7();
       var Data_Semigroup_Foldable = require_Data_Semigroup();
@@ -62170,7 +61582,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var Data_Eq = require_Data8();
       var Data_Function = require_Data2();
       var Data_Functor = require_Data4();
-      var Data_Int = require_Data40();
+      var Data_Int = require_Data39();
       var Data_List_NonEmpty = require_Data_List3();
       var Data_Maybe = require_Data15();
       var Data_Ord = require_Data12();
@@ -62516,7 +61928,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var Data_Either = require_Data19();
       var Data_FoldableWithIndex = require_Data36();
       var Data_HeytingAlgebra = require_Data20();
-      var Data_Int = require_Data40();
+      var Data_Int = require_Data39();
       var Data_Maybe = require_Data15();
       var Data_Monoid = require_Data18();
       var Data_Show = require_Data14();
@@ -63068,11 +62480,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var Control_Applicative = require_Control4();
       var Control_Bind = require_Control5();
       var Control_Monad_Cont_Trans = require_Control_Monad_Cont2();
-      var Control_Monad_Writer_Trans = require_Control_Monad_Writer2();
       var Data_Identity = require_Data23();
       var Data_Maybe = require_Data15();
-      var Data_Monoid = require_Data18();
-      var Data_Semigroup = require_Data7();
       var Data_Tuple = require_Data21();
       var Effect = require_Effect();
       var Effect_Aff = require_Effect7();
@@ -63080,7 +62489,6 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var Elmish_Dispatch = require_Elmish7();
       var Elmish_HTML_Styled_Generated = require_Elmish_HTML_Styled();
       var Elmish_Hooks = require_Elmish6();
-      var Elmish_Hooks_Type = require_Elmish_Hooks();
       var Elmish_Hooks_UseEffect = require_Elmish_Hooks2();
       var Elmish_Hooks_UseState = require_Elmish_Hooks3();
       var Elmish_React = require_Elmish();
@@ -63089,35 +62497,33 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var Web_HTML = require_Web();
       var Web_HTML_Window = require_Web_HTML69();
       var Web_Storage_Storage = require_Web_Storage();
-      var useLocalStorage = function(v) {
-        return function(key) {
-          return function(defaultValue) {
-            return Control_Bind.bind(Control_Monad_Writer_Trans.bindWriterT(Data_Semigroup.semigroupArray)(Control_Monad_Cont_Trans.bindContT(Data_Identity.bindIdentity)))(Elmish_Hooks_UseState.useState(Elmish_Hooks_Type.HookName(v + ".State"))(defaultValue))(function(v1) {
-              return Control_Bind.discard(Control_Bind.discardUnit)(Control_Monad_Writer_Trans.bindWriterT(Data_Semigroup.semigroupArray)(Control_Monad_Cont_Trans.bindContT(Data_Identity.bindIdentity)))(Elmish_Hooks_UseEffect.useEffect(Elmish_Hooks_Type.HookName(v + ".Effect"))(Effect_Class.liftEffect(Effect_Aff.monadEffectAff)(function __do() {
-                var v2 = Control_Bind.bindFlipped(Effect.bindEffect)(Web_Storage_Storage.getItem(key))(Control_Bind.bindFlipped(Effect.bindEffect)(Web_HTML_Window.localStorage)(Web_HTML.window))();
-                if (v2 instanceof Data_Maybe.Just) {
-                  return v1.value1(v2.value0)();
-                }
-                ;
-                if (v2 instanceof Data_Maybe.Nothing) {
-                  return Control_Bind.bindFlipped(Effect.bindEffect)(Web_Storage_Storage.setItem(key)(defaultValue))(Control_Bind.bindFlipped(Effect.bindEffect)(Web_HTML_Window.localStorage)(Web_HTML.window))();
-                }
-                ;
-                throw new Error("Failed pattern match at Examples.UseLocalStorage (line 41, column 5 - line 43, column 70): " + [v2.constructor.name]);
-              })))(function() {
-                return Control_Applicative.pure(Control_Monad_Writer_Trans.applicativeWriterT(Data_Monoid.monoidArray)(Control_Monad_Cont_Trans.applicativeContT(Data_Identity.applicativeIdentity)))(new Data_Tuple.Tuple(v1.value0, function(v2) {
-                  return function __do() {
-                    v1.value1(v2)();
-                    return Control_Bind.bindFlipped(Effect.bindEffect)(Web_Storage_Storage.setItem(key)(v2))(Control_Bind.bindFlipped(Effect.bindEffect)(Web_HTML_Window.localStorage)(Web_HTML.window))();
-                  };
-                }));
-              });
+      var useLocalStorage = function(key) {
+        return function(defaultValue) {
+          return Control_Bind.bind(Control_Monad_Cont_Trans.bindContT(Data_Identity.bindIdentity))(Elmish_Hooks_UseState.useState(defaultValue))(function(v) {
+            return Control_Bind.discard(Control_Bind.discardUnit)(Control_Monad_Cont_Trans.bindContT(Data_Identity.bindIdentity))(Elmish_Hooks_UseEffect.useEffect(Effect_Class.liftEffect(Effect_Aff.monadEffectAff)(function __do() {
+              var v1 = Control_Bind.bindFlipped(Effect.bindEffect)(Web_Storage_Storage.getItem(key))(Control_Bind.bindFlipped(Effect.bindEffect)(Web_HTML_Window.localStorage)(Web_HTML.window))();
+              if (v1 instanceof Data_Maybe.Just) {
+                return v.value1(v1.value0)();
+              }
+              ;
+              if (v1 instanceof Data_Maybe.Nothing) {
+                return Control_Bind.bindFlipped(Effect.bindEffect)(Web_Storage_Storage.setItem(key)(defaultValue))(Control_Bind.bindFlipped(Effect.bindEffect)(Web_HTML_Window.localStorage)(Web_HTML.window))();
+              }
+              ;
+              throw new Error("Failed pattern match at Examples.UseLocalStorage (line 41, column 5 - line 43, column 70): " + [v1.constructor.name]);
+            })))(function() {
+              return Control_Applicative.pure(Control_Monad_Cont_Trans.applicativeContT(Data_Identity.applicativeIdentity))(new Data_Tuple.Tuple(v.value0, function(v1) {
+                return function __do() {
+                  v.value1(v1)();
+                  return Control_Bind.bindFlipped(Effect.bindEffect)(Web_Storage_Storage.setItem(key)(v1))(Control_Bind.bindFlipped(Effect.bindEffect)(Web_HTML_Window.localStorage)(Web_HTML.window))();
+                };
+              }));
             });
-          };
+          });
         };
       };
-      var view = Elmish_Hooks.withHooks(Control_Bind.bind(Control_Monad_Writer_Trans.bindWriterT(Data_Semigroup.semigroupArray)(Control_Monad_Cont_Trans.bindContT(Data_Identity.bindIdentity)))(useLocalStorage("Foo")("foo")(""))(function(v) {
-        return Control_Applicative.pure(Control_Monad_Writer_Trans.applicativeWriterT(Data_Monoid.monoidArray)(Control_Monad_Cont_Trans.applicativeContT(Data_Identity.applicativeIdentity)))(Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("row")([Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("col-12 col-md-6 col-lg-4")([Elmish_HTML_Styled_Generated.h4(Elmish_React.reactChildrenSingle)("")(Elmish_HTML_Styled_Generated.code(Elmish_React.reactChildrenString)("")("useLocalStorage")), Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("form-group")([Elmish_HTML_Styled_Generated.label_(Elmish_React.reactChildrenArray)()()("form-label")({
+      var view = Elmish_Hooks.withHooks(Control_Bind.bind(Control_Monad_Cont_Trans.bindContT(Data_Identity.bindIdentity))(useLocalStorage("foo")(""))(function(v) {
+        return Control_Applicative.pure(Control_Monad_Cont_Trans.applicativeContT(Data_Identity.applicativeIdentity))(Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("row")([Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("col-12 col-md-6 col-lg-4")([Elmish_HTML_Styled_Generated.h4(Elmish_React.reactChildrenSingle)("")(Elmish_HTML_Styled_Generated.code(Elmish_React.reactChildrenString)("")("useLocalStorage")), Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("form-group")([Elmish_HTML_Styled_Generated.label_(Elmish_React.reactChildrenArray)()()("form-label")({
           htmlFor: "foo"
         })([Elmish_React_DOM.text("Typing here will update the state and save to "), Elmish_HTML_Styled_Generated.code(Elmish_React.reactChildrenString)("")("localStorage")]), Elmish_HTML_Styled_Generated.input_()()("form-control")({
           value: v.value0,
@@ -63138,12 +62544,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var Control_Applicative = require_Control4();
       var Control_Bind = require_Control5();
       var Control_Monad_Cont_Trans = require_Control_Monad_Cont2();
-      var Control_Monad_Writer_Trans = require_Control_Monad_Writer2();
       var Data_Function = require_Data2();
       var Data_Identity = require_Data23();
       var Data_Maybe = require_Data15();
-      var Data_Monoid = require_Data18();
-      var Data_Semigroup = require_Data7();
       var Elmish_Component = require_Elmish4();
       var Elmish_Dispatch = require_Elmish7();
       var Elmish_HTML_Internal = require_Elmish_HTML();
@@ -63153,50 +62556,51 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var Elmish_React = require_Elmish();
       var Elmish_React_DOM = require_Elmish_React();
       var Web_HTML_HTMLElement = require_Web_HTML15();
-      var useMousePosition = function(name) {
-        return function(className) {
-          return Elmish_Hooks_Type.mkHook(name)(function(render) {
-            return {
-              init: Control_Applicative.pure(Elmish_Component.trApplicative)(Data_Maybe.Nothing.value),
-              update: function(v) {
-                return function(pos) {
-                  return Control_Applicative.pure(Elmish_Component.trApplicative)(pos);
-                };
-              },
-              view: function(pos) {
-                return function(dispatch) {
-                  return Elmish_HTML_Styled_Generated.div_(Elmish_React.reactChildrenSingle)()()(className)({
-                    onMouseMove: function(v) {
-                      var v1 = Web_HTML_HTMLElement.getBoundingClientRect(v.currentTarget)();
-                      var y = v.clientY - v1.top;
-                      var x = v.clientX - v1.left;
-                      var mouseLeft = x < 0 || (y < 0 || (y > v1.height || x > v1.width));
-                      return dispatch(function() {
-                        if (mouseLeft) {
-                          return Data_Maybe.Nothing.value;
-                        }
-                        ;
-                        return new Data_Maybe.Just({
-                          x,
-                          y
-                        });
-                      }())();
-                    },
-                    onMouseLeave: Elmish_Dispatch.handle(dispatch)(Data_Function["const"](Data_Maybe.Nothing.value))
-                  })(render(pos));
-                };
-              }
-            };
-          });
-        };
+      var useMousePosition = function(className) {
+        var name = Elmish_Hooks_Type.genComponentName({
+          skipFrames: 2
+        });
+        return Elmish_Hooks_Type.mkHook(name)(function(render) {
+          return {
+            init: Control_Applicative.pure(Elmish_Component.trApplicative)(Data_Maybe.Nothing.value),
+            update: function(v) {
+              return function(pos) {
+                return Control_Applicative.pure(Elmish_Component.trApplicative)(pos);
+              };
+            },
+            view: function(pos) {
+              return function(dispatch) {
+                return Elmish_HTML_Styled_Generated.div_(Elmish_React.reactChildrenSingle)()()(className)({
+                  onMouseMove: function(v) {
+                    var v1 = Web_HTML_HTMLElement.getBoundingClientRect(v.currentTarget)();
+                    var y = v.clientY - v1.top;
+                    var x = v.clientX - v1.left;
+                    var mouseLeft = x < 0 || (y < 0 || (y > v1.height || x > v1.width));
+                    return dispatch(function() {
+                      if (mouseLeft) {
+                        return Data_Maybe.Nothing.value;
+                      }
+                      ;
+                      return new Data_Maybe.Just({
+                        x,
+                        y
+                      });
+                    }())();
+                  },
+                  onMouseLeave: Elmish_Dispatch.handle(dispatch)(Data_Function["const"](Data_Maybe.Nothing.value))
+                })(render(pos));
+              };
+            }
+          };
+        });
       };
       var view = Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("mt-3 mb-2")([Elmish_HTML_Styled_Generated.h4(Elmish_React.reactChildrenSingle)("")(Elmish_HTML_Styled_Generated.code(Elmish_React.reactChildrenString)("")("useMousePosition")), Elmish_HTML_Styled_Generated.p(Elmish_React.reactChildrenArray)("text-muted")([Elmish_React_DOM.text("This example uses "), Elmish_HTML_Styled_Generated.code(Elmish_React.reactChildrenString)("")("mkHook"), Elmish_React_DOM.text(" to make a custom hook.")]), Elmish_HTML_Styled_Generated.div_(Elmish_React.reactChildrenSingle)()()("w-100 py-6 rounded bg-light border position-relative")({
         style: Elmish_HTML_Internal.css({
           height: 200,
           cursor: "none"
         })
-      })(Elmish_Hooks.withHooks(Control_Bind.bind(Control_Monad_Writer_Trans.bindWriterT(Data_Semigroup.semigroupArray)(Control_Monad_Cont_Trans.bindContT(Data_Identity.bindIdentity)))(useMousePosition("Examples.UseMouseMove.mousePosition")("position-absolute h-100 w-100"))(function(pos) {
-        return Control_Applicative.pure(Control_Monad_Writer_Trans.applicativeWriterT(Data_Monoid.monoidArray)(Control_Monad_Cont_Trans.applicativeContT(Data_Identity.applicativeIdentity)))(function() {
+      })(Elmish_Hooks.withHooks(Control_Bind.bind(Control_Monad_Cont_Trans.bindContT(Data_Identity.bindIdentity))(useMousePosition("position-absolute h-100 w-100"))(function(pos) {
+        return Control_Applicative.pure(Control_Monad_Cont_Trans.applicativeContT(Data_Identity.applicativeIdentity))(function() {
           if (pos instanceof Data_Maybe.Just) {
             return Elmish_HTML_Styled_Generated.img_()()("position-absolute")({
               src: "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjAvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvVFIvMjAwMS9SRUMtU1ZHLTIwMDEwOTA0L0RURC9zdmcxMC5kdGQiPgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIGZpbGw9IndoaXRlIiB2ZXJzaW9uPSIxLjAiIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iMjAwcHgiIGhlaWdodD0iMTI4cHgiIHZpZXdCb3g9IjAgMCAxMDAgNjQiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDEwMCA2NCIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgc3R5bGU9IiI+Cjxwb2x5Z29uIHBvaW50cz0iNjUuNjE5LDUwLjI0MSA1OS4xNTYsNDQuMjA2IDMwLjc3NSw0NC4yMDYgMzcuMjM4LDUwLjI0MSAiIHN0eWxlPSImIzEwOyAgICBmaWxsOiAjNUVCNUNBOyYjMTA7ICAgIHN0cm9rZTogIzVFQjVDQTsmIzEwOyIvPgo8cG9seWdvbiBwb2ludHM9IjM3LjIzOCwyOS4wODUgMzAuNzc1LDM1LjEyIDU5LjE1NiwzNS4xMiA2NS42MTksMjkuMDg1ICIgc3R5bGU9IiYjMTA7ICAgIGZpbGw6ICNFRkFDMDA7JiMxMDsgICAgc3Ryb2tlOiAjRUZBQzAwOyYjMTA7Ii8+Cjxwb2x5Z29uIHBvaW50cz0iNjUuNjE3LDE5Ljk5NyA1OS4xNTYsMTMuOTYgMzAuNzc3LDEzLjk2IDM3LjIzOCwxOS45OTcgIiBzdHlsZT0iJiMxMDsgICAgZmlsbDogIzdFRDAzQTsmIzEwOyAgICBzdHJva2U6ICM3RUQwM0E7JiMxMDsiLz4KPHBhdGggZD0iTTI3Ljc4OSwyNS45N2wtNC4yNy00LjI3MUw3LjY4OSwzNy41M2MtMC41NjgsMC41NjctMC44ODIsMS4zMjgtMC44OCwyLjEzNGMwLDAuODA4LDAuMzEyLDEuNTY1LDAuODgsMi4xMzMgIGwxNS44MywxNS44M2w0LjI3LTQuMjY3TDE0LjA5NCwzOS42NjNMMjcuNzg5LDI1Ljk3eiIgc3R5bGU9IiYjMTA7ICAgIGZpbGw6ICM1OTYzNzY7JiMxMDsgICAgc3Ryb2tlOiAjNTk2Mzc2OyYjMTA7Ii8+CjxwYXRoIGQ9Ik04OC43MDUsMjIuNDA3TDcyLjg4MSw2LjU3NWwtNC4yNjgsNC4yNjlMODIuMzAxLDI0LjU0TDY4LjYxMywzOC4yMzVsNC4yNjgsNC4yNjlsMTUuODI0LTE1LjgyNyAgYzAuNTctMC41NzIsMC44ODUtMS4zMzEsMC44ODUtMi4xMzlDODkuNTg4LDIzLjczMSw4OS4yNzUsMjIuOTc2LDg4LjcwNSwyMi40MDciIHN0eWxlPSImIzEwOyAgICBmaWxsOiAjNTk2Mzc2OyYjMTA7ICAgIHN0cm9rZTogIzU5NjM3NjsmIzEwOyIvPgo8L3N2Zz4=",
@@ -63212,7 +62616,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
             return Elmish_React_DOM.empty;
           }
           ;
-          throw new Error("Failed pattern match at Examples.UseMouseMove (line 28, column 18 - line 35, column 22): " + [pos.constructor.name]);
+          throw new Error("Failed pattern match at Examples.UseMouseMove (line 29, column 18 - line 36, column 22): " + [pos.constructor.name]);
         }());
       })))]);
       module.exports = {
@@ -63228,18 +62632,15 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var Control_Applicative = require_Control4();
       var Control_Bind = require_Control5();
       var Control_Monad_Cont_Trans = require_Control_Monad_Cont2();
-      var Control_Monad_Writer_Trans = require_Control_Monad_Writer2();
       var Data_Identity = require_Data23();
-      var Data_Monoid = require_Data18();
-      var Data_Semigroup = require_Data7();
       var Elmish_HTML_Internal = require_Elmish_HTML();
       var Elmish_HTML_Styled_Generated = require_Elmish_HTML_Styled();
       var Elmish_Hooks = require_Elmish6();
       var Elmish_Hooks_UseState = require_Elmish_Hooks3();
       var Elmish_React = require_Elmish();
       var Elmish_React_DOM = require_Elmish_React();
-      var view = Elmish_Hooks.withHooks(Control_Bind.bind(Control_Monad_Writer_Trans.bindWriterT(Data_Semigroup.semigroupArray)(Control_Monad_Cont_Trans.bindContT(Data_Identity.bindIdentity)))(Elmish_Hooks_UseState.useState("ModalVisible")(false))(function(v) {
-        return Control_Applicative.pure(Control_Monad_Writer_Trans.applicativeWriterT(Data_Monoid.monoidArray)(Control_Monad_Cont_Trans.applicativeContT(Data_Identity.applicativeIdentity)))(Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("")([Elmish_HTML_Styled_Generated.h2(Elmish_React.reactChildrenArray)("")([Elmish_HTML_Styled_Generated.code(Elmish_React.reactChildrenString)("")("useState"), Elmish_React_DOM.text(" hook")]), Elmish_HTML_Styled_Generated.button_(Elmish_React.reactChildrenString)()()("btn btn-primary")({
+      var view = Elmish_Hooks.withHooks(Control_Bind.bind(Control_Monad_Cont_Trans.bindContT(Data_Identity.bindIdentity))(Elmish_Hooks_UseState.useState(false))(function(v) {
+        return Control_Applicative.pure(Control_Monad_Cont_Trans.applicativeContT(Data_Identity.applicativeIdentity))(Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("")([Elmish_HTML_Styled_Generated.h2(Elmish_React.reactChildrenArray)("")([Elmish_HTML_Styled_Generated.code(Elmish_React.reactChildrenString)("")("useState"), Elmish_React_DOM.text(" hook")]), Elmish_HTML_Styled_Generated.button_(Elmish_React.reactChildrenString)()()("btn btn-primary")({
           onClick: v.value1(!v.value0)
         })("Show"), function() {
           if (v.value0) {
