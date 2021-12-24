@@ -8,6 +8,7 @@ import Data.Maybe (Maybe(..))
 import Elmish (ReactElement, mkEffectFn1, (<|))
 import Elmish.HTML.Styled as H
 import Elmish.Hooks (Hook, mkHook, withHooks)
+import Elmish.Hooks.Type (genComponentName)
 import Unsafe.Coerce (unsafeCoerce)
 import Web.HTML.HTMLElement (HTMLElement, getBoundingClientRect)
 
@@ -37,7 +38,7 @@ view =
 
 useMousePosition :: String -> Hook (Maybe { x :: Number, y :: Number })
 useMousePosition className =
-  mkHook \render ->
+  mkHook name \render ->
     { init: pure Nothing
     , update: \_ pos -> pure pos
     , view: \pos dispatch ->
@@ -53,3 +54,5 @@ useMousePosition className =
           } $
           render pos
     }
+  where
+    name = genComponentName { skipFrames: 2 }

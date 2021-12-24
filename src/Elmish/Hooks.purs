@@ -1,6 +1,6 @@
 -- | A React hook-like library for Elmish.
 -- |
--- | ```purescript
+-- | ```purs
 -- | todos :: ReactElement
 -- | todos = withHooks do
 -- |   todos /\ setTodos <- useState []
@@ -16,14 +16,13 @@ module Elmish.Hooks
   , module Type
   , module UseEffect
   , module UseState
-  )
-  where
+  ) where
 
 import Prelude
 
 import Control.Monad.Cont (runCont)
 import Elmish (ReactElement)
-import Elmish.Hooks.Type (Hook, mkHook) as Type
+import Elmish.Hooks.Type (Hook, mkHook, genComponentName) as Type
 import Elmish.Hooks.UseEffect (useEffect) as UseEffect
 import Elmish.Hooks.UseState (useState) as UseState
 

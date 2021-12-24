@@ -1,6 +1,5 @@
 {
   "name": "purescript-elmish-hooks",
-  "version": "1.0.0",
   "description": "React Hooks for Elmish",
   "main": "index.js",
   "scripts": {

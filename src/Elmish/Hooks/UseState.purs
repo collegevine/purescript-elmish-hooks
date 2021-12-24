@@ -1,14 +1,13 @@
 module Elmish.Hooks.UseState
   ( useState
-  )
-  where
+  ) where
 
 import Prelude
 
 import Data.Tuple (curry)
 import Data.Tuple.Nested (type (/\))
 import Elmish (Dispatch)
-import Elmish.Hooks.Type (Hook, mkHook)
+import Elmish.Hooks.Type (Hook, genComponentName, mkHook)
 
 -- | The `useState` hook takes an initial state and returns a `Hook`
 -- | encapsulating the current state and a `setState` function. E.g.:
@@ -27,8 +26,10 @@ import Elmish.Hooks.Type (Hook, mkHook)
 -- | ```
 useState :: forall state. state -> Hook (state /\ Dispatch state)
 useState initialState =
-  mkHook \render ->
+  mkHook name \render ->
     { init: pure initialState
     , update: \_ newState -> pure newState
     , view: curry render
     }
+  where
+    name = genComponentName { skipFrames: 2 }
