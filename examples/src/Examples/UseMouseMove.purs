@@ -7,8 +7,7 @@ import Prelude
 import Data.Maybe (Maybe(..))
 import Elmish (ReactElement, mkEffectFn1, (<|))
 import Elmish.HTML.Styled as H
-import Elmish.Hooks (Hook, mkHook, withHooks)
-import Elmish.Hooks.Type (genComponentName)
+import Elmish.Hooks (Hook, mkHook, uniqueNameFromCurrentCallStack, withHooks)
 import Unsafe.Coerce (unsafeCoerce)
 import Web.HTML.HTMLElement (HTMLElement, getBoundingClientRect)
 
@@ -55,4 +54,4 @@ useMousePosition className =
           render pos
     }
   where
-    name = genComponentName { skipFrames: 2 }
+    name = uniqueNameFromCurrentCallStack { skipFrames: 2 }

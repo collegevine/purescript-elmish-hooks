@@ -60,7 +60,7 @@ useMousePosition className =
           render pos
     }
   where
-    name = genComponentName { skipFrames: 2 }
+    name = uniqueNameFromCurrentCallStack { skipFrames: 2 }
 ```
 
 ### Examples
