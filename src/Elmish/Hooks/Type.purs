@@ -46,6 +46,8 @@ instance Applicative Hook where
 instance Bind Hook where
   bind (Hook hookA) k = Hook \render ->
     hookA \a -> case k a of Hook hookB -> hookB \b -> render b
+    
+instance Monad Hook
 
 -- | Given a `ComponentName` and a function to create a `ComponentDef` (from a
 -- | render function `a -> ReactElement`), `mkHook` creates a `Hook a`. The name
