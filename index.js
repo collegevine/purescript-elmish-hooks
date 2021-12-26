@@ -56867,64 +56867,6 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }
   });
 
-  // output/Control.Monad.Cont/index.js
-  var require_Control_Monad = __commonJS({
-    "output/Control.Monad.Cont/index.js"(exports, module) {
-      "use strict";
-      var Control_Monad_Cont_Class = require_Control_Monad_Cont();
-      var Control_Monad_Cont_Trans = require_Control_Monad_Cont2();
-      var Control_Semigroupoid = require_Control();
-      var Data_Identity = require_Data23();
-      var Data_Newtype = require_Data24();
-      var withCont = function(f) {
-        return Control_Monad_Cont_Trans.withContT(function() {
-          var $0 = Control_Semigroupoid.compose(Control_Semigroupoid.semigroupoidFn)(Data_Identity.Identity);
-          var $1 = Control_Semigroupoid.compose(Control_Semigroupoid.semigroupoidFn)(Data_Newtype.unwrap());
-          return function($2) {
-            return $0(f($1($2)));
-          };
-        }());
-      };
-      var runCont = function(cc) {
-        return function(k) {
-          return Data_Newtype.unwrap()(Control_Monad_Cont_Trans.runContT(cc)(function($3) {
-            return Data_Identity.Identity(k($3));
-          }));
-        };
-      };
-      var mapCont = function(f) {
-        return Control_Monad_Cont_Trans.mapContT(function() {
-          var $4 = Data_Newtype.unwrap();
-          return function($5) {
-            return Data_Identity.Identity(f($4($5)));
-          };
-        }());
-      };
-      var cont = function(f) {
-        return function(c) {
-          return f(function() {
-            var $6 = Data_Newtype.unwrap();
-            return function($7) {
-              return $6(c($7));
-            };
-          }());
-        };
-      };
-      module.exports = {
-        cont,
-        runCont,
-        mapCont,
-        withCont,
-        callCC: Control_Monad_Cont_Class.callCC,
-        ContT: Control_Monad_Cont_Trans.ContT,
-        lift: Control_Monad_Cont_Trans.lift,
-        mapContT: Control_Monad_Cont_Trans.mapContT,
-        runContT: Control_Monad_Cont_Trans.runContT,
-        withContT: Control_Monad_Cont_Trans.withContT
-      };
-    }
-  });
-
   // node_modules/uuid/lib/bytesToUuid.js
   var require_bytesToUuid = __commonJS({
     "node_modules/uuid/lib/bytesToUuid.js"(exports, module) {
@@ -57122,7 +57064,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_foreign103 = __commonJS({
     "output/Elmish.Hooks.Type/foreign.js"(exports) {
       var uuidV5 = require_v5();
-      var genStableUUID_ = ({ trace }) => ({ skipFrames }) => {
+      var uniqueNameFromCurrentCallStack_ = ({ trace }) => ({ skipFrames }) => {
         const stack = new Error().stack;
         const stackLines = stack.split("\n");
         const hookCallSite = stackLines[skipFrames + 1];
@@ -57134,8 +57076,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         }
         return uuidV5(hookCallSite, "31877c6f-998d-44e6-99e6-3cd31a643f1d");
       };
-      exports.genStableUUID_ = genStableUUID_({ trace: false });
-      exports.genStableUUIDWithTrace_ = genStableUUID_({ trace: true });
+      exports.uniqueNameFromCurrentCallStack_ = uniqueNameFromCurrentCallStack_({ trace: false });
+      exports.uniqueNameFromCurrentCallStackTraced_ = uniqueNameFromCurrentCallStack_({ trace: true });
     }
   });
 
@@ -57144,27 +57086,98 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     "output/Elmish.Hooks.Type/index.js"(exports, module) {
       "use strict";
       var $foreign = require_foreign103();
-      var Control_Monad_Cont = require_Control_Monad();
+      var Control_Category = require_Control2();
       var Elmish_Component = require_Elmish4();
+      var functorHook = {
+        map: function(f) {
+          return function(v) {
+            return function(render) {
+              return v(function($21) {
+                return render(f($21));
+              });
+            };
+          };
+        }
+      };
+      var applyHook = {
+        apply: function(v) {
+          return function(v1) {
+            return function(render) {
+              return v(function(f) {
+                return v1(function($22) {
+                  return render(f($22));
+                });
+              });
+            };
+          };
+        },
+        Functor0: function() {
+          return functorHook;
+        }
+      };
+      var bindHook = {
+        bind: function(v) {
+          return function(k) {
+            return function(render) {
+              return v(function(a) {
+                var v1 = k(a);
+                return v1(function(b) {
+                  return render(b);
+                });
+              });
+            };
+          };
+        },
+        Apply0: function() {
+          return applyHook;
+        }
+      };
+      var applicativeHook = {
+        pure: function(a) {
+          return function(render) {
+            return render(a);
+          };
+        },
+        Apply0: function() {
+          return applyHook;
+        }
+      };
+      var monadHook = {
+        Applicative0: function() {
+          return applicativeHook;
+        },
+        Bind1: function() {
+          return bindHook;
+        }
+      };
+      var withHooks = function(v) {
+        return v(Control_Category.identity(Control_Category.categoryFn));
+      };
+      var uniqueNameFromCurrentCallStackTraced = function(dictDebugWarning) {
+        return function($23) {
+          return Elmish_Component.ComponentName($foreign.uniqueNameFromCurrentCallStackTraced_($23));
+        };
+      };
+      var uniqueNameFromCurrentCallStack = function($24) {
+        return Elmish_Component.ComponentName($foreign.uniqueNameFromCurrentCallStack_($24));
+      };
       var mkHook = function(name) {
         return function(mkDef) {
-          return Control_Monad_Cont.cont(function(render) {
+          return function(render) {
             return Elmish_Component.wrapWithLocalState(name)(mkDef)(render);
-          });
+          };
         };
-      };
-      var genComponentNameWithTrace = function(dictDebugWarning) {
-        return function($1) {
-          return Elmish_Component.ComponentName($foreign.genStableUUIDWithTrace_($1));
-        };
-      };
-      var genComponentName = function($2) {
-        return Elmish_Component.ComponentName($foreign.genStableUUID_($2));
       };
       module.exports = {
-        genComponentName,
-        genComponentNameWithTrace,
-        mkHook
+        mkHook,
+        uniqueNameFromCurrentCallStack,
+        uniqueNameFromCurrentCallStackTraced,
+        withHooks,
+        functorHook,
+        applyHook,
+        applicativeHook,
+        bindHook,
+        monadHook
       };
     }
   });
@@ -57178,7 +57191,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var Elmish_Component = require_Elmish4();
       var Elmish_Hooks_Type = require_Elmish_Hooks();
       var useEffect = function(init) {
-        var name = Elmish_Hooks_Type.genComponentName({
+        var name = Elmish_Hooks_Type.uniqueNameFromCurrentCallStack({
           skipFrames: 2
         });
         return Elmish_Hooks_Type.mkHook(name)(function(render) {
@@ -57212,7 +57225,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var Elmish_Component = require_Elmish4();
       var Elmish_Hooks_Type = require_Elmish_Hooks();
       var useState = function(initialState) {
-        var name = Elmish_Hooks_Type.genComponentName({
+        var name = Elmish_Hooks_Type.uniqueNameFromCurrentCallStack({
           skipFrames: 2
         });
         return Elmish_Hooks_Type.mkHook(name)(function(render) {
@@ -57233,52 +57246,28 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }
   });
 
-  // output/Elmish.Hooks/index.js
-  var require_Elmish6 = __commonJS({
-    "output/Elmish.Hooks/index.js"(exports, module) {
-      "use strict";
-      var Control_Category = require_Control2();
-      var Control_Monad_Cont = require_Control_Monad();
-      var Elmish_Hooks_Type = require_Elmish_Hooks();
-      var Elmish_Hooks_UseEffect = require_Elmish_Hooks2();
-      var Elmish_Hooks_UseState = require_Elmish_Hooks3();
-      var withHooks = function(hooks) {
-        return Control_Monad_Cont.runCont(hooks)(Control_Category.identity(Control_Category.categoryFn));
-      };
-      module.exports = {
-        withHooks,
-        genComponentName: Elmish_Hooks_Type.genComponentName,
-        mkHook: Elmish_Hooks_Type.mkHook,
-        useEffect: Elmish_Hooks_UseEffect.useEffect,
-        useState: Elmish_Hooks_UseState.useState
-      };
-    }
-  });
-
   // output/Examples.UseEffect/index.js
   var require_Examples = __commonJS({
     "output/Examples.UseEffect/index.js"(exports, module) {
       "use strict";
       var Control_Applicative = require_Control4();
       var Control_Bind = require_Control5();
-      var Control_Monad_Cont_Trans = require_Control_Monad_Cont2();
       var Data_Functor = require_Data4();
-      var Data_Identity = require_Data23();
       var Data_Maybe = require_Data15();
       var Effect_Aff = require_Effect7();
       var Effect_Class = require_Effect2();
       var Elmish_HTML_Internal = require_Elmish_HTML();
       var Elmish_HTML_Styled_Generated = require_Elmish_HTML_Styled();
-      var Elmish_Hooks = require_Elmish6();
+      var Elmish_Hooks_Type = require_Elmish_Hooks();
       var Elmish_Hooks_UseEffect = require_Elmish_Hooks2();
       var Elmish_Hooks_UseState = require_Elmish_Hooks3();
       var Elmish_React = require_Elmish();
       var Elmish_React_DOM = require_Elmish_React();
-      var view = Elmish_Hooks.withHooks(Control_Bind.bind(Control_Monad_Cont_Trans.bindContT(Data_Identity.bindIdentity))(Elmish_Hooks_UseState.useState(Data_Maybe.Nothing.value))(function(v) {
-        return Control_Bind.discard(Control_Bind.discardUnit)(Control_Monad_Cont_Trans.bindContT(Data_Identity.bindIdentity))(Elmish_Hooks_UseEffect.useEffect(Control_Bind.discard(Control_Bind.discardUnit)(Effect_Aff.bindAff)(Effect_Aff.delay(2e3))(function() {
+      var view = Elmish_Hooks_Type.withHooks(Control_Bind.bind(Elmish_Hooks_Type.bindHook)(Elmish_Hooks_UseState.useState(Data_Maybe.Nothing.value))(function(v) {
+        return Control_Bind.discard(Control_Bind.discardUnit)(Elmish_Hooks_Type.bindHook)(Elmish_Hooks_UseEffect.useEffect(Control_Bind.discard(Control_Bind.discardUnit)(Effect_Aff.bindAff)(Effect_Aff.delay(2e3))(function() {
           return Effect_Class.liftEffect(Effect_Aff.monadEffectAff)(v.value1(new Data_Maybe.Just(["Do thing", "Do another thing", "Some more stuff"])));
         })))(function() {
-          return Control_Applicative.pure(Control_Monad_Cont_Trans.applicativeContT(Data_Identity.applicativeIdentity))(Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("row")([Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("col-12 col-md-6 col-lg-4")([Elmish_HTML_Styled_Generated.h2(Elmish_React.reactChildrenArray)("")([Elmish_HTML_Styled_Generated.code(Elmish_React.reactChildrenString)("")("useEffect"), Elmish_React_DOM.text(" hook")]), Elmish_HTML_Styled_Generated.h4(Elmish_React.reactChildrenString)("mb-3")("Todos"), function() {
+          return Control_Applicative.pure(Elmish_Hooks_Type.applicativeHook)(Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("row")([Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("col-12 col-md-6 col-lg-4")([Elmish_HTML_Styled_Generated.h2(Elmish_React.reactChildrenArray)("")([Elmish_HTML_Styled_Generated.code(Elmish_React.reactChildrenString)("")("useEffect"), Elmish_React_DOM.text(" hook")]), Elmish_HTML_Styled_Generated.h4(Elmish_React.reactChildrenString)("mb-3")("Todos"), function() {
             if (v.value0 instanceof Data_Maybe.Nothing) {
               return Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("")([Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenSingle)("progress")(Elmish_HTML_Styled_Generated.div_(Elmish_React.reactChildrenSingle)()()("progress-bar progress-bar-striped progress-bar-animated")({
                 role: "progressbar",
@@ -57303,7 +57292,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Elmish.Dispatch/index.js
-  var require_Elmish7 = __commonJS({
+  var require_Elmish6 = __commonJS({
     "output/Elmish.Dispatch/index.js"(exports, module) {
       "use strict";
       var Control_Applicative = require_Control4();
@@ -61919,7 +61908,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Elmish.Foreign/index.js
-  var require_Elmish8 = __commonJS({
+  var require_Elmish7 = __commonJS({
     "output/Elmish.Foreign/index.js"(exports, module) {
       "use strict";
       var $foreign = require_foreign104();
@@ -62369,7 +62358,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       "use strict";
       var Data_Functor = require_Data4();
       var Data_Maybe = require_Data15();
-      var Elmish_Foreign = require_Elmish8();
+      var Elmish_Foreign = require_Elmish7();
       var eventTargetValue = function() {
         var toEvent = Elmish_Foreign.readForeign(Elmish_Foreign.canReceiveFromJavaScriptR1()(Elmish_Foreign.canReceiveFromJavaScriptR2({
           reflectSymbol: function() {
@@ -62479,16 +62468,14 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       "use strict";
       var Control_Applicative = require_Control4();
       var Control_Bind = require_Control5();
-      var Control_Monad_Cont_Trans = require_Control_Monad_Cont2();
-      var Data_Identity = require_Data23();
       var Data_Maybe = require_Data15();
       var Data_Tuple = require_Data21();
       var Effect = require_Effect();
       var Effect_Aff = require_Effect7();
       var Effect_Class = require_Effect2();
-      var Elmish_Dispatch = require_Elmish7();
+      var Elmish_Dispatch = require_Elmish6();
       var Elmish_HTML_Styled_Generated = require_Elmish_HTML_Styled();
-      var Elmish_Hooks = require_Elmish6();
+      var Elmish_Hooks_Type = require_Elmish_Hooks();
       var Elmish_Hooks_UseEffect = require_Elmish_Hooks2();
       var Elmish_Hooks_UseState = require_Elmish_Hooks3();
       var Elmish_React = require_Elmish();
@@ -62499,8 +62486,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var Web_Storage_Storage = require_Web_Storage();
       var useLocalStorage = function(key) {
         return function(defaultValue) {
-          return Control_Bind.bind(Control_Monad_Cont_Trans.bindContT(Data_Identity.bindIdentity))(Elmish_Hooks_UseState.useState(defaultValue))(function(v) {
-            return Control_Bind.discard(Control_Bind.discardUnit)(Control_Monad_Cont_Trans.bindContT(Data_Identity.bindIdentity))(Elmish_Hooks_UseEffect.useEffect(Effect_Class.liftEffect(Effect_Aff.monadEffectAff)(function __do() {
+          return Control_Bind.bind(Elmish_Hooks_Type.bindHook)(Elmish_Hooks_UseState.useState(defaultValue))(function(v) {
+            return Control_Bind.discard(Control_Bind.discardUnit)(Elmish_Hooks_Type.bindHook)(Elmish_Hooks_UseEffect.useEffect(Effect_Class.liftEffect(Effect_Aff.monadEffectAff)(function __do() {
               var v1 = Control_Bind.bindFlipped(Effect.bindEffect)(Web_Storage_Storage.getItem(key))(Control_Bind.bindFlipped(Effect.bindEffect)(Web_HTML_Window.localStorage)(Web_HTML.window))();
               if (v1 instanceof Data_Maybe.Just) {
                 return v.value1(v1.value0)();
@@ -62512,7 +62499,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
               ;
               throw new Error("Failed pattern match at Examples.UseLocalStorage (line 41, column 5 - line 43, column 70): " + [v1.constructor.name]);
             })))(function() {
-              return Control_Applicative.pure(Control_Monad_Cont_Trans.applicativeContT(Data_Identity.applicativeIdentity))(new Data_Tuple.Tuple(v.value0, function(v1) {
+              return Control_Applicative.pure(Elmish_Hooks_Type.applicativeHook)(new Data_Tuple.Tuple(v.value0, function(v1) {
                 return function __do() {
                   v.value1(v1)();
                   return Control_Bind.bindFlipped(Effect.bindEffect)(Web_Storage_Storage.setItem(key)(v1))(Control_Bind.bindFlipped(Effect.bindEffect)(Web_HTML_Window.localStorage)(Web_HTML.window))();
@@ -62522,8 +62509,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           });
         };
       };
-      var view = Elmish_Hooks.withHooks(Control_Bind.bind(Control_Monad_Cont_Trans.bindContT(Data_Identity.bindIdentity))(useLocalStorage("foo")(""))(function(v) {
-        return Control_Applicative.pure(Control_Monad_Cont_Trans.applicativeContT(Data_Identity.applicativeIdentity))(Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("row")([Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("col-12 col-md-6 col-lg-4")([Elmish_HTML_Styled_Generated.h4(Elmish_React.reactChildrenSingle)("")(Elmish_HTML_Styled_Generated.code(Elmish_React.reactChildrenString)("")("useLocalStorage")), Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("form-group")([Elmish_HTML_Styled_Generated.label_(Elmish_React.reactChildrenArray)()()("form-label")({
+      var view = Elmish_Hooks_Type.withHooks(Control_Bind.bind(Elmish_Hooks_Type.bindHook)(useLocalStorage("foo")(""))(function(v) {
+        return Control_Applicative.pure(Elmish_Hooks_Type.applicativeHook)(Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("row")([Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("col-12 col-md-6 col-lg-4")([Elmish_HTML_Styled_Generated.h4(Elmish_React.reactChildrenSingle)("")(Elmish_HTML_Styled_Generated.code(Elmish_React.reactChildrenString)("")("useLocalStorage")), Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("form-group")([Elmish_HTML_Styled_Generated.label_(Elmish_React.reactChildrenArray)()()("form-label")({
           htmlFor: "foo"
         })([Elmish_React_DOM.text("Typing here will update the state and save to "), Elmish_HTML_Styled_Generated.code(Elmish_React.reactChildrenString)("")("localStorage")]), Elmish_HTML_Styled_Generated.input_()()("form-control")({
           value: v.value0,
@@ -62543,21 +62530,18 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       "use strict";
       var Control_Applicative = require_Control4();
       var Control_Bind = require_Control5();
-      var Control_Monad_Cont_Trans = require_Control_Monad_Cont2();
       var Data_Function = require_Data2();
-      var Data_Identity = require_Data23();
       var Data_Maybe = require_Data15();
       var Elmish_Component = require_Elmish4();
-      var Elmish_Dispatch = require_Elmish7();
+      var Elmish_Dispatch = require_Elmish6();
       var Elmish_HTML_Internal = require_Elmish_HTML();
       var Elmish_HTML_Styled_Generated = require_Elmish_HTML_Styled();
-      var Elmish_Hooks = require_Elmish6();
       var Elmish_Hooks_Type = require_Elmish_Hooks();
       var Elmish_React = require_Elmish();
       var Elmish_React_DOM = require_Elmish_React();
       var Web_HTML_HTMLElement = require_Web_HTML15();
       var useMousePosition = function(className) {
-        var name = Elmish_Hooks_Type.genComponentName({
+        var name = Elmish_Hooks_Type.uniqueNameFromCurrentCallStack({
           skipFrames: 2
         });
         return Elmish_Hooks_Type.mkHook(name)(function(render) {
@@ -62599,8 +62583,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           height: 200,
           cursor: "none"
         })
-      })(Elmish_Hooks.withHooks(Control_Bind.bind(Control_Monad_Cont_Trans.bindContT(Data_Identity.bindIdentity))(useMousePosition("position-absolute h-100 w-100"))(function(pos) {
-        return Control_Applicative.pure(Control_Monad_Cont_Trans.applicativeContT(Data_Identity.applicativeIdentity))(function() {
+      })(Elmish_Hooks_Type.withHooks(Control_Bind.bind(Elmish_Hooks_Type.bindHook)(useMousePosition("position-absolute h-100 w-100"))(function(pos) {
+        return Control_Applicative.pure(Elmish_Hooks_Type.applicativeHook)(function() {
           if (pos instanceof Data_Maybe.Just) {
             return Elmish_HTML_Styled_Generated.img_()()("position-absolute")({
               src: "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjAvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvVFIvMjAwMS9SRUMtU1ZHLTIwMDEwOTA0L0RURC9zdmcxMC5kdGQiPgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIGZpbGw9IndoaXRlIiB2ZXJzaW9uPSIxLjAiIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iMjAwcHgiIGhlaWdodD0iMTI4cHgiIHZpZXdCb3g9IjAgMCAxMDAgNjQiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDEwMCA2NCIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgc3R5bGU9IiI+Cjxwb2x5Z29uIHBvaW50cz0iNjUuNjE5LDUwLjI0MSA1OS4xNTYsNDQuMjA2IDMwLjc3NSw0NC4yMDYgMzcuMjM4LDUwLjI0MSAiIHN0eWxlPSImIzEwOyAgICBmaWxsOiAjNUVCNUNBOyYjMTA7ICAgIHN0cm9rZTogIzVFQjVDQTsmIzEwOyIvPgo8cG9seWdvbiBwb2ludHM9IjM3LjIzOCwyOS4wODUgMzAuNzc1LDM1LjEyIDU5LjE1NiwzNS4xMiA2NS42MTksMjkuMDg1ICIgc3R5bGU9IiYjMTA7ICAgIGZpbGw6ICNFRkFDMDA7JiMxMDsgICAgc3Ryb2tlOiAjRUZBQzAwOyYjMTA7Ii8+Cjxwb2x5Z29uIHBvaW50cz0iNjUuNjE3LDE5Ljk5NyA1OS4xNTYsMTMuOTYgMzAuNzc3LDEzLjk2IDM3LjIzOCwxOS45OTcgIiBzdHlsZT0iJiMxMDsgICAgZmlsbDogIzdFRDAzQTsmIzEwOyAgICBzdHJva2U6ICM3RUQwM0E7JiMxMDsiLz4KPHBhdGggZD0iTTI3Ljc4OSwyNS45N2wtNC4yNy00LjI3MUw3LjY4OSwzNy41M2MtMC41NjgsMC41NjctMC44ODIsMS4zMjgtMC44OCwyLjEzNGMwLDAuODA4LDAuMzEyLDEuNTY1LDAuODgsMi4xMzMgIGwxNS44MywxNS44M2w0LjI3LTQuMjY3TDE0LjA5NCwzOS42NjNMMjcuNzg5LDI1Ljk3eiIgc3R5bGU9IiYjMTA7ICAgIGZpbGw6ICM1OTYzNzY7JiMxMDsgICAgc3Ryb2tlOiAjNTk2Mzc2OyYjMTA7Ii8+CjxwYXRoIGQ9Ik04OC43MDUsMjIuNDA3TDcyLjg4MSw2LjU3NWwtNC4yNjgsNC4yNjlMODIuMzAxLDI0LjU0TDY4LjYxMywzOC4yMzVsNC4yNjgsNC4yNjlsMTUuODI0LTE1LjgyNyAgYzAuNTctMC41NzIsMC44ODUtMS4zMzEsMC44ODUtMi4xMzlDODkuNTg4LDIzLjczMSw4OS4yNzUsMjIuOTc2LDg4LjcwNSwyMi40MDciIHN0eWxlPSImIzEwOyAgICBmaWxsOiAjNTk2Mzc2OyYjMTA7ICAgIHN0cm9rZTogIzU5NjM3NjsmIzEwOyIvPgo8L3N2Zz4=",
@@ -62616,7 +62600,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
             return Elmish_React_DOM.empty;
           }
           ;
-          throw new Error("Failed pattern match at Examples.UseMouseMove (line 29, column 18 - line 36, column 22): " + [pos.constructor.name]);
+          throw new Error("Failed pattern match at Examples.UseMouseMove (line 28, column 18 - line 35, column 22): " + [pos.constructor.name]);
         }());
       })))]);
       module.exports = {
@@ -62631,16 +62615,14 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       "use strict";
       var Control_Applicative = require_Control4();
       var Control_Bind = require_Control5();
-      var Control_Monad_Cont_Trans = require_Control_Monad_Cont2();
-      var Data_Identity = require_Data23();
       var Elmish_HTML_Internal = require_Elmish_HTML();
       var Elmish_HTML_Styled_Generated = require_Elmish_HTML_Styled();
-      var Elmish_Hooks = require_Elmish6();
+      var Elmish_Hooks_Type = require_Elmish_Hooks();
       var Elmish_Hooks_UseState = require_Elmish_Hooks3();
       var Elmish_React = require_Elmish();
       var Elmish_React_DOM = require_Elmish_React();
-      var view = Elmish_Hooks.withHooks(Control_Bind.bind(Control_Monad_Cont_Trans.bindContT(Data_Identity.bindIdentity))(Elmish_Hooks_UseState.useState(false))(function(v) {
-        return Control_Applicative.pure(Control_Monad_Cont_Trans.applicativeContT(Data_Identity.applicativeIdentity))(Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("")([Elmish_HTML_Styled_Generated.h2(Elmish_React.reactChildrenArray)("")([Elmish_HTML_Styled_Generated.code(Elmish_React.reactChildrenString)("")("useState"), Elmish_React_DOM.text(" hook")]), Elmish_HTML_Styled_Generated.button_(Elmish_React.reactChildrenString)()()("btn btn-primary")({
+      var view = Elmish_Hooks_Type.withHooks(Control_Bind.bind(Elmish_Hooks_Type.bindHook)(Elmish_Hooks_UseState.useState(false))(function(v) {
+        return Control_Applicative.pure(Elmish_Hooks_Type.applicativeHook)(Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("")([Elmish_HTML_Styled_Generated.h2(Elmish_React.reactChildrenArray)("")([Elmish_HTML_Styled_Generated.code(Elmish_React.reactChildrenString)("")("useState"), Elmish_React_DOM.text(" hook")]), Elmish_HTML_Styled_Generated.button_(Elmish_React.reactChildrenString)()()("btn btn-primary")({
           onClick: v.value1(!v.value0)
         })("Show"), function() {
           if (v.value0) {
