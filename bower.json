@@ -21,7 +21,6 @@
         "purescript-elmish": "^v0.5.6",
         "purescript-prelude": "^v5.0.1",
         "purescript-psci-support": "^v5.0.0",
-        "purescript-transformers": "^v5.2.0",
         "purescript-tuples": "^v6.0.1"
     }
 }
