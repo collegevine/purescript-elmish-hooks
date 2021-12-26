@@ -60,9 +60,13 @@ useMousePosition className =
           render pos
     }
   where
-    name = genComponentName { skipFrames: 2 }
+    name = uniqueNameFromCurrentCallStack { skipFrames: 2 }
 ```
 
 ### Examples
 
 There are some examples in the [examples](https://github.com/collegevine/purescript-elmish-hooks/tree/main/examples) folder, which can be seen live [here](https://collegevine.github.io/purescript-elmish-hooks).
+
+### Documentation
+
+Documentation is [published on Pursuit](https://pursuit.purescript.org/packages/purescript-elmish-hooks).

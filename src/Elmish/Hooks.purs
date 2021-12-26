@@ -12,20 +12,11 @@
 -- |   pure $ H.fragment $ todoView <$> todos
 -- | ```
 module Elmish.Hooks
-  ( withHooks
-  , module Type
+  ( module Type
   , module UseEffect
   , module UseState
   ) where
 
-import Prelude
-
-import Control.Monad.Cont (runCont)
-import Elmish (ReactElement)
-import Elmish.Hooks.Type (Hook, mkHook, genComponentName) as Type
+import Elmish.Hooks.Type (Hook, mkHook, uniqueNameFromCurrentCallStack, withHooks) as Type
 import Elmish.Hooks.UseEffect (useEffect) as UseEffect
 import Elmish.Hooks.UseState (useState) as UseState
-
--- | Unwraps a `Hook ReactElement`
-withHooks :: Type.Hook ReactElement -> ReactElement
-withHooks hooks = runCont hooks identity

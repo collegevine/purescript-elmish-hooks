@@ -6,7 +6,7 @@ import Prelude
 
 import Effect.Aff (Aff)
 import Elmish (forkVoid)
-import Elmish.Hooks.Type (Hook, genComponentName, mkHook)
+import Elmish.Hooks.Type (Hook, mkHook, uniqueNameFromCurrentCallStack)
 
 -- | The `useEffect` hook takes an effect (`Aff`) to run and runs it in the
 -- | `init` of the resulting component. E.g.:
@@ -30,4 +30,4 @@ useEffect init =
     , view: \_ _ -> render unit
     }
   where
-    name = genComponentName { skipFrames: 2 }
+    name = uniqueNameFromCurrentCallStack { skipFrames: 2 }

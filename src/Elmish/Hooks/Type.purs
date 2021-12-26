@@ -1,13 +1,13 @@
 module Elmish.Hooks.Type
   ( Hook
-  , genComponentName
-  , genComponentNameWithTrace
   , mkHook
+  , uniqueNameFromCurrentCallStack
+  , uniqueNameFromCurrentCallStackTraced
+  , withHooks
   ) where
 
 import Prelude
 
-import Control.Monad.Cont (Cont, cont)
 import Debug (class DebugWarning)
 import Elmish (ReactElement, ComponentDef)
 import Elmish.Component (ComponentName(..), wrapWithLocalState)
@@ -31,14 +31,31 @@ import Elmish.Component (ComponentName(..), wrapWithLocalState)
 -- |   foo /\ setFoo <- useState ""
 -- |   pure …
 -- | ```
-type Hook = Cont ReactElement
+newtype Hook a = Hook ((a -> ReactElement) -> ReactElement)
+
+instance Functor Hook where
+  map f (Hook hook) = Hook \render -> hook (render <<< f)
+
+instance Apply Hook where
+  apply (Hook hookF) (Hook hook) = Hook \render ->
+    hookF \f -> hook (render <<< f)
+
+instance Applicative Hook where
+  pure a = Hook \render -> render a
+
+instance Bind Hook where
+  bind (Hook hookA) k = Hook \render ->
+    hookA \a -> case k a of Hook hookB -> hookB \b -> render b
+    
+instance Monad Hook
 
 -- | Given a `ComponentName` and a function to create a `ComponentDef` (from a
 -- | render function `a -> ReactElement`), `mkHook` creates a `Hook a`. The name
--- | can be anything, but it’s recommended to use `genComponentName` to create a
--- | unique name based on where the hook is called from in the stack trace.
--- | `genComponentName` accepts a `skipFrames :: Int` argument to indicate how
--- | many frames back it should look for the call site of the hook.
+-- | can be anything, but it’s recommended to use
+-- | `uniqueNameFromCurrentCallStack` to create a unique name based on where the
+-- | hook is called from in the stack trace. `uniqueNameFromCurrentCallStack`
+-- | accepts a `skipFrames :: Int` argument to indicate how many frames back it
+-- | should look for the call site of the hook.
 -- |
 -- | It’s also recommended to create the name in a where clause and make your
 -- | hook a function accepting one argument. Even if your hook takes more than
@@ -46,14 +63,14 @@ type Hook = Cont ReactElement
 -- | function body:
 -- |
 -- | ```purs
--- | myHook x = \y z -> …
+-- | myHook x = \y z -> mkHook …
 -- |   where
--- |     name = …
+-- |     name = uniqueNameFromCurrentCallStack { skipFrames: 2 }
 -- |
 -- | This ensures that the number of frames to skip is predictably 2. If
 -- | defining the function differently, a different number of frames can be
--- | passed. `genComponentNameWithTrace` can be used to help find the correct
--- | number.
+-- | passed. `uniqueNameFromCurrentCallStackTraced` can be used to help find the
+-- | correct number.
 -- |
 -- | As an example of how to use `mkHook`, `useEffect` uses it like so:
 -- |
@@ -70,18 +87,28 @@ type Hook = Cont ReactElement
 -- | ```
 mkHook :: forall msg state a. ComponentName -> ((a -> ReactElement) -> ComponentDef msg state) -> Hook a
 mkHook name mkDef =
-  cont \render -> wrapWithLocalState name mkDef render
+  Hook \render -> wrapWithLocalState name mkDef render
+
+-- | Unwraps a `Hook ReactElement`, which is usually created by using one or
+-- | more hooks and then using `pure` to encapsulate a `ReactElement`. E.g.:
+-- |
+-- | view :: ReactElement
+-- | view = withHooks do
+-- |   name /\ setName <- useState ""
+-- |   pure $ H.input_ "" { value: name, onChange: setName <?| eventTargetValue }
+withHooks :: Hook ReactElement -> ReactElement
+withHooks (Hook hook) = hook identity
 
 -- | Generates a `ComponentName` to be passed to `mkHook`.
-genComponentName :: { skipFrames :: Int } -> ComponentName
-genComponentName = ComponentName <<< genStableUUID_
+uniqueNameFromCurrentCallStack :: { skipFrames :: Int } -> ComponentName
+uniqueNameFromCurrentCallStack = ComponentName <<< uniqueNameFromCurrentCallStack_
 
 -- | Generates a `ComponentName` to be passed to `mkHook`, like
--- | `genComponentName`, but logs the stack trace and specific line to the
--- | console.
-genComponentNameWithTrace :: DebugWarning => { skipFrames :: Int } -> ComponentName
-genComponentNameWithTrace = ComponentName <<< genStableUUIDWithTrace_
+-- | `uniqueNameFromCurrentCallStack`, but logs the stack trace and specific
+-- | line to the console.
+uniqueNameFromCurrentCallStackTraced :: DebugWarning => { skipFrames :: Int } -> ComponentName
+uniqueNameFromCurrentCallStackTraced = ComponentName <<< uniqueNameFromCurrentCallStackTraced_
 
-foreign import genStableUUID_ :: { skipFrames :: Int } -> String
+foreign import uniqueNameFromCurrentCallStack_ :: { skipFrames :: Int } -> String
 
-foreign import genStableUUIDWithTrace_ :: { skipFrames :: Int } -> String
+foreign import uniqueNameFromCurrentCallStackTraced_ :: { skipFrames :: Int } -> String

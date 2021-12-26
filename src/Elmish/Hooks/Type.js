@@ -1,6 +1,6 @@
 const uuidV5 = require('uuid/v5')
 
-const genStableUUID_ = ({ trace }) => ({ skipFrames }) => {
+const uniqueNameFromCurrentCallStack_ = ({ trace }) => ({ skipFrames }) => {
   const stack = new Error().stack
   const stackLines = stack.split('\n')
   // TODO: Add tests to ensure this stays correct: See
@@ -16,5 +16,5 @@ const genStableUUID_ = ({ trace }) => ({ skipFrames }) => {
   return uuidV5(hookCallSite, '31877c6f-998d-44e6-99e6-3cd31a643f1d')
 }
 
-exports.genStableUUID_ = genStableUUID_({ trace: false })
-exports.genStableUUIDWithTrace_ = genStableUUID_({ trace: true })
+exports.uniqueNameFromCurrentCallStack_ = uniqueNameFromCurrentCallStack_({ trace: false })
+exports.uniqueNameFromCurrentCallStackTraced_ = uniqueNameFromCurrentCallStack_({ trace: true })

@@ -7,7 +7,7 @@ import Prelude
 import Data.Tuple (curry)
 import Data.Tuple.Nested (type (/\))
 import Elmish (Dispatch)
-import Elmish.Hooks.Type (Hook, genComponentName, mkHook)
+import Elmish.Hooks.Type (Hook, mkHook, uniqueNameFromCurrentCallStack)
 
 -- | The `useState` hook takes an initial state and returns a `Hook`
 -- | encapsulating the current state and a `setState` function. E.g.:
@@ -32,4 +32,4 @@ useState initialState =
     , view: curry render
     }
   where
-    name = genComponentName { skipFrames: 2 }
+    name = uniqueNameFromCurrentCallStack { skipFrames: 2 }
