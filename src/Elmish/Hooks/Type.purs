@@ -65,7 +65,7 @@ instance Monad Hook
 -- | ```purs
 -- | myHook x = \y z -> mkHook …
 -- |   where
--- |     name = …
+-- |     name = uniqueNameFromCurrentCallStack { skipFrames: 2 }
 -- |
 -- | This ensures that the number of frames to skip is predictably 2. If
 -- | defining the function differently, a different number of frames can be
