@@ -89,7 +89,13 @@ mkHook :: forall msg state a. ComponentName -> ((a -> ReactElement) -> Component
 mkHook name mkDef =
   Hook \render -> wrapWithLocalState name mkDef render
 
--- | Unwraps a `Hook ReactElement`
+-- | Unwraps a `Hook ReactElement`, which is usually created by using one or
+-- | more hooks and then using `pure` to encapsulate a `ReactElement`. E.g.:
+-- |
+-- | view :: ReactElement
+-- | view = withHooks do
+-- |   name /\ setName <- useState ""
+-- |   pure $ H.input_ "" { value: name, onChange: setName <?| eventTargetValue }
 withHooks :: Hook ReactElement -> ReactElement
 withHooks (Hook hook) = hook identity
 
