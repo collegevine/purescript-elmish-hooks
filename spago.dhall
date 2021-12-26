@@ -25,5 +25,4 @@ to generate this file without the comments in this block.
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
 , license = "MIT"
 , repository = "https://github.com/collegevine/purescript-elmish-hooks.git"
-, version = "0.2.0"
 }
