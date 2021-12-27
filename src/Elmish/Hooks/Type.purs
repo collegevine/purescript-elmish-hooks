@@ -66,6 +66,7 @@ instance Monad Hook
 -- | myHook x = \y z -> mkHook …
 -- |   where
 -- |     name = uniqueNameFromCurrentCallStack { skipFrames: 2 }
+-- | ```
 -- |
 -- | This ensures that the number of frames to skip is predictably 2. If
 -- | defining the function differently, a different number of frames can be
@@ -92,10 +93,12 @@ mkHook name mkDef =
 -- | Unwraps a `Hook ReactElement`, which is usually created by using one or
 -- | more hooks and then using `pure` to encapsulate a `ReactElement`. E.g.:
 -- |
+-- | ```purs
 -- | view :: ReactElement
 -- | view = withHooks do
 -- |   name /\ setName <- useState ""
 -- |   pure $ H.input_ "" { value: name, onChange: setName <?| eventTargetValue }
+-- | ```
 withHooks :: Hook ReactElement -> ReactElement
 withHooks (Hook hook) = hook identity
 
