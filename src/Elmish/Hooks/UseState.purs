@@ -1,13 +1,16 @@
 module Elmish.Hooks.UseState
-  ( useState
+  ( traced
+  , useState
   ) where
 
 import Prelude
 
 import Data.Tuple (curry)
 import Data.Tuple.Nested (type (/\))
-import Elmish (Dispatch)
-import Elmish.Hooks.Type (Hook, mkHook, uniqueNameFromCurrentCallStack)
+import Debug (class DebugWarning)
+import Elmish (ComponentDef, Dispatch, withTrace)
+import Elmish.Component (ComponentName)
+import Elmish.Hooks.Type (Hook, mkHook, uniqueNameFromCurrentCallStack, uniqueNameFromCurrentCallStackTraced)
 
 -- | The `useState` hook takes an initial state and returns a `Hook`
 -- | encapsulating the current state and a `setState` function. E.g.:
@@ -25,11 +28,24 @@ import Elmish.Hooks.Type (Hook, mkHook, uniqueNameFromCurrentCallStack)
 -- |     ]
 -- | ```
 useState :: forall state. state -> Hook (state /\ Dispatch state)
-useState initialState =
-  mkHook name \render ->
+useState = useState' identity uniqueNameFromCurrentCallStack
+
+-- | A version of `useState` that logs messages, state changes, render times,
+-- | and info from the name-generating function. Intended to be used with
+-- | qualified imports: `UseState.traced`.
+traced :: forall state. DebugWarning => state -> Hook (state /\ Dispatch state)
+traced = useState' withTrace uniqueNameFromCurrentCallStackTraced
+
+useState' :: forall state.
+  (ComponentDef state state -> ComponentDef state state)
+  -> ({ skipFrames :: Int } -> ComponentName)
+  -> state
+  -> Hook (state /\ Dispatch state)
+useState' f genName initialState =
+  mkHook name \render -> f
     { init: pure initialState
     , update: \_ newState -> pure newState
     , view: curry render
     }
   where
-    name = uniqueNameFromCurrentCallStack { skipFrames: 2 }
+    name = genName { skipFrames: 2 }
