@@ -57186,31 +57186,41 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Elmish_Hooks2 = __commonJS({
     "output/Elmish.Hooks.UseEffect/index.js"(exports, module) {
       "use strict";
+      var Control_Category = require_Control2();
       var Data_Unit = require_Data3();
       var Data_Void = require_Data5();
       var Elmish_Component = require_Elmish4();
       var Elmish_Hooks_Type = require_Elmish_Hooks();
-      var useEffect = function(init) {
-        var name = Elmish_Hooks_Type.uniqueNameFromCurrentCallStack({
-          skipFrames: 2
-        });
-        return Elmish_Hooks_Type.mkHook(name)(function(render) {
-          return {
-            init: Elmish_Component.forkVoid(init),
-            update: function(v) {
-              return function(msg) {
-                return Data_Void.absurd(msg);
-              };
-            },
-            view: function(v) {
-              return function(v1) {
-                return render(Data_Unit.unit);
-              };
-            }
+      var useEffect$prime = function(f) {
+        return function(genName) {
+          return function(init) {
+            var name = genName({
+              skipFrames: 2
+            });
+            return Elmish_Hooks_Type.mkHook(name)(function(render) {
+              return f({
+                init: Elmish_Component.forkVoid(init),
+                update: function(v) {
+                  return function(msg) {
+                    return Data_Void.absurd(msg);
+                  };
+                },
+                view: function(v) {
+                  return function(v1) {
+                    return render(Data_Unit.unit);
+                  };
+                }
+              });
+            });
           };
-        });
+        };
+      };
+      var useEffect = useEffect$prime(Control_Category.identity(Control_Category.categoryFn))(Elmish_Hooks_Type.uniqueNameFromCurrentCallStack);
+      var traced = function(dictDebugWarning) {
+        return useEffect$prime(Elmish_Component.withTrace())(Elmish_Hooks_Type.uniqueNameFromCurrentCallStackTraced());
       };
       module.exports = {
+        traced,
         useEffect
       };
     }
@@ -57221,26 +57231,36 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     "output/Elmish.Hooks.UseState/index.js"(exports, module) {
       "use strict";
       var Control_Applicative = require_Control4();
+      var Control_Category = require_Control2();
       var Data_Tuple = require_Data21();
       var Elmish_Component = require_Elmish4();
       var Elmish_Hooks_Type = require_Elmish_Hooks();
-      var useState = function(initialState) {
-        var name = Elmish_Hooks_Type.uniqueNameFromCurrentCallStack({
-          skipFrames: 2
-        });
-        return Elmish_Hooks_Type.mkHook(name)(function(render) {
-          return {
-            init: Control_Applicative.pure(Elmish_Component.trApplicative)(initialState),
-            update: function(v) {
-              return function(newState) {
-                return Control_Applicative.pure(Elmish_Component.trApplicative)(newState);
-              };
-            },
-            view: Data_Tuple.curry(render)
+      var useState$prime = function(f) {
+        return function(genName) {
+          return function(initialState) {
+            var name = genName({
+              skipFrames: 2
+            });
+            return Elmish_Hooks_Type.mkHook(name)(function(render) {
+              return f({
+                init: Control_Applicative.pure(Elmish_Component.trApplicative)(initialState),
+                update: function(v) {
+                  return function(newState) {
+                    return Control_Applicative.pure(Elmish_Component.trApplicative)(newState);
+                  };
+                },
+                view: Data_Tuple.curry(render)
+              });
+            });
           };
-        });
+        };
+      };
+      var useState = useState$prime(Control_Category.identity(Control_Category.categoryFn))(Elmish_Hooks_Type.uniqueNameFromCurrentCallStack);
+      var traced = function(dictDebugWarning) {
+        return useState$prime(Elmish_Component.withTrace())(Elmish_Hooks_Type.uniqueNameFromCurrentCallStackTraced());
       };
       module.exports = {
+        traced,
         useState
       };
     }
