@@ -3,8 +3,7 @@ module Elmish.Hooks.UseEffect
   , traced'
   , useEffect
   , useEffect'
-  )
-  where
+  ) where
 
 import Prelude
 
@@ -42,7 +41,7 @@ useEffect = useEffect_ identity uniqueNameFromCurrentCallStack unit
 -- |   useEffect' count $ liftEffect $
 -- |     HTMLDocument.setTitle ("You clicked " <> show count <> " times") =<< document =<< window
 -- |
---   pure H.empty
+-- |   pure H.button_ "" { onClick: setCount $ count + 1 } "Click me"
 -- | ```
 useEffect' :: forall a. a -> Aff Unit -> Hook Unit
 useEffect' = useEffect_ identity uniqueNameFromCurrentCallStack
