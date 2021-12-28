@@ -1,7 +1,10 @@
 module Elmish.Hooks.UseEffect
   ( traced
+  , traced'
   , useEffect
-  ) where
+  , useEffect'
+  )
+  where
 
 import Prelude
 
@@ -26,24 +29,50 @@ import Elmish.Hooks.Type (Hook, mkHook, uniqueNameFromCurrentCallStack, uniqueNa
 -- |   pure $ H.fragment $ todoView <$> todos
 -- | ```
 useEffect :: Aff Unit -> Hook Unit
-useEffect = useEffect' identity uniqueNameFromCurrentCallStack
+useEffect = useEffect_ identity uniqueNameFromCurrentCallStack unit
+
+-- | This is like `useEffect`, but allows passing a value which, when it
+-- | changes, will trigger the effect to run again. E.g.:
+-- |
+-- | ```purs
+-- | view :: ReactElement
+-- | view = withHooks do
+-- |   count /\ setCount <- useState 0
+-- |
+-- |   useEffect' count $ liftEffect $
+-- |     HTMLDocument.setTitle ("You clicked " <> show count <> " times") =<< document =<< window
+-- |
+--   pure H.empty
+-- | ```
+useEffect' :: forall a. a -> Aff Unit -> Hook Unit
+useEffect' = useEffect_ identity uniqueNameFromCurrentCallStack
 
 -- | A version of `useEffect` that logs messages, state changes, render times,
 -- | and info from the name-generating function. Intended to be used with
 -- | qualified imports: `UseEffect.traced`.
 traced :: DebugWarning => Aff Unit -> Hook Unit
-traced = useEffect' withTrace uniqueNameFromCurrentCallStackTraced
+traced = useEffect_ withTrace uniqueNameFromCurrentCallStackTraced unit
 
-useEffect' ::
+-- | A version of `useEffect'` that logs messages, state changes, render times,
+-- | and info from the name-generating function. Intended to be used with
+-- | qualified imports: `UseEffect.traced'`.
+traced' :: forall a. DebugWarning => a -> Aff Unit -> Hook Unit
+traced' = useEffect_ withTrace uniqueNameFromCurrentCallStackTraced
+
+useEffect_ :: forall a.
   (ComponentDef Void Unit -> ComponentDef Void Unit)
   -> ({ skipFrames :: Int } -> ComponentName)
+  -> a
   -> Aff Unit
   -> Hook Unit
-useEffect' f genName init =
+useEffect_ f genName cache init =
   mkHook name \render -> f
     { init: forkVoid init
     , update: \_ msg -> absurd msg
     , view: \_ _ -> render unit
     }
   where
-    name = genName { skipFrames: 2 }
+    generatedName = genName { skipFrames: 2 }
+    name = generateComponentName { name: generatedName, value: cache }
+
+foreign import generateComponentName :: forall a. { name :: ComponentName, value :: a } -> ComponentName
