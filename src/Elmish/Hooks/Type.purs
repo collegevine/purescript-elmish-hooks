@@ -4,7 +4,8 @@ module Elmish.Hooks.Type
   , uniqueNameFromCurrentCallStack
   , uniqueNameFromCurrentCallStackTraced
   , withHooks
-  ) where
+  )
+  where
 
 import Prelude
 
