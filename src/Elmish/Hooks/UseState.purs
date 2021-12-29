@@ -30,7 +30,7 @@ import Elmish.Hooks.Type (Hook, mkHook, uniqueNameFromCurrentCallStack, uniqueNa
 useState :: forall state. state -> Hook (state /\ Dispatch state)
 useState state = useState' name identity state
   where
-    name = uniqueNameFromCurrentCallStackTraced { skipFrames: 3 }
+    name = uniqueNameFromCurrentCallStack { skipFrames: 3 }
 
 -- | A version of `useState` that logs messages, state changes, render times,
 -- | and info from the name-generating function. Intended to be used with

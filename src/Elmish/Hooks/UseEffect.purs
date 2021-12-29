@@ -31,7 +31,7 @@ useEffect :: Aff Unit -> Hook Unit
 useEffect aff =
   useEffect_ name unit $ const aff
   where
-    name = uniqueNameFromCurrentCallStackTraced { skipFrames: 3 }
+    name = uniqueNameFromCurrentCallStack { skipFrames: 3 }
 
 -- | This is like `useEffect`, but allows passing a value which, when it
 -- | changes, will trigger the effect to run again. E.g.:
@@ -50,7 +50,7 @@ useEffect' :: forall a. Eq a => a -> (a -> Aff Unit) -> Hook Unit
 useEffect' deps = \aff ->
   useEffect_ name deps aff
   where
-    name = uniqueNameFromCurrentCallStackTraced { skipFrames: 3 }
+    name = uniqueNameFromCurrentCallStack { skipFrames: 3 }
 
 -- | A version of `useEffect` that logs info from the name-generating function.
 -- | Intended to be used with qualified imports: `UseEffect.traced`.
