@@ -18,9 +18,9 @@ view :: ReactElement
 view = withHooks do
   count /\ setCount <- useState 0
 
-  useEffect' count $ liftEffect do
+  useEffect' count \c -> liftEffect do
     doc <- Window.document =<< window
-    HTMLDocument.setTitle ("You clicked " <> show count <> " times") doc
+    HTMLDocument.setTitle ("You clicked " <> show c <> " times") doc
 
   pure $
     H.div "row mt-3"

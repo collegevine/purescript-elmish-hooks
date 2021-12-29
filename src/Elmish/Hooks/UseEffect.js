@@ -1,14 +1,5 @@
 const cache = {}
 
-exports.generateComponentName = ({ name, value }) => {
-  if (!cache[name]) {
-    cache[name] = { key: 0, value: null }
-  }
+exports.get = (name) => cache[name]
 
-  if (cache[name].value !== value) {
-    cache[name].value = value
-    cache[name].key += 1
-  }
-
-  return `${name}-${cache[name].key}`
-}
+exports.set = (name) => (value) => { cache[name] = value }

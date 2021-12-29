@@ -9,7 +9,7 @@ import Prelude
 
 import Debug (class DebugWarning)
 import Effect.Aff (Aff)
-import Elmish (ComponentDef, forkVoid, withTrace)
+import Elmish (fork)
 import Elmish.Component (ComponentName)
 import Elmish.Hooks.Type (Hook, mkHook, uniqueNameFromCurrentCallStack, uniqueNameFromCurrentCallStackTraced)
 
@@ -28,7 +28,10 @@ import Elmish.Hooks.Type (Hook, mkHook, uniqueNameFromCurrentCallStack, uniqueNa
 -- |   pure $ H.fragment $ todoView <$> todos
 -- | ```
 useEffect :: Aff Unit -> Hook Unit
-useEffect = useEffect_ identity uniqueNameFromCurrentCallStack unit
+useEffect aff =
+  useEffect_ name unit $ const aff
+  where
+    name = uniqueNameFromCurrentCallStackTraced { skipFrames: 3 }
 
 -- | This is like `useEffect`, but allows passing a value which, when it
 -- | changes, will trigger the effect to run again. E.g.:
@@ -43,35 +46,50 @@ useEffect = useEffect_ identity uniqueNameFromCurrentCallStack unit
 -- |
 -- |   pure H.button_ "" { onClick: setCount $ count + 1 } "Click me"
 -- | ```
-useEffect' :: forall a. a -> Aff Unit -> Hook Unit
-useEffect' = useEffect_ identity uniqueNameFromCurrentCallStack
+useEffect' :: forall a. Eq a => a -> (a -> Aff Unit) -> Hook Unit
+useEffect' deps = \aff ->
+  useEffect_ name deps aff
+  where
+    name = uniqueNameFromCurrentCallStackTraced { skipFrames: 3 }
 
--- | A version of `useEffect` that logs messages, state changes, render times,
--- | and info from the name-generating function. Intended to be used with
--- | qualified imports: `UseEffect.traced`.
+-- | A version of `useEffect` that logs info from the name-generating function.
+-- | Intended to be used with qualified imports: `UseEffect.traced`.
 traced :: DebugWarning => Aff Unit -> Hook Unit
-traced = useEffect_ withTrace uniqueNameFromCurrentCallStackTraced unit
+traced aff =
+  useEffect_ name unit $ const aff
+  where
+    name = uniqueNameFromCurrentCallStackTraced { skipFrames: 3 }
 
--- | A version of `useEffect'` that logs messages, state changes, render times,
--- | and info from the name-generating function. Intended to be used with
--- | qualified imports: `UseEffect.traced'`.
-traced' :: forall a. DebugWarning => a -> Aff Unit -> Hook Unit
-traced' = useEffect_ withTrace uniqueNameFromCurrentCallStackTraced
+-- | A version of `useEffect'` that logs info from the name-generating function.
+-- | Intended to be used with qualified imports: `UseEffect.traced'`.
+traced' :: forall a. DebugWarning => Eq a => a -> (a -> Aff Unit) -> Hook Unit
+traced' deps = \aff ->
+  useEffect_ name deps aff
+  where
+    name = uniqueNameFromCurrentCallStackTraced { skipFrames: 3 }
 
-useEffect_ :: forall a.
-  (ComponentDef Void Unit -> ComponentDef Void Unit)
-  -> ({ skipFrames :: Int } -> ComponentName)
-  -> a
-  -> Aff Unit
-  -> Hook Unit
-useEffect_ f genName cache init =
-  mkHook name \render -> f
-    { init: forkVoid init
-    , update: \_ msg -> absurd msg
+useEffect_ :: forall a. Eq a => ComponentName -> a -> (a -> Aff Unit) -> Hook Unit
+useEffect_ name = \deps init ->
+  let _ = set name deps
+  in
+  mkHook name \render ->
+    { init: do
+        fork do
+          pure $ set name deps
+          init deps
+        pure deps
+    , update: \deps' _ -> do
+        let newDeps = get name
+        if deps' == newDeps then
+          fork $ pure unit
+        else
+          fork do
+            pure $ set name newDeps
+            init newDeps
+        pure newDeps
     , view: \_ _ -> render unit
     }
-  where
-    generatedName = genName { skipFrames: 2 }
-    name = generateComponentName { name: generatedName, value: cache }
 
-foreign import generateComponentName :: forall a. { name :: ComponentName, value :: a } -> ComponentName
+foreign import get :: forall a. ComponentName -> a
+
+foreign import set :: forall a. ComponentName -> a -> Unit

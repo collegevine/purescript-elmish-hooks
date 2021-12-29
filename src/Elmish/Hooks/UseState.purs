@@ -28,24 +28,26 @@ import Elmish.Hooks.Type (Hook, mkHook, uniqueNameFromCurrentCallStack, uniqueNa
 -- |     ]
 -- | ```
 useState :: forall state. state -> Hook (state /\ Dispatch state)
-useState = useState' identity uniqueNameFromCurrentCallStack
+useState state = useState' name identity state
+  where
+    name = uniqueNameFromCurrentCallStackTraced { skipFrames: 3 }
 
 -- | A version of `useState` that logs messages, state changes, render times,
 -- | and info from the name-generating function. Intended to be used with
 -- | qualified imports: `UseState.traced`.
 traced :: forall state. DebugWarning => state -> Hook (state /\ Dispatch state)
-traced = useState' withTrace uniqueNameFromCurrentCallStackTraced
+traced state = useState' name withTrace state
+  where
+    name = uniqueNameFromCurrentCallStackTraced { skipFrames: 3 }
 
 useState' :: forall state.
-  (ComponentDef state state -> ComponentDef state state)
-  -> ({ skipFrames :: Int } -> ComponentName)
+  ComponentName
+  -> (ComponentDef state state -> ComponentDef state state)
   -> state
   -> Hook (state /\ Dispatch state)
-useState' f genName initialState =
+useState' name = \f initialState ->
   mkHook name \render -> f
     { init: pure initialState
     , update: \_ newState -> pure newState
     , view: curry render
     }
-  where
-    name = genName { skipFrames: 2 }
