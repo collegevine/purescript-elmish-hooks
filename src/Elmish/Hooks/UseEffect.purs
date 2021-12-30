@@ -41,8 +41,8 @@ useEffect aff =
 -- | view = withHooks do
 -- |   count /\ setCount <- useState 0
 -- |
--- |   useEffect' count $ liftEffect $
--- |     HTMLDocument.setTitle ("You clicked " <> show count <> " times") =<< document =<< window
+-- |   useEffect' count \c -> liftEffect $
+-- |     HTMLDocument.setTitle ("You clicked " <> show c <> " times") =<< document =<< window
 -- |
 -- |   pure H.button_ "" { onClick: setCount $ count + 1 } "Click me"
 -- | ```
