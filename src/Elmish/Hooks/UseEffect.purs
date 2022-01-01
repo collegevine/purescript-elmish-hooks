@@ -7,11 +7,14 @@ module Elmish.Hooks.UseEffect
 
 import Prelude
 
+import Data.Maybe (Maybe(..))
 import Debug (class DebugWarning)
 import Effect.Aff (Aff)
-import Elmish (fork)
+import Elmish (EffectFn1, ComponentDef, createElement, forkVoid, withTrace, (<?|))
 import Elmish.Component (ComponentName)
 import Elmish.Hooks.Type (Hook, mkHook, uniqueNameFromCurrentCallStack, uniqueNameFromCurrentCallStackTraced)
+import Elmish.React.Import (EmptyProps, ImportedReactComponent, ImportedReactComponentConstructorWithContent)
+import Elmish.Ref (Ref, deref, ref)
 
 -- | The `useEffect` hook takes an effect (`Aff`) to run and runs it in the
 -- | `init` of the resulting component. E.g.:
@@ -29,7 +32,7 @@ import Elmish.Hooks.Type (Hook, mkHook, uniqueNameFromCurrentCallStack, uniqueNa
 -- | ```
 useEffect :: Aff Unit -> Hook Unit
 useEffect aff =
-  useEffect_ name unit $ const aff
+  useEffect_ name identity unit $ const aff
   where
     name = uniqueNameFromCurrentCallStack { skipFrames: 3 }
 
@@ -48,7 +51,7 @@ useEffect aff =
 -- | ```
 useEffect' :: forall a. Eq a => a -> (a -> Aff Unit) -> Hook Unit
 useEffect' deps = \aff ->
-  useEffect_ name deps aff
+  useEffect_ name identity deps aff
   where
     name = uniqueNameFromCurrentCallStack { skipFrames: 3 }
 
@@ -56,7 +59,7 @@ useEffect' deps = \aff ->
 -- | Intended to be used with qualified imports: `UseEffect.traced`.
 traced :: DebugWarning => Aff Unit -> Hook Unit
 traced aff =
-  useEffect_ name unit $ const aff
+  useEffect_ name withTrace unit $ const aff
   where
     name = uniqueNameFromCurrentCallStackTraced { skipFrames: 3 }
 
@@ -64,32 +67,44 @@ traced aff =
 -- | Intended to be used with qualified imports: `UseEffect.traced'`.
 traced' :: forall a. DebugWarning => Eq a => a -> (a -> Aff Unit) -> Hook Unit
 traced' deps = \aff ->
-  useEffect_ name deps aff
+  useEffect_ name withTrace deps aff
   where
     name = uniqueNameFromCurrentCallStackTraced { skipFrames: 3 }
 
-useEffect_ :: forall a. Eq a => ComponentName -> a -> (a -> Aff Unit) -> Hook Unit
-useEffect_ name = \deps init ->
-  let _ = set name deps
-  in
-  mkHook name \render ->
+useEffect_ :: forall a.
+  Eq a
+  => ComponentName
+  -> (ComponentDef a a -> ComponentDef a a)
+  -> a
+  -> (a -> Aff Unit)
+  -> Hook Unit
+useEffect_ name = \f deps init ->
+  mkHook name \render -> f
     { init: do
-        fork do
-          pure $ set name deps
-          init deps
+        forkVoid $ init deps
         pure deps
-    , update: \deps' _ -> do
-        let newDeps = get name
-        if deps' == newDeps then
-          fork $ pure unit
-        else
-          fork do
-            pure $ set name newDeps
-            init newDeps
+    , update: \_ newDeps -> do
+        forkVoid $ init newDeps
         pure newDeps
-    , view: \_ _ -> render unit
+    , view: \_ dispatch ->
+        lifeCycles
+          { componentDidUpdate: dispatch <?| \prevDeps ->
+              if deref prevDeps /= deps then
+                Just deps
+              else
+                Nothing
+          , deps: ref deps
+          } $
+          render unit
     }
 
-foreign import get :: forall a. ComponentName -> a
+type Props deps r =
+  ( componentDidUpdate :: EffectFn1 (Ref "deps" deps) Unit
+  , deps :: Ref "deps" deps
+  | r
+  )
 
-foreign import set :: forall a. ComponentName -> a -> Unit
+lifeCycles :: forall deps. ImportedReactComponentConstructorWithContent (Props deps) EmptyProps
+lifeCycles = createElement lifeCycles_
+
+foreign import lifeCycles_ :: ImportedReactComponent

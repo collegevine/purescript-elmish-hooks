@@ -1,5 +1,17 @@
-const cache = {}
+const React = require("react")
 
-exports.get = (name) => cache[name]
+class LifeCycles extends React.Component {
+  constructor(props) {
+    super(props)
+  }
 
-exports.set = (name) => (value) => { cache[name] = value }
+  componentDidUpdate(prevProps) {
+    this.props.componentDidUpdate(prevProps.deps)
+  }
+
+  render() {
+    return this.props.children
+  }
+}
+
+exports.lifeCycles_ = LifeCycles
