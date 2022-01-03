@@ -18,6 +18,7 @@ to generate this file without the comments in this block.
   , "effect"
   , "elmish"
   , "maybe"
+  , "nullable"
   , "prelude"
   , "psci-support"
   , "tuples"
