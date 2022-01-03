@@ -4,6 +4,7 @@
   , "debug"
   , "elmish"
   , "maybe"
+  , "nullable"
   , "prelude"
   , "psci-support"
   , "tuples"
