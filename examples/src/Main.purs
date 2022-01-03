@@ -10,6 +10,7 @@ import Elmish (Dispatch, ReactElement)
 import Elmish.Boot (defaultMain)
 import Elmish.HTML.Styled as H
 import Examples.UseEffect as UseEffect
+import Examples.UseEffectPrime as UseEffectPrime
 import Examples.UseLocalStorage as UseLocalStorage
 import Examples.UseMouseMove as UseMouseMove
 import Examples.UseState as UseState
@@ -35,6 +36,7 @@ view _ _ =
   , UseState.view
   , H.hr "my-4"
   , UseEffect.view
+  , UseEffectPrime.view
   , H.hr "my-4"
   , H.h2 "" "Custom hooks"
   , UseLocalStorage.view
