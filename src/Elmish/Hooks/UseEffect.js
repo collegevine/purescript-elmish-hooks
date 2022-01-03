@@ -1,10 +1,6 @@
 const React = require("react")
 
-class LifeCycles extends React.Component {
-  constructor(props) {
-    super(props)
-  }
-
+class UseEffectLifeCycles extends React.Component {
   componentDidUpdate(prevProps) {
     this.props.componentDidUpdate(prevProps.deps)
   }
@@ -14,4 +10,4 @@ class LifeCycles extends React.Component {
   }
 }
 
-exports.lifeCycles_ = LifeCycles
+exports.useEffectLifeCycles_ = UseEffectLifeCycles

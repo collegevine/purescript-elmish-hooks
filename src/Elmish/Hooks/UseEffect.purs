@@ -87,7 +87,7 @@ useEffect_ name = \f deps init ->
         forkVoid $ init newDeps
         pure newDeps
     , view: \_ dispatch ->
-        lifeCycles
+        useEffectLifeCycles
           { componentDidUpdate: dispatch <?| \prevDeps ->
               if deref prevDeps /= deps then
                 Just deps
@@ -104,7 +104,7 @@ type Props deps r =
   | r
   )
 
-lifeCycles :: forall deps. ImportedReactComponentConstructorWithContent (Props deps) EmptyProps
-lifeCycles = createElement lifeCycles_
+useEffectLifeCycles :: forall deps. ImportedReactComponentConstructorWithContent (Props deps) EmptyProps
+useEffectLifeCycles = createElement useEffectLifeCycles_
 
-foreign import lifeCycles_ :: ImportedReactComponent
+foreign import useEffectLifeCycles_ :: ImportedReactComponent
