@@ -21,7 +21,7 @@ view =
     , H.code "" "mkHook"
     , H.text " to make a custom hook."
     ]
-  , H.div_ "w-100 py-6 rounded bg-light border position-relative"
+  , H.div_ "w-100 py-6 rounded bg-light border position-relative overflow-hidden"
       { style: H.css { height: 200, cursor: "none" } }$
         withHooks do
           pos <- useMousePosition "position-absolute h-100 w-100"

@@ -37,7 +37,9 @@ view _ _ =
   , UseState.view
   , H.hr "my-4"
   , UseEffect.view
+  , H.hr "my-4"
   , UseEffectPrime.view
+  , H.hr "my-4"
   , UseRef.view
   , H.hr "my-4"
   , H.h2 "" "Custom hooks"
