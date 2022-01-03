@@ -57182,132 +57182,19 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }
   });
 
-  // output/Elmish.Hooks.UseEffect/index.js
-  var require_Elmish_Hooks2 = __commonJS({
-    "output/Elmish.Hooks.UseEffect/index.js"(exports, module) {
-      "use strict";
-      var Control_Category = require_Control2();
-      var Data_Unit = require_Data3();
-      var Data_Void = require_Data5();
-      var Elmish_Component = require_Elmish4();
-      var Elmish_Hooks_Type = require_Elmish_Hooks();
-      var useEffect$prime = function(f) {
-        return function(genName) {
-          return function(init) {
-            var name = genName({
-              skipFrames: 2
-            });
-            return Elmish_Hooks_Type.mkHook(name)(function(render) {
-              return f({
-                init: Elmish_Component.forkVoid(init),
-                update: function(v) {
-                  return function(msg) {
-                    return Data_Void.absurd(msg);
-                  };
-                },
-                view: function(v) {
-                  return function(v1) {
-                    return render(Data_Unit.unit);
-                  };
-                }
-              });
-            });
-          };
-        };
+  // output/Elmish.Hooks.UseEffect/foreign.js
+  var require_foreign104 = __commonJS({
+    "output/Elmish.Hooks.UseEffect/foreign.js"(exports) {
+      var React = require_react();
+      var UseEffectLifeCycles = class extends React.Component {
+        componentDidUpdate(prevProps) {
+          this.props.componentDidUpdate(prevProps.deps);
+        }
+        render() {
+          return this.props.children;
+        }
       };
-      var useEffect = useEffect$prime(Control_Category.identity(Control_Category.categoryFn))(Elmish_Hooks_Type.uniqueNameFromCurrentCallStack);
-      var traced = function(dictDebugWarning) {
-        return useEffect$prime(Elmish_Component.withTrace())(Elmish_Hooks_Type.uniqueNameFromCurrentCallStackTraced());
-      };
-      module.exports = {
-        traced,
-        useEffect
-      };
-    }
-  });
-
-  // output/Elmish.Hooks.UseState/index.js
-  var require_Elmish_Hooks3 = __commonJS({
-    "output/Elmish.Hooks.UseState/index.js"(exports, module) {
-      "use strict";
-      var Control_Applicative = require_Control4();
-      var Control_Category = require_Control2();
-      var Data_Tuple = require_Data21();
-      var Elmish_Component = require_Elmish4();
-      var Elmish_Hooks_Type = require_Elmish_Hooks();
-      var useState$prime = function(f) {
-        return function(genName) {
-          return function(initialState) {
-            var name = genName({
-              skipFrames: 2
-            });
-            return Elmish_Hooks_Type.mkHook(name)(function(render) {
-              return f({
-                init: Control_Applicative.pure(Elmish_Component.trApplicative)(initialState),
-                update: function(v) {
-                  return function(newState) {
-                    return Control_Applicative.pure(Elmish_Component.trApplicative)(newState);
-                  };
-                },
-                view: Data_Tuple.curry(render)
-              });
-            });
-          };
-        };
-      };
-      var useState = useState$prime(Control_Category.identity(Control_Category.categoryFn))(Elmish_Hooks_Type.uniqueNameFromCurrentCallStack);
-      var traced = function(dictDebugWarning) {
-        return useState$prime(Elmish_Component.withTrace())(Elmish_Hooks_Type.uniqueNameFromCurrentCallStackTraced());
-      };
-      module.exports = {
-        traced,
-        useState
-      };
-    }
-  });
-
-  // output/Examples.UseEffect/index.js
-  var require_Examples = __commonJS({
-    "output/Examples.UseEffect/index.js"(exports, module) {
-      "use strict";
-      var Control_Applicative = require_Control4();
-      var Control_Bind = require_Control5();
-      var Data_Functor = require_Data4();
-      var Data_Maybe = require_Data15();
-      var Effect_Aff = require_Effect7();
-      var Effect_Class = require_Effect2();
-      var Elmish_HTML_Internal = require_Elmish_HTML();
-      var Elmish_HTML_Styled_Generated = require_Elmish_HTML_Styled();
-      var Elmish_Hooks_Type = require_Elmish_Hooks();
-      var Elmish_Hooks_UseEffect = require_Elmish_Hooks2();
-      var Elmish_Hooks_UseState = require_Elmish_Hooks3();
-      var Elmish_React = require_Elmish();
-      var Elmish_React_DOM = require_Elmish_React();
-      var view = Elmish_Hooks_Type.withHooks(Control_Bind.bind(Elmish_Hooks_Type.bindHook)(Elmish_Hooks_UseState.useState(Data_Maybe.Nothing.value))(function(v) {
-        return Control_Bind.discard(Control_Bind.discardUnit)(Elmish_Hooks_Type.bindHook)(Elmish_Hooks_UseEffect.useEffect(Control_Bind.discard(Control_Bind.discardUnit)(Effect_Aff.bindAff)(Effect_Aff.delay(2e3))(function() {
-          return Effect_Class.liftEffect(Effect_Aff.monadEffectAff)(v.value1(new Data_Maybe.Just(["Do thing", "Do another thing", "Some more stuff"])));
-        })))(function() {
-          return Control_Applicative.pure(Elmish_Hooks_Type.applicativeHook)(Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("row")([Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("col-12 col-md-6 col-lg-4")([Elmish_HTML_Styled_Generated.h2(Elmish_React.reactChildrenArray)("")([Elmish_HTML_Styled_Generated.code(Elmish_React.reactChildrenString)("")("useEffect"), Elmish_React_DOM.text(" hook")]), Elmish_HTML_Styled_Generated.h4(Elmish_React.reactChildrenString)("mb-3")("Todos"), function() {
-            if (v.value0 instanceof Data_Maybe.Nothing) {
-              return Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("")([Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenSingle)("progress")(Elmish_HTML_Styled_Generated.div_(Elmish_React.reactChildrenSingle)()()("progress-bar progress-bar-striped progress-bar-animated")({
-                role: "progressbar",
-                style: Elmish_HTML_Internal.css({
-                  width: "100%"
-                })
-              })(Elmish_React_DOM.empty)), Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenString)("mt-2")("Loading todos\u2026")]);
-            }
-            ;
-            if (v.value0 instanceof Data_Maybe.Just) {
-              return Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("ul")(Data_Functor.map(Data_Functor.functorArray)(Elmish_HTML_Styled_Generated.li(Elmish_React.reactChildrenString)(""))(v.value0.value0));
-            }
-            ;
-            throw new Error("Failed pattern match at Examples.UseEffect (line 31, column 9 - line 40, column 33): " + [v.value0.constructor.name]);
-          }()])]));
-        });
-      }));
-      module.exports = {
-        view
-      };
+      exports.useEffectLifeCycles_ = UseEffectLifeCycles;
     }
   });
 
@@ -57347,7 +57234,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Elmish.Foreign/foreign.js
-  var require_foreign104 = __commonJS({
+  var require_foreign105 = __commonJS({
     "output/Elmish.Foreign/foreign.js"(exports) {
       exports.isString = function(s) {
         return typeof s === "string";
@@ -57391,7 +57278,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Data.Int/foreign.js
-  var require_foreign105 = __commonJS({
+  var require_foreign106 = __commonJS({
     "output/Data.Int/foreign.js"(exports) {
       "use strict";
       exports.fromNumberImpl = function(just) {
@@ -57451,7 +57338,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Data.Number/foreign.js
-  var require_foreign106 = __commonJS({
+  var require_foreign107 = __commonJS({
     "output/Data.Number/foreign.js"(exports) {
       "use strict";
       exports.nan = NaN;
@@ -57473,7 +57360,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Data38 = __commonJS({
     "output/Data.Number/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign106();
+      var $foreign = require_foreign107();
       var Data_Maybe = require_Data15();
       var fromString = function(str) {
         return $foreign.fromStringImpl(str, $foreign["isFinite"], Data_Maybe.Just.create, Data_Maybe.Nothing.value);
@@ -57489,7 +57376,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Math/foreign.js
-  var require_foreign107 = __commonJS({
+  var require_foreign108 = __commonJS({
     "output/Math/foreign.js"(exports) {
       "use strict";
       exports.abs = Math.abs;
@@ -57564,7 +57451,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Math = __commonJS({
     "output/Math/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign107();
+      var $foreign = require_foreign108();
       module.exports = {
         abs: $foreign.abs,
         acos: $foreign.acos,
@@ -57603,7 +57490,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Data39 = __commonJS({
     "output/Data.Int/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign105();
+      var $foreign = require_foreign106();
       var Control_Category = require_Control2();
       var Data_Boolean = require_Data();
       var Data_Bounded = require_Data13();
@@ -57852,7 +57739,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Foreign/foreign.js
-  var require_foreign108 = __commonJS({
+  var require_foreign109 = __commonJS({
     "output/Foreign/foreign.js"(exports) {
       "use strict";
       exports.typeOf = function(value) {
@@ -61311,7 +61198,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Data.String.CodeUnits/foreign.js
-  var require_foreign109 = __commonJS({
+  var require_foreign110 = __commonJS({
     "output/Data.String.CodeUnits/foreign.js"(exports) {
       "use strict";
       exports.fromCharArray = function(a) {
@@ -61422,7 +61309,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Data.String.Unsafe/foreign.js
-  var require_foreign110 = __commonJS({
+  var require_foreign111 = __commonJS({
     "output/Data.String.Unsafe/foreign.js"(exports) {
       "use strict";
       exports.charAt = function(i) {
@@ -61444,7 +61331,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Data_String = __commonJS({
     "output/Data.String.Unsafe/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign110();
+      var $foreign = require_foreign111();
       module.exports = {
         "char": $foreign["char"],
         charAt: $foreign.charAt
@@ -61456,7 +61343,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Data_String2 = __commonJS({
     "output/Data.String.CodeUnits/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign109();
+      var $foreign = require_foreign110();
       var Data_Boolean = require_Data();
       var Data_Maybe = require_Data15();
       var Data_String_Unsafe = require_Data_String();
@@ -61582,7 +61469,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Foreign2 = __commonJS({
     "output/Foreign/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign108();
+      var $foreign = require_foreign109();
       var Control_Applicative = require_Control4();
       var Control_Monad_Error_Class = require_Control_Monad_Error();
       var Control_Monad_Except_Trans = require_Control_Monad_Except();
@@ -61931,7 +61818,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Elmish7 = __commonJS({
     "output/Elmish.Foreign/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign104();
+      var $foreign = require_foreign105();
       var Data_Array = require_Data34();
       var Data_Boolean = require_Data();
       var Data_Either = require_Data19();
@@ -62372,6 +62259,317 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }
   });
 
+  // output/Elmish.Ref/index.js
+  var require_Elmish8 = __commonJS({
+    "output/Elmish.Ref/index.js"(exports, module) {
+      "use strict";
+      var Data_Maybe = require_Data15();
+      var Data_Symbol = require_Data6();
+      var Elmish_Foreign = require_Elmish7();
+      var Foreign_Object = require_Foreign();
+      var Type_Proxy = require_Type();
+      var Ref = function(x) {
+        return x;
+      };
+      var writejsRef = function(dictIsSymbol) {
+        return {};
+      };
+      var refName = function(dictIsSymbol) {
+        return function(p) {
+          return "ref:" + Data_Symbol.reflectSymbol(dictIsSymbol)(p);
+        };
+      };
+      var ref = function(dictIsSymbol) {
+        return function(a) {
+          return Ref(Foreign_Object.singleton(refName(dictIsSymbol)(Type_Proxy["Proxy"].value))(a));
+        };
+      };
+      var readjsRef = function(dictIsSymbol) {
+        return {
+          validateForeignType: function(v) {
+            return function(v1) {
+              var sname = refName(dictIsSymbol)(Type_Proxy["Proxy"].value);
+              var v2 = Foreign_Object.lookup(sname)(v1);
+              if (v2 instanceof Data_Maybe.Just) {
+                return Elmish_Foreign.Valid.value;
+              }
+              ;
+              if (v2 instanceof Data_Maybe.Nothing) {
+                return new Elmish_Foreign.Invalid({
+                  path: "",
+                  expected: "Ref",
+                  got: v1
+                });
+              }
+              ;
+              throw new Error("Failed pattern match at Elmish.Ref (line 72, column 7 - line 74, column 65): " + [v2.constructor.name]);
+            };
+          }
+        };
+      };
+      var deref = function(dictIsSymbol) {
+        return function(v) {
+          return Data_Maybe.fromJust()(Foreign_Object.lookup(refName(dictIsSymbol)(Type_Proxy["Proxy"].value))(v));
+        };
+      };
+      module.exports = {
+        ref,
+        deref,
+        readjsRef,
+        writejsRef
+      };
+    }
+  });
+
+  // output/Elmish.Hooks.UseEffect/index.js
+  var require_Elmish_Hooks2 = __commonJS({
+    "output/Elmish.Hooks.UseEffect/index.js"(exports, module) {
+      "use strict";
+      var $foreign = require_foreign104();
+      var Control_Applicative = require_Control4();
+      var Control_Bind = require_Control5();
+      var Control_Category = require_Control2();
+      var Data_Eq = require_Data8();
+      var Data_Function = require_Data2();
+      var Data_Maybe = require_Data15();
+      var Data_Unit = require_Data3();
+      var Elmish_Component = require_Elmish4();
+      var Elmish_Dispatch = require_Elmish6();
+      var Elmish_Hooks_Type = require_Elmish_Hooks();
+      var Elmish_React = require_Elmish();
+      var Elmish_Ref = require_Elmish8();
+      var useEffectLifeCycles = function(dictReactChildren) {
+        return function(dictIsSubsetOf) {
+          return function(dictIsSubsetOf1) {
+            return function(dictValidReactProps) {
+              return Elmish_React.createElement()(dictReactChildren)($foreign.useEffectLifeCycles_);
+            };
+          };
+        };
+      };
+      var useEffect_ = function(dictEq) {
+        return function(name) {
+          return function(f) {
+            return function(deps) {
+              return function(runEffect) {
+                return Elmish_Hooks_Type.mkHook(name)(function(render) {
+                  return f({
+                    init: Control_Bind.discard(Control_Bind.discardUnit)(Elmish_Component.trBind)(Elmish_Component.forkVoid(runEffect(deps)))(function() {
+                      return Control_Applicative.pure(Elmish_Component.trApplicative)(deps);
+                    }),
+                    update: function(v) {
+                      return function(newDeps) {
+                        return Control_Bind.discard(Control_Bind.discardUnit)(Elmish_Component.trBind)(Elmish_Component.forkVoid(runEffect(newDeps)))(function() {
+                          return Control_Applicative.pure(Elmish_Component.trApplicative)(newDeps);
+                        });
+                      };
+                    },
+                    view: function(v) {
+                      return function(dispatch) {
+                        return useEffectLifeCycles(Elmish_React.reactChildrenSingle)()()()({
+                          componentDidUpdate: Elmish_Dispatch.handleMaybe(dispatch)(function(prevDeps) {
+                            var $11 = Data_Eq.notEq(dictEq)(Elmish_Ref.deref({
+                              reflectSymbol: function() {
+                                return "deps";
+                              }
+                            })(prevDeps))(deps);
+                            if ($11) {
+                              return new Data_Maybe.Just(deps);
+                            }
+                            ;
+                            return Data_Maybe.Nothing.value;
+                          }),
+                          deps: Elmish_Ref.ref({
+                            reflectSymbol: function() {
+                              return "deps";
+                            }
+                          })(deps)
+                        })(render(Data_Unit.unit));
+                      };
+                    }
+                  });
+                });
+              };
+            };
+          };
+        };
+      };
+      var useEffect$prime = function(dictEq) {
+        return function(deps) {
+          var name = Elmish_Hooks_Type.uniqueNameFromCurrentCallStack({
+            skipFrames: 3
+          });
+          return function(runEffect) {
+            return useEffect_(dictEq)(name)(Control_Category.identity(Control_Category.categoryFn))(deps)(runEffect);
+          };
+        };
+      };
+      var useEffect = function(aff) {
+        var name = Elmish_Hooks_Type.uniqueNameFromCurrentCallStack({
+          skipFrames: 3
+        });
+        return useEffect_(Data_Eq.eqUnit)(name)(Control_Category.identity(Control_Category.categoryFn))(Data_Unit.unit)(Data_Function["const"](aff));
+      };
+      var traced$prime = function(dictDebugWarning) {
+        return function(dictEq) {
+          return function(deps) {
+            var name = Elmish_Hooks_Type.uniqueNameFromCurrentCallStackTraced()({
+              skipFrames: 3
+            });
+            return function(runEffect) {
+              return useEffect_(dictEq)(name)(Elmish_Component.withTrace())(deps)(runEffect);
+            };
+          };
+        };
+      };
+      var traced = function(dictDebugWarning) {
+        return function(runEffect) {
+          var name = Elmish_Hooks_Type.uniqueNameFromCurrentCallStackTraced()({
+            skipFrames: 3
+          });
+          return useEffect_(Data_Eq.eqUnit)(name)(Elmish_Component.withTrace())(Data_Unit.unit)(Data_Function["const"](runEffect));
+        };
+      };
+      module.exports = {
+        traced,
+        "traced'": traced$prime,
+        useEffect,
+        "useEffect'": useEffect$prime,
+        useEffect_
+      };
+    }
+  });
+
+  // output/Elmish.Hooks.UseState/index.js
+  var require_Elmish_Hooks3 = __commonJS({
+    "output/Elmish.Hooks.UseState/index.js"(exports, module) {
+      "use strict";
+      var Control_Applicative = require_Control4();
+      var Control_Category = require_Control2();
+      var Data_Tuple = require_Data21();
+      var Elmish_Component = require_Elmish4();
+      var Elmish_Hooks_Type = require_Elmish_Hooks();
+      var useState$prime = function(name) {
+        return function(f) {
+          return function(initialState) {
+            return Elmish_Hooks_Type.mkHook(name)(function(render) {
+              return f({
+                init: Control_Applicative.pure(Elmish_Component.trApplicative)(initialState),
+                update: function(v) {
+                  return function(newState) {
+                    return Control_Applicative.pure(Elmish_Component.trApplicative)(newState);
+                  };
+                },
+                view: Data_Tuple.curry(render)
+              });
+            });
+          };
+        };
+      };
+      var useState = function(state) {
+        var name = Elmish_Hooks_Type.uniqueNameFromCurrentCallStack({
+          skipFrames: 3
+        });
+        return useState$prime(name)(Control_Category.identity(Control_Category.categoryFn))(state);
+      };
+      var traced = function(dictDebugWarning) {
+        return function(state) {
+          var name = Elmish_Hooks_Type.uniqueNameFromCurrentCallStackTraced()({
+            skipFrames: 3
+          });
+          return useState$prime(name)(Elmish_Component.withTrace())(state);
+        };
+      };
+      module.exports = {
+        traced,
+        useState
+      };
+    }
+  });
+
+  // output/Examples.UseEffect/index.js
+  var require_Examples = __commonJS({
+    "output/Examples.UseEffect/index.js"(exports, module) {
+      "use strict";
+      var Control_Applicative = require_Control4();
+      var Control_Bind = require_Control5();
+      var Data_Functor = require_Data4();
+      var Data_Maybe = require_Data15();
+      var Effect_Aff = require_Effect7();
+      var Effect_Class = require_Effect2();
+      var Elmish_HTML_Internal = require_Elmish_HTML();
+      var Elmish_HTML_Styled_Generated = require_Elmish_HTML_Styled();
+      var Elmish_Hooks_Type = require_Elmish_Hooks();
+      var Elmish_Hooks_UseEffect = require_Elmish_Hooks2();
+      var Elmish_Hooks_UseState = require_Elmish_Hooks3();
+      var Elmish_React = require_Elmish();
+      var Elmish_React_DOM = require_Elmish_React();
+      var view = Elmish_Hooks_Type.withHooks(Control_Bind.bind(Elmish_Hooks_Type.bindHook)(Elmish_Hooks_UseState.useState(Data_Maybe.Nothing.value))(function(v) {
+        return Control_Bind.discard(Control_Bind.discardUnit)(Elmish_Hooks_Type.bindHook)(Elmish_Hooks_UseEffect.useEffect(Control_Bind.discard(Control_Bind.discardUnit)(Effect_Aff.bindAff)(Effect_Aff.delay(2e3))(function() {
+          return Effect_Class.liftEffect(Effect_Aff.monadEffectAff)(v.value1(new Data_Maybe.Just(["Do thing", "Do another thing", "Some more stuff"])));
+        })))(function() {
+          return Control_Applicative.pure(Elmish_Hooks_Type.applicativeHook)(Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("row")([Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("col-12 col-md-6 col-lg-4")([Elmish_HTML_Styled_Generated.h2(Elmish_React.reactChildrenArray)("")([Elmish_HTML_Styled_Generated.code(Elmish_React.reactChildrenString)("")("useEffect"), Elmish_React_DOM.text(" hook")]), Elmish_HTML_Styled_Generated.h4(Elmish_React.reactChildrenString)("mb-3")("Todos"), function() {
+            if (v.value0 instanceof Data_Maybe.Nothing) {
+              return Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("")([Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenSingle)("progress")(Elmish_HTML_Styled_Generated.div_(Elmish_React.reactChildrenSingle)()()("progress-bar progress-bar-striped progress-bar-animated")({
+                role: "progressbar",
+                style: Elmish_HTML_Internal.css({
+                  width: "100%"
+                })
+              })(Elmish_React_DOM.empty)), Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenString)("mt-2")("Loading todos\u2026")]);
+            }
+            ;
+            if (v.value0 instanceof Data_Maybe.Just) {
+              return Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("ul")(Data_Functor.map(Data_Functor.functorArray)(Elmish_HTML_Styled_Generated.li(Elmish_React.reactChildrenString)(""))(v.value0.value0));
+            }
+            ;
+            throw new Error("Failed pattern match at Examples.UseEffect (line 31, column 9 - line 40, column 33): " + [v.value0.constructor.name]);
+          }()])]));
+        });
+      }));
+      module.exports = {
+        view
+      };
+    }
+  });
+
+  // output/Examples.UseEffectPrime/index.js
+  var require_Examples2 = __commonJS({
+    "output/Examples.UseEffectPrime/index.js"(exports, module) {
+      "use strict";
+      var Control_Applicative = require_Control4();
+      var Control_Bind = require_Control5();
+      var Data_Eq = require_Data8();
+      var Data_Show = require_Data14();
+      var Effect = require_Effect();
+      var Effect_Aff = require_Effect7();
+      var Effect_Class = require_Effect2();
+      var Elmish_HTML_Styled_Generated = require_Elmish_HTML_Styled();
+      var Elmish_Hooks_Type = require_Elmish_Hooks();
+      var Elmish_Hooks_UseEffect = require_Elmish_Hooks2();
+      var Elmish_Hooks_UseState = require_Elmish_Hooks3();
+      var Elmish_React = require_Elmish();
+      var Elmish_React_DOM = require_Elmish_React();
+      var Web_HTML = require_Web();
+      var Web_HTML_HTMLDocument = require_Web_HTML14();
+      var Web_HTML_Window = require_Web_HTML69();
+      var view = Elmish_Hooks_Type.withHooks(Control_Bind.bind(Elmish_Hooks_Type.bindHook)(Elmish_Hooks_UseState.useState(0))(function(v) {
+        return Control_Bind.discard(Control_Bind.discardUnit)(Elmish_Hooks_Type.bindHook)(Elmish_Hooks_UseEffect["useEffect'"](Data_Eq.eqInt)(v.value0)(function(c) {
+          return Effect_Class.liftEffect(Effect_Aff.monadEffectAff)(function __do() {
+            var doc = Control_Bind.bindFlipped(Effect.bindEffect)(Web_HTML_Window.document)(Web_HTML.window)();
+            return Web_HTML_HTMLDocument.setTitle("You clicked " + (Data_Show.show(Data_Show.showInt)(c) + " times"))(doc)();
+          });
+        }))(function() {
+          return Control_Applicative.pure(Elmish_Hooks_Type.applicativeHook)(Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("row mt-3")([Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("col-12 col-md-6 col-lg-4")([Elmish_HTML_Styled_Generated.h2(Elmish_React.reactChildrenArray)("")([Elmish_HTML_Styled_Generated.code(Elmish_React.reactChildrenString)("")("useEffect'"), Elmish_React_DOM.text(" hook")]), Elmish_HTML_Styled_Generated.p(Elmish_React.reactChildrenArray)("")([Elmish_React_DOM.text("You clicked "), Elmish_React_DOM.text(Data_Show.show(Data_Show.showInt)(v.value0)), Elmish_React_DOM.text(" times. Clicking will also update "), Elmish_HTML_Styled_Generated.code(Elmish_React.reactChildrenString)("")("document.title"), Elmish_React_DOM.text(".")]), Elmish_HTML_Styled_Generated.button_(Elmish_React.reactChildrenString)()()("btn btn-primary")({
+            onClick: v.value1(v.value0 + 1 | 0)
+          })("Click to update title")])]));
+        });
+      }));
+      module.exports = {
+        view
+      };
+    }
+  });
+
   // output/Utils/index.js
   var require_Utils = __commonJS({
     "output/Utils/index.js"(exports, module) {
@@ -62403,7 +62601,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.Storage.Storage/foreign.js
-  var require_foreign111 = __commonJS({
+  var require_foreign112 = __commonJS({
     "output/Web.Storage.Storage/foreign.js"(exports) {
       "use strict";
       exports.length = function(storage) {
@@ -62453,7 +62651,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_Storage = __commonJS({
     "output/Web.Storage.Storage/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign111();
+      var $foreign = require_foreign112();
       var Data_Functor = require_Data4();
       var Data_Nullable = require_Data30();
       var Effect = require_Effect();
@@ -62483,7 +62681,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Examples.UseLocalStorage/index.js
-  var require_Examples2 = __commonJS({
+  var require_Examples3 = __commonJS({
     "output/Examples.UseLocalStorage/index.js"(exports, module) {
       "use strict";
       var Control_Applicative = require_Control4();
@@ -62545,7 +62743,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Examples.UseMouseMove/index.js
-  var require_Examples3 = __commonJS({
+  var require_Examples4 = __commonJS({
     "output/Examples.UseMouseMove/index.js"(exports, module) {
       "use strict";
       var Control_Applicative = require_Control4();
@@ -62630,7 +62828,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Examples.UseState/index.js
-  var require_Examples4 = __commonJS({
+  var require_Examples5 = __commonJS({
     "output/Examples.UseState/index.js"(exports, module) {
       "use strict";
       var Control_Applicative = require_Control4();
@@ -62679,12 +62877,13 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var Elmish_React = require_Elmish();
       var Elmish_React_DOM = require_Elmish_React();
       var Examples_UseEffect = require_Examples();
-      var Examples_UseLocalStorage = require_Examples2();
-      var Examples_UseMouseMove = require_Examples3();
-      var Examples_UseState = require_Examples4();
+      var Examples_UseEffectPrime = require_Examples2();
+      var Examples_UseLocalStorage = require_Examples3();
+      var Examples_UseMouseMove = require_Examples4();
+      var Examples_UseState = require_Examples5();
       var view = function(v) {
         return function(v1) {
-          return Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("container mt-4")([Elmish_HTML_Styled_Generated.h1(Elmish_React.reactChildrenArray)("")([Elmish_HTML_Styled_Generated.code(Elmish_React.reactChildrenString)("")("elmish-hooks"), Elmish_React_DOM.text(" examples")]), Elmish_HTML_Styled_Generated.hr("my-4"), Examples_UseState.view, Elmish_HTML_Styled_Generated.hr("my-4"), Examples_UseEffect.view, Elmish_HTML_Styled_Generated.hr("my-4"), Elmish_HTML_Styled_Generated.h2(Elmish_React.reactChildrenString)("")("Custom hooks"), Examples_UseLocalStorage.view, Examples_UseMouseMove.view]);
+          return Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("container mt-4")([Elmish_HTML_Styled_Generated.h1(Elmish_React.reactChildrenArray)("")([Elmish_HTML_Styled_Generated.code(Elmish_React.reactChildrenString)("")("elmish-hooks"), Elmish_React_DOM.text(" examples")]), Elmish_HTML_Styled_Generated.hr("my-4"), Examples_UseState.view, Elmish_HTML_Styled_Generated.hr("my-4"), Examples_UseEffect.view, Examples_UseEffectPrime.view, Elmish_HTML_Styled_Generated.hr("my-4"), Elmish_HTML_Styled_Generated.h2(Elmish_React.reactChildrenString)("")("Custom hooks"), Examples_UseLocalStorage.view, Examples_UseMouseMove.view]);
         };
       };
       var main = Elmish_Boot.defaultMain({
