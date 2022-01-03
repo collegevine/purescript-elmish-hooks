@@ -3,7 +3,9 @@ module Elmish.Hooks.UseEffect
   , traced'
   , useEffect
   , useEffect'
-  ) where
+  , useEffect_
+  )
+  where
 
 import Prelude
 
@@ -50,24 +52,24 @@ useEffect aff =
 -- |   pure H.button_ "" { onClick: setCount $ count + 1 } "Click me"
 -- | ```
 useEffect' :: forall a. Eq a => a -> (a -> Aff Unit) -> Hook Unit
-useEffect' deps = \aff ->
-  useEffect_ name identity deps aff
+useEffect' deps = \runEffect ->
+  useEffect_ name identity deps runEffect
   where
     name = uniqueNameFromCurrentCallStack { skipFrames: 3 }
 
 -- | A version of `useEffect` that logs info from the name-generating function.
 -- | Intended to be used with qualified imports: `UseEffect.traced`.
 traced :: DebugWarning => Aff Unit -> Hook Unit
-traced aff =
-  useEffect_ name withTrace unit $ const aff
+traced runEffect =
+  useEffect_ name withTrace unit $ const runEffect
   where
     name = uniqueNameFromCurrentCallStackTraced { skipFrames: 3 }
 
 -- | A version of `useEffect'` that logs info from the name-generating function.
 -- | Intended to be used with qualified imports: `UseEffect.traced'`.
 traced' :: forall a. DebugWarning => Eq a => a -> (a -> Aff Unit) -> Hook Unit
-traced' deps = \aff ->
-  useEffect_ name withTrace deps aff
+traced' deps = \runEffect ->
+  useEffect_ name withTrace deps runEffect
   where
     name = uniqueNameFromCurrentCallStackTraced { skipFrames: 3 }
 
@@ -78,13 +80,13 @@ useEffect_ :: forall a.
   -> a
   -> (a -> Aff Unit)
   -> Hook Unit
-useEffect_ name = \f deps init ->
+useEffect_ name f deps runEffect =
   mkHook name \render -> f
     { init: do
-        forkVoid $ init deps
+        forkVoid $ runEffect deps
         pure deps
     , update: \_ newDeps -> do
-        forkVoid $ init newDeps
+        forkVoid $ runEffect newDeps
         pure newDeps
     , view: \_ dispatch ->
         useEffectLifeCycles
