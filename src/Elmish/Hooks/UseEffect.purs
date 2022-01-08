@@ -3,9 +3,7 @@ module Elmish.Hooks.UseEffect
   , traced'
   , useEffect
   , useEffect'
-  , useEffect_
-  )
-  where
+  ) where
 
 import Prelude
 

@@ -19,6 +19,11 @@ todos = withHooks do
     H.fragment $ todoView <$> todos
 ```
 
+> **NOTE:** Hooks should always be used either:
+>
+> 1. At the top level of a `withHooks` block, not inside any conditionals
+> 2. At the top level of a “custom hook”
+
 ### Custom Hooks
 
 Custom hooks can also be created. One way is to build on other hooks using the `Hook` monad:

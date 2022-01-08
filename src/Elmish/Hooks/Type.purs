@@ -106,7 +106,14 @@ mkHook name mkDef =
 -- |   pure $ H.input_ "" { value: name, onChange: setName <?| eventTargetValue }
 -- | ```
 withHooks :: Hook ReactElement -> ReactElement
-withHooks (Hook hook) = hook identity
+withHooks (Hook hook) =
+  hook $ wrapWithLocalState name \children ->
+    { init: pure unit
+    , update: const absurd
+    , view: const $ const children
+    }
+  where
+    name = uniqueNameFromCurrentCallStack { skipFrames: 3 }
 
 -- | When there is only one hook, it might make more sense to invoke it with
 -- | continuation-passing style. This helper makes that easier, accepting a
