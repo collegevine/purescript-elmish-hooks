@@ -56,19 +56,19 @@ spec = do
 
       it "has a the same when same reference used twice" $
         testElement wrappedComponent do
-          withHooks1Name <- find ".with-hooks-3-parent" >> childAt 0 >> name
-          withHooks2Name <- find ".with-hooks-4-parent" >> childAt 0 >> name
-          withHooks1Name `shouldContain` "WithHooks"
-          withHooks1Name `shouldEqual` withHooks2Name
+          withHooks3Name <- find ".with-hooks-3-parent" >> childAt 0 >> name
+          withHooks4Name <- find ".with-hooks-4-parent" >> childAt 0 >> name
+          withHooks3Name `shouldContain` "WithHooks"
+          withHooks3Name `shouldEqual` withHooks4Name
 
     describe "useState" do
       it "has a unique name when used twice" $
         testElement wrappedComponent do
-          withHooks1Name <- find ".with-hooks-5-parent" >> childAt 0 >> childAt 0 >> name
-          withHooks2Name <- find ".with-hooks-6-parent" >> childAt 0 >> childAt 0 >> name
-          withHooks1Name `shouldContain` "UseState"
-          withHooks2Name `shouldContain` "UseState"
-          withHooks1Name `shouldNotEqual` withHooks2Name
+          withHooks5Name <- find ".with-hooks-5-parent" >> childAt 0 >> childAt 0 >> name
+          withHooks6Name <- find ".with-hooks-6-parent" >> childAt 0 >> childAt 0 >> name
+          withHooks5Name `shouldContain` "UseState"
+          withHooks6Name `shouldContain` "UseState"
+          withHooks5Name `shouldNotEqual` withHooks6Name
 
       it "has a the same when same reference used twice" $
         testElement wrappedComponent do
