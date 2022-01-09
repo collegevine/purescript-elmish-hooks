@@ -1,9 +1,7 @@
 { name = "elmish-hooks"
 , dependencies =
   [ "aff"
-  , "console"
   , "debug"
-  , "effect"
   , "elmish"
   , "maybe"
   , "prelude"
@@ -11,7 +9,7 @@
   , "tuples"
   ]
 , packages = ./packages.dhall
-, sources = [ "src/**/*.purs", "test/**/*.purs" ]
+, sources = [ "src/**/*.purs" ]
 , license = "MIT"
 , repository = "https://github.com/collegevine/purescript-elmish-hooks.git"
 }

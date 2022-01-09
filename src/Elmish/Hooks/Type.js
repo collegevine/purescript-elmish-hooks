@@ -1,4 +1,4 @@
-const uuidV5 = require('uuid/v5')
+const uuid = require('uuid')
 
 const uniqueNameFromCurrentCallStack_ = ({ trace }) => ({ skipFrames }) => {
   const stack = new Error().stack
@@ -13,7 +13,7 @@ const uniqueNameFromCurrentCallStack_ = ({ trace }) => ({ skipFrames }) => {
     console.log('Full Stack Trace:')
     console.log(stack)
   }
-  return uuidV5(hookCallSite, '31877c6f-998d-44e6-99e6-3cd31a643f1d')
+  return uuid.v5(hookCallSite, '31877c6f-998d-44e6-99e6-3cd31a643f1d')
 }
 
 exports.uniqueNameFromCurrentCallStack_ = uniqueNameFromCurrentCallStack_({ trace: false })
