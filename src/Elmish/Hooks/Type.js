@@ -1,6 +1,6 @@
 const uuid = require('uuid')
 
-const uniqueNameFromCurrentCallStack_ = ({ trace }) => ({ skipFrames }) => {
+const uniqueNameFromCurrentCallStack_ = ({ trace }) => ({ skipFrames, prefix }) => {
   const stack = new Error().stack
   const stackLines = stack.split('\n')
   // TODO: Add tests to ensure this stays correct: See
@@ -13,7 +13,7 @@ const uniqueNameFromCurrentCallStack_ = ({ trace }) => ({ skipFrames }) => {
     console.log('Full Stack Trace:')
     console.log(stack)
   }
-  return uuid.v5(hookCallSite, '31877c6f-998d-44e6-99e6-3cd31a643f1d')
+  return `${prefix}_${uuid.v5(hookCallSite, '31877c6f-998d-44e6-99e6-3cd31a643f1d')}`
 }
 
 exports.uniqueNameFromCurrentCallStack_ = uniqueNameFromCurrentCallStack_({ trace: false })

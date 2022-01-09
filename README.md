@@ -65,7 +65,7 @@ useMousePosition className =
           render pos
     }
   where
-    name = uniqueNameFromCurrentCallStack { skipFrames: 2 }
+    name = uniqueNameFromCurrentCallStack { skipFrames: 3, prefix: "UseMousePosition" }
 ```
 
 ### Continuation-Passing Style

@@ -34,7 +34,7 @@ useEffect :: Aff Unit -> Hook Unit
 useEffect aff =
   useEffect_ name identity unit $ const aff
   where
-    name = uniqueNameFromCurrentCallStack { skipFrames: 3 }
+    name = uniqueNameFromCurrentCallStack { skipFrames: 3, prefix: "UseEffect" }
 
 -- | This is like `useEffect`, but allows passing a value which, when it
 -- | changes, will trigger the effect to run again. E.g.:
@@ -53,7 +53,7 @@ useEffect' :: forall a. Eq a => a -> (a -> Aff Unit) -> Hook Unit
 useEffect' deps = \runEffect ->
   useEffect_ name identity deps runEffect
   where
-    name = uniqueNameFromCurrentCallStack { skipFrames: 3 }
+    name = uniqueNameFromCurrentCallStack { skipFrames: 3, prefix: "UseEffectPrime" }
 
 -- | A version of `useEffect` that logs info from the name-generating function.
 -- | Intended to be used with qualified imports: `UseEffect.traced`.
@@ -61,7 +61,7 @@ traced :: DebugWarning => Aff Unit -> Hook Unit
 traced runEffect =
   useEffect_ name withTrace unit $ const runEffect
   where
-    name = uniqueNameFromCurrentCallStackTraced { skipFrames: 3 }
+    name = uniqueNameFromCurrentCallStackTraced { skipFrames: 3, prefix: "UseEffect_Traced" }
 
 -- | A version of `useEffect'` that logs info from the name-generating function.
 -- | Intended to be used with qualified imports: `UseEffect.traced'`.
@@ -69,7 +69,7 @@ traced' :: forall a. DebugWarning => Eq a => a -> (a -> Aff Unit) -> Hook Unit
 traced' deps = \runEffect ->
   useEffect_ name withTrace deps runEffect
   where
-    name = uniqueNameFromCurrentCallStackTraced { skipFrames: 3 }
+    name = uniqueNameFromCurrentCallStackTraced { skipFrames: 3, prefix: "UseEffect_TracedPrime" }
 
 useEffect_ :: forall a.
   Eq a
