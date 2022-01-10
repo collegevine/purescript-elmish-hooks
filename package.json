@@ -44,6 +44,6 @@
     "spago": "^0.20.3"
   },
   "dependencies": {
-    "uuid": "^8.3.2"
+    "stacktrace-parser": "^0.1.10"
   }
 }
