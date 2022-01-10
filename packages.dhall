@@ -3,4 +3,4 @@ let upstream =
 
 in  upstream
   with elmish.version = "v0.5.8"
-  with elmish-enzyme.version = "children"
+  with elmish-enzyme.version = "v0.0.3"
