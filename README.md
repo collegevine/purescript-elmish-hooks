@@ -2,6 +2,15 @@
 
 This library offers an analog of [React Hooks](https://reactjs.org/docs/hooks-intro.html) for use with [PureScript Elmish](https://github.com/collegevine/purescript-elmish).
 
+### Getting Started
+
+To use this library, install `elmish-hooks`, as well as the npm package [`stacktrace-parser`](https://github.com/errwischt/stacktrace-parser).
+
+```
+npx spago install elmish-hooks
+npm install stacktrace-parser --save
+```
+
 ### Hooks
 
 Hooks allow introducing local state or effects without writing a new component. This library comes with two builtin hooks: `useState` and `useEffect`:
