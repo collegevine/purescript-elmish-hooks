@@ -57087,6 +57087,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       "use strict";
       var $foreign = require_foreign103();
       var Control_Category = require_Control2();
+      var Data_Functor = require_Data4();
+      var Data_Tuple = require_Data21();
       var Elmish_Component = require_Elmish4();
       var functorHook = {
         map: function(f) {
@@ -57153,13 +57155,24 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var withHooks = function(v) {
         return v(Control_Category.identity(Control_Category.categoryFn));
       };
-      var uniqueNameFromCurrentCallStackTraced = function(dictDebugWarning) {
-        return function($23) {
-          return Elmish_Component.ComponentName($foreign.uniqueNameFromCurrentCallStackTraced_($23));
+      var withHook = function(hook) {
+        return function(render) {
+          return withHooks(Data_Functor.map(functorHook)(render)(hook));
         };
       };
-      var uniqueNameFromCurrentCallStack = function($24) {
-        return Elmish_Component.ComponentName($foreign.uniqueNameFromCurrentCallStack_($24));
+      var withHookCurried = function(hook) {
+        var $23 = withHook(hook);
+        return function($24) {
+          return $23(Data_Tuple.uncurry($24));
+        };
+      };
+      var uniqueNameFromCurrentCallStackTraced = function(dictDebugWarning) {
+        return function($25) {
+          return Elmish_Component.ComponentName($foreign.uniqueNameFromCurrentCallStackTraced_($25));
+        };
+      };
+      var uniqueNameFromCurrentCallStack = function($26) {
+        return Elmish_Component.ComponentName($foreign.uniqueNameFromCurrentCallStack_($26));
       };
       var mkHook = function(name) {
         return function(mkDef) {
@@ -57172,6 +57185,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         mkHook,
         uniqueNameFromCurrentCallStack,
         uniqueNameFromCurrentCallStackTraced,
+        withHook,
+        withHookCurried,
         withHooks,
         functorHook,
         applyHook,
@@ -62831,33 +62846,33 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Examples5 = __commonJS({
     "output/Examples.UseState/index.js"(exports, module) {
       "use strict";
-      var Control_Applicative = require_Control4();
-      var Control_Bind = require_Control5();
       var Elmish_HTML_Internal = require_Elmish_HTML();
       var Elmish_HTML_Styled_Generated = require_Elmish_HTML_Styled();
       var Elmish_Hooks_Type = require_Elmish_Hooks();
       var Elmish_Hooks_UseState = require_Elmish_Hooks3();
       var Elmish_React = require_Elmish();
       var Elmish_React_DOM = require_Elmish_React();
-      var view = Elmish_Hooks_Type.withHooks(Control_Bind.bind(Elmish_Hooks_Type.bindHook)(Elmish_Hooks_UseState.useState(false))(function(v) {
-        return Control_Applicative.pure(Elmish_Hooks_Type.applicativeHook)(Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("")([Elmish_HTML_Styled_Generated.h2(Elmish_React.reactChildrenArray)("")([Elmish_HTML_Styled_Generated.code(Elmish_React.reactChildrenString)("")("useState"), Elmish_React_DOM.text(" hook")]), Elmish_HTML_Styled_Generated.button_(Elmish_React.reactChildrenString)()()("btn btn-primary")({
-          onClick: v.value1(!v.value0)
-        })("Show"), function() {
-          if (v.value0) {
-            return Elmish_React_DOM.fragment([Elmish_HTML_Styled_Generated.div_(Elmish_React.reactChildrenSingle)()()("modal fade show d-block")({
-              style: Elmish_HTML_Internal.css({
-                pointerEvents: "none"
-              })
-            })(Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenSingle)("modal-dialog")(Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenSingle)("modal-content")(Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("modal-body")([Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("row")([Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenSingle)("col")(Elmish_HTML_Styled_Generated.h3(Elmish_React.reactChildrenString)("header-title")("Modal")), Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenSingle)("col-auto")(Elmish_HTML_Styled_Generated.button_(Elmish_React.reactChildrenString)()()("btn btn-icon btn-lg p-0 text-muted")({
-              onClick: v.value1(false)
-            })("\xD7"))]), Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenString)("py-4")("Content")])))), Elmish_HTML_Styled_Generated.div_(Elmish_React.reactChildrenSingle)()()("modal-backdrop fade show")({
-              onClick: v.value1(false)
-            })(Elmish_React_DOM.empty)]);
-          }
-          ;
-          return Elmish_React_DOM.empty;
-        }()]));
-      }));
+      var view = Elmish_Hooks_Type.withHookCurried(Elmish_Hooks_UseState.useState(false))(function(visible) {
+        return function(setVisible) {
+          return Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("")([Elmish_HTML_Styled_Generated.h2(Elmish_React.reactChildrenArray)("")([Elmish_HTML_Styled_Generated.code(Elmish_React.reactChildrenString)("")("useState"), Elmish_React_DOM.text(" hook")]), Elmish_HTML_Styled_Generated.button_(Elmish_React.reactChildrenString)()()("btn btn-primary")({
+            onClick: setVisible(!visible)
+          })("Show"), function() {
+            if (visible) {
+              return Elmish_React_DOM.fragment([Elmish_HTML_Styled_Generated.div_(Elmish_React.reactChildrenSingle)()()("modal fade show d-block")({
+                style: Elmish_HTML_Internal.css({
+                  pointerEvents: "none"
+                })
+              })(Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenSingle)("modal-dialog")(Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenSingle)("modal-content")(Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("modal-body")([Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("row")([Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenSingle)("col")(Elmish_HTML_Styled_Generated.h3(Elmish_React.reactChildrenString)("header-title")("Modal")), Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenSingle)("col-auto")(Elmish_HTML_Styled_Generated.button_(Elmish_React.reactChildrenString)()()("btn btn-icon btn-lg p-0 text-muted")({
+                onClick: setVisible(false)
+              })("\xD7"))]), Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenString)("py-4")("Content")])))), Elmish_HTML_Styled_Generated.div_(Elmish_React.reactChildrenSingle)()()("modal-backdrop fade show")({
+                onClick: setVisible(false)
+              })(Elmish_React_DOM.empty)]);
+            }
+            ;
+            return Elmish_React_DOM.empty;
+          }()]);
+        };
+      });
       module.exports = {
         view
       };
