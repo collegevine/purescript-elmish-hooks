@@ -4,7 +4,6 @@ const uniqueNameFromCurrentCallStack_ = ({ trace }) => ({ skipFrames, prefix }) 
   const stack = new Error().stack
   const stackLines = stackTraceParser.parse(stack)
   const hookCallSite = stackLines[skipFrames]
-  const file = cleanName(hookCallSite.file)
   const methodName = cleanName(hookCallSite.methodName)
   if (trace) {
     console.log('Hook Call Site:')
@@ -12,7 +11,7 @@ const uniqueNameFromCurrentCallStack_ = ({ trace }) => ({ skipFrames, prefix }) 
     console.log('Full Stack Trace:')
     console.log(stack)
   }
-  return `${prefix}_${file}_${methodName}_${hookCallSite.lineNumber}_${hookCallSite.column}`
+  return `${prefix}_${methodName}_${hookCallSite.lineNumber}_${hookCallSite.column}`
 }
 
 const cleanName = name => name.replace(/[^\d\w]+/g, '_').replace(/(^_|_$)/g, '')
