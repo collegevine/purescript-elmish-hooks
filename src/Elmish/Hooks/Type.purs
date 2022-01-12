@@ -127,7 +127,6 @@ infixl 1 withHook as ==>
 -- | Given a `Hook (a /\ b)`, this allows invoking it with a curried `render`
 -- | callback.
 -- |
--- | ```purs
 -- | Intended to be used via the `=/>` operator:
 -- |
 -- | ```purs
