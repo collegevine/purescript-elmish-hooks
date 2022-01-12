@@ -4,7 +4,7 @@ const uniqueNameFromCurrentCallStack_ = ({ trace }) => ({ skipFrames, prefix }) 
   const stack = new Error().stack
   const stackLines = stackTraceParser.parse(stack)
   const hookCallSite = stackLines[skipFrames]
-  const file = cleanName(hookCallSite.file)
+  const file = cleanName(hookCallSite.file.replace(/^(http(s?):\/\/)?[^\/]+/, ''))
   const methodName = cleanName(hookCallSite.methodName)
   if (trace) {
     console.log('Hook Call Site:')
