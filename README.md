@@ -63,6 +63,16 @@ useMousePosition className =
     name = uniqueNameFromCurrentCallStack { skipFrames: 2 }
 ```
 
+### Continuation-Passing Style
+
+If you're only using a single hook, sometimes it might be more concise to use CPS via the `==>` or `=/>` operators.
+
+```purs
+myInput :: ReactElement
+myInput = useState "" =/> \name setName ->
+  H.input_ "" { value: name, onChange: setName <?| eventTargetValue }
+```
+
 ### Examples
 
 There are some examples in the [examples](https://github.com/collegevine/purescript-elmish-hooks/tree/main/examples) folder, which can be seen live [here](https://collegevine.github.io/purescript-elmish-hooks).
