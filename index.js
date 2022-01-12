@@ -5575,7 +5575,7 @@ var Main = (() => {
       exports.withCachedComponent = function() {
         const cache = {};
         return function(name, f) {
-          const c = cache[name] || (cache[name] = mkFreshComponent());
+          const c = cache[name] || (cache[name] = mkFreshComponent(name));
           return f(c);
         };
       }();
@@ -5583,16 +5583,20 @@ var Main = (() => {
         return f(mkFreshComponent());
       };
       exports.instantiateBaseComponent = React.createElement;
-      function mkFreshComponent() {
-        function ElmishComponent() {
+      function mkFreshComponent(name) {
+        class ElmishComponent extends React.Component {
+          constructor(props) {
+            super(props);
+            props.init && props.init(this)();
+          }
+          render() {
+            return this.props.render(this)();
+          }
+          componentDidMount() {
+            this.props.componentDidMount(this)();
+          }
         }
-        ElmishComponent.prototype = Object.create(React.Component.prototype);
-        ElmishComponent.prototype.render = function() {
-          return this.props.render(this)();
-        };
-        ElmishComponent.prototype.componentDidMount = function() {
-          this.props.componentDidMount(this)();
-        };
+        ElmishComponent.displayName = name ? "Elmish_" + name : "ElmishRoot";
         return ElmishComponent;
       }
     }
@@ -38658,6 +38662,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var ReactDOMServer = require_server_browser();
       exports.getState_ = (component) => component.state && component.state.s;
       exports.setState_ = (component, state, callback) => component.setState({ s: state }, callback);
+      exports.assignState_ = (component, state) => component.state = { s: state };
       exports.render_ = ReactDOM.render;
       exports.hydrate_ = ReactDOM.hydrate;
       exports.renderToString = ReactDOMServer && ReactDOMServer.renderToString || ((_) => "");
@@ -39345,20 +39350,11 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var $foreign = require_foreign31();
       var Control_Category = require_Control2();
       var Effect_Uncurried = require_Effect8();
-      var validPropsNonRecord = function(dictFail) {
+      var validReactPropsRecord = function(dictCanPassToJavaScript) {
         return {};
       };
-      var validPropsNil = {};
-      var validPropsConsRef = function(dictFail) {
+      var validReactProps = function(dictFail) {
         return {};
-      };
-      var validPropsCons = {};
-      var validProps = function(dictRowToList) {
-        return function(dictValidReactPropsRL) {
-          return function(dictCanPassToJavaScript) {
-            return {};
-          };
-        };
       };
       var tojsReactElement = {};
       var setState = Effect_Uncurried.runEffectFn3($foreign.setState_);
@@ -39378,6 +39374,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       };
       var hydrate = Effect_Uncurried.runEffectFn2($foreign.hydrate_);
       var getState = Effect_Uncurried.runEffectFn1($foreign.getState_);
+      var assignState = Effect_Uncurried.runEffectFn2($foreign.assignState_);
       var asReactChildren = function(dict) {
         return dict.asReactChildren;
       };
@@ -39401,17 +39398,15 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       };
       module.exports = {
         asReactChildren,
+        assignState,
         createElement,
         "createElement'": createElement$prime,
         getState,
         hydrate,
         setState,
         render,
-        validProps,
-        validPropsNonRecord,
-        validPropsNil,
-        validPropsConsRef,
-        validPropsCons,
+        validReactPropsRecord,
+        validReactProps,
         reactChildrenArray,
         reactChildrenString,
         reactChildrenSingle,
@@ -39435,6 +39430,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var Elmish_React = require_Elmish();
       var localState = function(v) {
         return {
+          initialize: function(component) {
+            return Elmish_React.assignState(component)(v.initialState);
+          },
           getState: function(component) {
             return function __do() {
               var mState = Data_Functor.map(Effect.functorEffect)(Data_Nullable.toMaybe)(Elmish_React.getState(component))();
@@ -39448,6 +39446,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         var mkStrategy = function(stateVar) {
           return function(v) {
             return {
+              initialize: function(v1) {
+                return Effect_Ref.write(new Data_Maybe.Just(v.initialState))(stateVar);
+              },
               getState: function(v1) {
                 return Data_Functor.map(Effect.functorEffect)(Data_Maybe.fromMaybe(v.initialState))(Effect_Ref.read(stateVar));
               },
@@ -39588,8 +39589,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
               return function(v) {
                 return new Transition(g(v.value0), Data_Functor.mapFlipped(Data_Functor.functorArray)(v.value1)(function(cmd) {
                   return function(sink) {
-                    return cmd(function($57) {
-                      return sink(f($57));
+                    return cmd(function($58) {
+                      return sink(f($58));
                     });
                   };
                 }));
@@ -39687,10 +39688,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
                 var runCmd = function(cmd) {
                   return Effect_Aff.launchAff_(Control_Bind.discard(Control_Bind.discardUnit)(Effect_Aff.bindAff)(Effect_Aff.delay(0))(function() {
                     return cmd(function() {
-                      var $58 = Effect_Class.liftEffect(Effect_Class.monadEffectEffect);
-                      var $59 = dispatchMsg(component);
-                      return function($60) {
-                        return $58($59($60));
+                      var $59 = Effect_Class.liftEffect(Effect_Class.monadEffectEffect);
+                      var $60 = dispatchMsg(component);
+                      return function($61) {
+                        return $59($60($61));
                       };
                     }());
                   }));
@@ -39714,6 +39715,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
               };
             };
             return $foreign.instantiateBaseComponent(cmpt, {
+              init: v.initialize,
               render,
               componentDidMount: runCmds(def.init.value1)
             });
@@ -56867,215 +56869,132 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }
   });
 
-  // node_modules/uuid/lib/bytesToUuid.js
-  var require_bytesToUuid = __commonJS({
-    "node_modules/uuid/lib/bytesToUuid.js"(exports, module) {
-      var byteToHex = [];
-      for (i = 0; i < 256; ++i) {
-        byteToHex[i] = (i + 256).toString(16).substr(1);
-      }
-      var i;
-      function bytesToUuid(buf, offset) {
-        var i2 = offset || 0;
-        var bth = byteToHex;
-        return [
-          bth[buf[i2++]],
-          bth[buf[i2++]],
-          bth[buf[i2++]],
-          bth[buf[i2++]],
-          "-",
-          bth[buf[i2++]],
-          bth[buf[i2++]],
-          "-",
-          bth[buf[i2++]],
-          bth[buf[i2++]],
-          "-",
-          bth[buf[i2++]],
-          bth[buf[i2++]],
-          "-",
-          bth[buf[i2++]],
-          bth[buf[i2++]],
-          bth[buf[i2++]],
-          bth[buf[i2++]],
-          bth[buf[i2++]],
-          bth[buf[i2++]]
-        ].join("");
-      }
-      module.exports = bytesToUuid;
-    }
-  });
-
-  // node_modules/uuid/lib/v35.js
-  var require_v35 = __commonJS({
-    "node_modules/uuid/lib/v35.js"(exports, module) {
-      var bytesToUuid = require_bytesToUuid();
-      function uuidToBytes(uuid) {
-        var bytes = [];
-        uuid.replace(/[a-fA-F0-9]{2}/g, function(hex) {
-          bytes.push(parseInt(hex, 16));
-        });
-        return bytes;
-      }
-      function stringToBytes(str) {
-        str = unescape(encodeURIComponent(str));
-        var bytes = new Array(str.length);
-        for (var i = 0; i < str.length; i++) {
-          bytes[i] = str.charCodeAt(i);
-        }
-        return bytes;
-      }
-      module.exports = function(name, version, hashfunc) {
-        var generateUUID = function(value, namespace, buf, offset) {
-          var off = buf && offset || 0;
-          if (typeof value == "string")
-            value = stringToBytes(value);
-          if (typeof namespace == "string")
-            namespace = uuidToBytes(namespace);
-          if (!Array.isArray(value))
-            throw TypeError("value must be an array of bytes");
-          if (!Array.isArray(namespace) || namespace.length !== 16)
-            throw TypeError("namespace must be uuid string or an Array of 16 byte values");
-          var bytes = hashfunc(namespace.concat(value));
-          bytes[6] = bytes[6] & 15 | version;
-          bytes[8] = bytes[8] & 63 | 128;
-          if (buf) {
-            for (var idx = 0; idx < 16; ++idx) {
-              buf[off + idx] = bytes[idx];
-            }
-          }
-          return buf || bytesToUuid(bytes);
-        };
-        try {
-          generateUUID.name = name;
-        } catch (err) {
-        }
-        generateUUID.DNS = "6ba7b810-9dad-11d1-80b4-00c04fd430c8";
-        generateUUID.URL = "6ba7b811-9dad-11d1-80b4-00c04fd430c8";
-        return generateUUID;
-      };
-    }
-  });
-
-  // node_modules/uuid/lib/sha1-browser.js
-  var require_sha1_browser = __commonJS({
-    "node_modules/uuid/lib/sha1-browser.js"(exports, module) {
+  // node_modules/stacktrace-parser/dist/stack-trace-parser.cjs.js
+  var require_stack_trace_parser_cjs = __commonJS({
+    "node_modules/stacktrace-parser/dist/stack-trace-parser.cjs.js"(exports) {
       "use strict";
-      function f(s, x, y, z) {
-        switch (s) {
-          case 0:
-            return x & y ^ ~x & z;
-          case 1:
-            return x ^ y ^ z;
-          case 2:
-            return x & y ^ x & z ^ y & z;
-          case 3:
-            return x ^ y ^ z;
-        }
-      }
-      function ROTL(x, n) {
-        return x << n | x >>> 32 - n;
-      }
-      function sha1(bytes) {
-        var K = [1518500249, 1859775393, 2400959708, 3395469782];
-        var H = [1732584193, 4023233417, 2562383102, 271733878, 3285377520];
-        if (typeof bytes == "string") {
-          var msg = unescape(encodeURIComponent(bytes));
-          bytes = new Array(msg.length);
-          for (var i = 0; i < msg.length; i++)
-            bytes[i] = msg.charCodeAt(i);
-        }
-        bytes.push(128);
-        var l = bytes.length / 4 + 2;
-        var N = Math.ceil(l / 16);
-        var M = new Array(N);
-        for (var i = 0; i < N; i++) {
-          M[i] = new Array(16);
-          for (var j = 0; j < 16; j++) {
-            M[i][j] = bytes[i * 64 + j * 4] << 24 | bytes[i * 64 + j * 4 + 1] << 16 | bytes[i * 64 + j * 4 + 2] << 8 | bytes[i * 64 + j * 4 + 3];
+      Object.defineProperty(exports, "__esModule", { value: true });
+      var UNKNOWN_FUNCTION = "<unknown>";
+      function parse(stackString) {
+        var lines = stackString.split("\n");
+        return lines.reduce(function(stack, line) {
+          var parseResult = parseChrome(line) || parseWinjs(line) || parseGecko(line) || parseNode(line) || parseJSC(line);
+          if (parseResult) {
+            stack.push(parseResult);
           }
-        }
-        M[N - 1][14] = (bytes.length - 1) * 8 / Math.pow(2, 32);
-        M[N - 1][14] = Math.floor(M[N - 1][14]);
-        M[N - 1][15] = (bytes.length - 1) * 8 & 4294967295;
-        for (var i = 0; i < N; i++) {
-          var W = new Array(80);
-          for (var t = 0; t < 16; t++)
-            W[t] = M[i][t];
-          for (var t = 16; t < 80; t++) {
-            W[t] = ROTL(W[t - 3] ^ W[t - 8] ^ W[t - 14] ^ W[t - 16], 1);
-          }
-          var a = H[0];
-          var b = H[1];
-          var c = H[2];
-          var d = H[3];
-          var e = H[4];
-          for (var t = 0; t < 80; t++) {
-            var s = Math.floor(t / 20);
-            var T = ROTL(a, 5) + f(s, b, c, d) + e + K[s] + W[t] >>> 0;
-            e = d;
-            d = c;
-            c = ROTL(b, 30) >>> 0;
-            b = a;
-            a = T;
-          }
-          H[0] = H[0] + a >>> 0;
-          H[1] = H[1] + b >>> 0;
-          H[2] = H[2] + c >>> 0;
-          H[3] = H[3] + d >>> 0;
-          H[4] = H[4] + e >>> 0;
-        }
-        return [
-          H[0] >> 24 & 255,
-          H[0] >> 16 & 255,
-          H[0] >> 8 & 255,
-          H[0] & 255,
-          H[1] >> 24 & 255,
-          H[1] >> 16 & 255,
-          H[1] >> 8 & 255,
-          H[1] & 255,
-          H[2] >> 24 & 255,
-          H[2] >> 16 & 255,
-          H[2] >> 8 & 255,
-          H[2] & 255,
-          H[3] >> 24 & 255,
-          H[3] >> 16 & 255,
-          H[3] >> 8 & 255,
-          H[3] & 255,
-          H[4] >> 24 & 255,
-          H[4] >> 16 & 255,
-          H[4] >> 8 & 255,
-          H[4] & 255
-        ];
+          return stack;
+        }, []);
       }
-      module.exports = sha1;
-    }
-  });
-
-  // node_modules/uuid/v5.js
-  var require_v5 = __commonJS({
-    "node_modules/uuid/v5.js"(exports, module) {
-      var v35 = require_v35();
-      var sha1 = require_sha1_browser();
-      module.exports = v35("v5", 80, sha1);
+      var chromeRe = /^\s*at (.*?) ?\(((?:file|https?|blob|chrome-extension|native|eval|webpack|<anonymous>|\/|[a-z]:\\|\\\\).*?)(?::(\d+))?(?::(\d+))?\)?\s*$/i;
+      var chromeEvalRe = /\((\S*)(?::(\d+))(?::(\d+))\)/;
+      function parseChrome(line) {
+        var parts = chromeRe.exec(line);
+        if (!parts) {
+          return null;
+        }
+        var isNative = parts[2] && parts[2].indexOf("native") === 0;
+        var isEval = parts[2] && parts[2].indexOf("eval") === 0;
+        var submatch = chromeEvalRe.exec(parts[2]);
+        if (isEval && submatch != null) {
+          parts[2] = submatch[1];
+          parts[3] = submatch[2];
+          parts[4] = submatch[3];
+        }
+        return {
+          file: !isNative ? parts[2] : null,
+          methodName: parts[1] || UNKNOWN_FUNCTION,
+          arguments: isNative ? [parts[2]] : [],
+          lineNumber: parts[3] ? +parts[3] : null,
+          column: parts[4] ? +parts[4] : null
+        };
+      }
+      var winjsRe = /^\s*at (?:((?:\[object object\])?.+) )?\(?((?:file|ms-appx|https?|webpack|blob):.*?):(\d+)(?::(\d+))?\)?\s*$/i;
+      function parseWinjs(line) {
+        var parts = winjsRe.exec(line);
+        if (!parts) {
+          return null;
+        }
+        return {
+          file: parts[2],
+          methodName: parts[1] || UNKNOWN_FUNCTION,
+          arguments: [],
+          lineNumber: +parts[3],
+          column: parts[4] ? +parts[4] : null
+        };
+      }
+      var geckoRe = /^\s*(.*?)(?:\((.*?)\))?(?:^|@)((?:file|https?|blob|chrome|webpack|resource|\[native).*?|[^@]*bundle)(?::(\d+))?(?::(\d+))?\s*$/i;
+      var geckoEvalRe = /(\S+) line (\d+)(?: > eval line \d+)* > eval/i;
+      function parseGecko(line) {
+        var parts = geckoRe.exec(line);
+        if (!parts) {
+          return null;
+        }
+        var isEval = parts[3] && parts[3].indexOf(" > eval") > -1;
+        var submatch = geckoEvalRe.exec(parts[3]);
+        if (isEval && submatch != null) {
+          parts[3] = submatch[1];
+          parts[4] = submatch[2];
+          parts[5] = null;
+        }
+        return {
+          file: parts[3],
+          methodName: parts[1] || UNKNOWN_FUNCTION,
+          arguments: parts[2] ? parts[2].split(",") : [],
+          lineNumber: parts[4] ? +parts[4] : null,
+          column: parts[5] ? +parts[5] : null
+        };
+      }
+      var javaScriptCoreRe = /^\s*(?:([^@]*)(?:\((.*?)\))?@)?(\S.*?):(\d+)(?::(\d+))?\s*$/i;
+      function parseJSC(line) {
+        var parts = javaScriptCoreRe.exec(line);
+        if (!parts) {
+          return null;
+        }
+        return {
+          file: parts[3],
+          methodName: parts[1] || UNKNOWN_FUNCTION,
+          arguments: [],
+          lineNumber: +parts[4],
+          column: parts[5] ? +parts[5] : null
+        };
+      }
+      var nodeRe = /^\s*at (?:((?:\[object object\])?[^\\/]+(?: \[as \S+\])?) )?\(?(.*?):(\d+)(?::(\d+))?\)?\s*$/i;
+      function parseNode(line) {
+        var parts = nodeRe.exec(line);
+        if (!parts) {
+          return null;
+        }
+        return {
+          file: parts[2],
+          methodName: parts[1] || UNKNOWN_FUNCTION,
+          arguments: [],
+          lineNumber: +parts[3],
+          column: parts[4] ? +parts[4] : null
+        };
+      }
+      exports.parse = parse;
     }
   });
 
   // output/Elmish.Hooks.Type/foreign.js
   var require_foreign103 = __commonJS({
     "output/Elmish.Hooks.Type/foreign.js"(exports) {
-      var uuidV5 = require_v5();
-      var uniqueNameFromCurrentCallStack_ = ({ trace }) => ({ skipFrames }) => {
+      var stackTraceParser = require_stack_trace_parser_cjs();
+      var uniqueNameFromCurrentCallStack_ = ({ trace }) => ({ skipFrames, prefix }) => {
         const stack = new Error().stack;
-        const stackLines = stack.split("\n");
-        const hookCallSite = stackLines[skipFrames + 1];
+        const stackLines = stackTraceParser.parse(stack);
+        const hookCallSite = stackLines[skipFrames];
+        const file = cleanName(hookCallSite.file.replace(/^(http(s?):\/\/)?[^\/]+/, ""));
+        const methodName = cleanName(hookCallSite.methodName);
         if (trace) {
           console.log("Hook Call Site:");
           console.log(hookCallSite);
           console.log("Full Stack Trace:");
           console.log(stack);
         }
-        return uuidV5(hookCallSite, "31877c6f-998d-44e6-99e6-3cd31a643f1d");
+        return `${prefix}_${file}_${methodName}_${hookCallSite.lineNumber}_${hookCallSite.column}`;
       };
+      var cleanName = (name) => name.replace(/[^\d\w]+/g, "_").replace(/(^_|_$)/g, "");
       exports.uniqueNameFromCurrentCallStack_ = uniqueNameFromCurrentCallStack_({ trace: false });
       exports.uniqueNameFromCurrentCallStackTraced_ = uniqueNameFromCurrentCallStack_({ trace: true });
     }
@@ -57086,16 +57005,20 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     "output/Elmish.Hooks.Type/index.js"(exports, module) {
       "use strict";
       var $foreign = require_foreign103();
+      var Control_Applicative = require_Control4();
       var Control_Category = require_Control2();
+      var Data_Function = require_Data2();
       var Data_Functor = require_Data4();
       var Data_Tuple = require_Data21();
+      var Data_Unit = require_Data3();
+      var Data_Void = require_Data5();
       var Elmish_Component = require_Elmish4();
       var functorHook = {
         map: function(f) {
           return function(v) {
             return function(render) {
-              return v(function($21) {
-                return render(f($21));
+              return v(function($22) {
+                return render(f($22));
               });
             };
           };
@@ -57106,8 +57029,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           return function(v1) {
             return function(render) {
               return v(function(f) {
-                return v1(function($22) {
-                  return render(f($22));
+                return v1(function($23) {
+                  return render(f($23));
                 });
               });
             };
@@ -57152,8 +57075,26 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           return bindHook;
         }
       };
+      var uniqueNameFromCurrentCallStackTraced = function(dictDebugWarning) {
+        return function($24) {
+          return Elmish_Component.ComponentName($foreign.uniqueNameFromCurrentCallStackTraced_($24));
+        };
+      };
+      var uniqueNameFromCurrentCallStack = function($25) {
+        return Elmish_Component.ComponentName($foreign.uniqueNameFromCurrentCallStack_($25));
+      };
       var withHooks = function(v) {
-        return v(Control_Category.identity(Control_Category.categoryFn));
+        var name = uniqueNameFromCurrentCallStack({
+          skipFrames: 3,
+          prefix: "WithHooks"
+        });
+        return Elmish_Component.wrapWithLocalState(name)(function(v1) {
+          return {
+            init: Control_Applicative.pure(Elmish_Component.trApplicative)(Data_Unit.unit),
+            update: Data_Function["const"](Data_Void.absurd),
+            view: Data_Function["const"](Data_Function["const"](v(Control_Category.identity(Control_Category.categoryFn))))
+          };
+        })(Data_Unit.unit);
       };
       var withHook = function(hook) {
         return function(render) {
@@ -57161,18 +57102,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         };
       };
       var withHookCurried = function(hook) {
-        var $23 = withHook(hook);
-        return function($24) {
-          return $23(Data_Tuple.uncurry($24));
+        var $26 = withHook(hook);
+        return function($27) {
+          return $26(Data_Tuple.uncurry($27));
         };
-      };
-      var uniqueNameFromCurrentCallStackTraced = function(dictDebugWarning) {
-        return function($25) {
-          return Elmish_Component.ComponentName($foreign.uniqueNameFromCurrentCallStackTraced_($25));
-        };
-      };
-      var uniqueNameFromCurrentCallStack = function($26) {
-        return Elmish_Component.ComponentName($foreign.uniqueNameFromCurrentCallStack_($26));
       };
       var mkHook = function(name) {
         return function(mkDef) {
@@ -62412,7 +62345,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var useEffect$prime = function(dictEq) {
         return function(deps) {
           var name = Elmish_Hooks_Type.uniqueNameFromCurrentCallStack({
-            skipFrames: 3
+            skipFrames: 3,
+            prefix: "UseEffectPrime"
           });
           return function(runEffect) {
             return useEffect_(dictEq)(name)(Control_Category.identity(Control_Category.categoryFn))(deps)(runEffect);
@@ -62421,7 +62355,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       };
       var useEffect = function(aff) {
         var name = Elmish_Hooks_Type.uniqueNameFromCurrentCallStack({
-          skipFrames: 3
+          skipFrames: 3,
+          prefix: "UseEffect"
         });
         return useEffect_(Data_Eq.eqUnit)(name)(Control_Category.identity(Control_Category.categoryFn))(Data_Unit.unit)(Data_Function["const"](aff));
       };
@@ -62429,7 +62364,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         return function(dictEq) {
           return function(deps) {
             var name = Elmish_Hooks_Type.uniqueNameFromCurrentCallStackTraced()({
-              skipFrames: 3
+              skipFrames: 3,
+              prefix: "UseEffect_TracedPrime"
             });
             return function(runEffect) {
               return useEffect_(dictEq)(name)(Elmish_Component.withTrace())(deps)(runEffect);
@@ -62440,7 +62376,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var traced = function(dictDebugWarning) {
         return function(runEffect) {
           var name = Elmish_Hooks_Type.uniqueNameFromCurrentCallStackTraced()({
-            skipFrames: 3
+            skipFrames: 3,
+            prefix: "UseEffect_Traced"
           });
           return useEffect_(Data_Eq.eqUnit)(name)(Elmish_Component.withTrace())(Data_Unit.unit)(Data_Function["const"](runEffect));
         };
@@ -62449,8 +62386,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         traced,
         "traced'": traced$prime,
         useEffect,
-        "useEffect'": useEffect$prime,
-        useEffect_
+        "useEffect'": useEffect$prime
       };
     }
   });
@@ -62483,14 +62419,16 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       };
       var useState = function(state) {
         var name = Elmish_Hooks_Type.uniqueNameFromCurrentCallStack({
-          skipFrames: 3
+          skipFrames: 3,
+          prefix: "UseState"
         });
         return useState$prime(name)(Control_Category.identity(Control_Category.categoryFn))(state);
       };
       var traced = function(dictDebugWarning) {
         return function(state) {
           var name = Elmish_Hooks_Type.uniqueNameFromCurrentCallStackTraced()({
-            skipFrames: 3
+            skipFrames: 3,
+            prefix: "UseState_Traced"
           });
           return useState$prime(name)(Elmish_Component.withTrace())(state);
         };
@@ -62775,7 +62713,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var Web_HTML_HTMLElement = require_Web_HTML15();
       var useMousePosition = function(className) {
         var name = Elmish_Hooks_Type.uniqueNameFromCurrentCallStack({
-          skipFrames: 2
+          skipFrames: 3,
+          prefix: "UseMouseMove"
         });
         return Elmish_Hooks_Type.mkHook(name)(function(render) {
           return {
