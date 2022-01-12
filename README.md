@@ -65,7 +65,7 @@ useMousePosition className =
 
 ### Continuation-Passing Style
 
-You can use CPS using the `withHook` or `withHookCurried` functions, or their respective operators (`==>` and `=/>`).
+If you're only using a single hook, sometimes it might be more concise to use CPS via the `==>` or `=/>` operators.
 
 ```purs
 myInput :: ReactElement
