@@ -112,13 +112,7 @@ withHooks (Hook hook) = hook identity
 -- | continuation-passing style. This helper makes that easier, accepting a
 -- | `render` callback.
 -- |
--- | ```purs
--- | view :: ReactElement
--- | view = withHook (useState "") \(name /\ setName) ->
--- |   H.input_ "" { value: name, onChange: setName <?| eventTargetValue }
--- | ```
--- |
--- | Or using the operator:
+-- | Intended to be used via the `==>` operator:
 -- |
 -- | ```purs
 -- | view :: ReactElement
@@ -134,12 +128,7 @@ infixl 1 withHook as ==>
 -- | callback.
 -- |
 -- | ```purs
--- | view :: ReactElement
--- | view = withHookCurried (useState "") \name setName ->
--- |   H.input_ "" { value: name, onChange: setName <?| eventTargetValue }
--- | ```
--- |
--- | Or using the operator:
+-- | Intended to be used via the `=/>` operator:
 -- |
 -- | ```purs
 -- | view :: ReactElement
