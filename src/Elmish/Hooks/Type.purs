@@ -135,7 +135,7 @@ infixl 1 withHook as ==>
 -- |
 -- | ```purs
 -- | view :: ReactElement
--- | view = withHook (useState "") \name setName ->
+-- | view = withHookCurried (useState "") \name setName ->
 -- |   H.input_ "" { value: name, onChange: setName <?| eventTargetValue }
 -- | ```
 -- |
