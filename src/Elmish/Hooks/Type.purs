@@ -3,11 +3,17 @@ module Elmish.Hooks.Type
   , mkHook
   , uniqueNameFromCurrentCallStack
   , uniqueNameFromCurrentCallStackTraced
+  , withHook
+  , withHookCurried
   , withHooks
+  , (=/>)
+  , (==>)
   ) where
 
 import Prelude
 
+import Data.Tuple (uncurry)
+import Data.Tuple.Nested (type (/\))
 import Debug (class DebugWarning)
 import Elmish (ReactElement, ComponentDef)
 import Elmish.Component (ComponentName(..), wrapWithLocalState)
@@ -101,6 +107,49 @@ mkHook name mkDef =
 -- | ```
 withHooks :: Hook ReactElement -> ReactElement
 withHooks (Hook hook) = hook identity
+
+-- | When there is only one hook, it might make more sense to invoke it with
+-- | continuation-passing style. This helper makes that easier, accepting a
+-- | `render` callback.
+-- |
+-- | ```purs
+-- | view :: ReactElement
+-- | view = withHook (useState "") \(name /\ setName) ->
+-- |   H.input_ "" { value: name, onChange: setName <?| eventTargetValue }
+-- | ```
+-- |
+-- | Or using the operator:
+-- |
+-- | ```purs
+-- | view :: ReactElement
+-- | view = useState "" ==> \(name /\ setName) ->
+-- |   H.input_ "" { value: name, onChange: setName <?| eventTargetValue }
+-- | ```
+withHook :: forall a. Hook a -> (a -> ReactElement) -> ReactElement
+withHook hook render = withHooks $ render <$> hook
+
+infixl 1 withHook as ==>
+
+-- | Given a `Hook (a /\ b)`, this allows invoking it with a curried `render`
+-- | callback.
+-- |
+-- | ```purs
+-- | view :: ReactElement
+-- | view = withHook (useState "") \name setName ->
+-- |   H.input_ "" { value: name, onChange: setName <?| eventTargetValue }
+-- | ```
+-- |
+-- | Or using the operator:
+-- |
+-- | ```purs
+-- | view :: ReactElement
+-- | view = useState "" =/> \name setName ->
+-- |   H.input_ "" { value: name, onChange: setName <?| eventTargetValue }
+-- | ```
+withHookCurried :: forall a b. Hook (a /\ b) -> (a -> b -> ReactElement) -> ReactElement
+withHookCurried hook = withHook hook <<< uncurry
+
+infixl 1 withHookCurried as =/>
 
 -- | Generates a `ComponentName` to be passed to `mkHook`.
 uniqueNameFromCurrentCallStack :: { skipFrames :: Int } -> ComponentName
