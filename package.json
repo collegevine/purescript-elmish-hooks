@@ -5,7 +5,7 @@
   "scripts": {
     "install": "spago install",
     "build": "spago build --no-psa",
-    "test": "spago test"
+    "test": "spago -x test.dhall test"
   },
   "repository": {
     "type": "git",
@@ -34,10 +34,16 @@
   },
   "homepage": "https://github.com/collegevine/purescript-elmish-hooks#readme",
   "devDependencies": {
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.6",
+    "enzyme": "^3.11.0",
+    "global-jsdom": "^8.4.0",
+    "jsdom": "^16.5.1",
     "purescript": "^0.14.5",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "spago": "^0.20.3"
   },
   "dependencies": {
-    "uuid": "^8.3.2"
+    "stacktrace-parser": "^0.1.10"
   }
 }

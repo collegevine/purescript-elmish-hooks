@@ -2,6 +2,15 @@
 
 This library offers an analog of [React Hooks](https://reactjs.org/docs/hooks-intro.html) for use with [PureScript Elmish](https://github.com/collegevine/purescript-elmish).
 
+### Getting Started
+
+To use this library, install `elmish-hooks`, as well as the npm package [`stacktrace-parser`](https://github.com/errwischt/stacktrace-parser).
+
+```
+npx spago install elmish-hooks
+npm install stacktrace-parser --save
+```
+
 ### Hooks
 
 Hooks allow introducing local state or effects without writing a new component. This library comes with two builtin hooks: `useState` and `useEffect`:
@@ -18,6 +27,11 @@ todos = withHooks do
   pure $
     H.fragment $ todoView <$> todos
 ```
+
+> **NOTE:** Hooks should always be used either:
+>
+> 1. At the top level of a `withHooks` block, not inside any conditionals
+> 2. At the top level of a “custom hook”
 
 ### Custom Hooks
 
@@ -60,7 +74,7 @@ useMousePosition className =
           render pos
     }
   where
-    name = uniqueNameFromCurrentCallStack { skipFrames: 2 }
+    name = uniqueNameFromCurrentCallStack { skipFrames: 3, prefix: "UseMousePosition" }
 ```
 
 ### Continuation-Passing Style

@@ -61,7 +61,8 @@ instance Monad Hook
 -- | `uniqueNameFromCurrentCallStack` to create a unique name based on where the
 -- | hook is called from in the stack trace. `uniqueNameFromCurrentCallStack`
 -- | accepts a `skipFrames :: Int` argument to indicate how many frames back it
--- | should look for the call site of the hook.
+-- | should look for the call site of the hook, as well as a `prefix` argument
+-- | that will be the prefix of the resulting `ComponentName`.
 -- |
 -- | It’s also recommended to create the name in a where clause and make your
 -- | hook a function accepting one argument. Even if your hook takes more than
@@ -71,10 +72,10 @@ instance Monad Hook
 -- | ```purs
 -- | myHook x = \y z -> mkHook …
 -- |   where
--- |     name = uniqueNameFromCurrentCallStack { skipFrames: 2 }
+-- |     name = uniqueNameFromCurrentCallStack { skipFrames: 3, prefix: "MyHook" }
 -- | ```
 -- |
--- | This ensures that the number of frames to skip is predictably 2. If
+-- | This ensures that the number of frames to skip is predictably 3. If
 -- | defining the function differently, a different number of frames can be
 -- | passed. `uniqueNameFromCurrentCallStackTraced` can be used to help find the
 -- | correct number.
@@ -90,7 +91,7 @@ instance Monad Hook
 -- |     , view: \_ _ -> render unit
 -- |     }
 -- |   where
--- |     name = ComponentName $ genStableUUID { skipFrames: 2 }
+-- |     name = ComponentName $ genStableUUID { skipFrames: 3, prefix: "UseEffect" }
 -- | ```
 mkHook :: forall msg state a. ComponentName -> ((a -> ReactElement) -> ComponentDef msg state) -> Hook a
 mkHook name mkDef =
@@ -106,7 +107,14 @@ mkHook name mkDef =
 -- |   pure $ H.input_ "" { value: name, onChange: setName <?| eventTargetValue }
 -- | ```
 withHooks :: Hook ReactElement -> ReactElement
-withHooks (Hook hook) = hook identity
+withHooks (Hook hook) =
+  unit # wrapWithLocalState name \_ ->
+    { init: pure unit
+    , update: const absurd
+    , view: const $ const $ hook identity
+    }
+  where
+    name = uniqueNameFromCurrentCallStack { skipFrames: 3, prefix: "WithHooks" }
 
 -- | When there is only one hook, it might make more sense to invoke it with
 -- | continuation-passing style. This helper makes that easier, accepting a
@@ -140,15 +148,15 @@ withHookCurried hook = withHook hook <<< uncurry
 infixl 1 withHookCurried as =/>
 
 -- | Generates a `ComponentName` to be passed to `mkHook`.
-uniqueNameFromCurrentCallStack :: { skipFrames :: Int } -> ComponentName
+uniqueNameFromCurrentCallStack :: { skipFrames :: Int, prefix :: String } -> ComponentName
 uniqueNameFromCurrentCallStack = ComponentName <<< uniqueNameFromCurrentCallStack_
 
 -- | Generates a `ComponentName` to be passed to `mkHook`, like
 -- | `uniqueNameFromCurrentCallStack`, but logs the stack trace and specific
 -- | line to the console.
-uniqueNameFromCurrentCallStackTraced :: DebugWarning => { skipFrames :: Int } -> ComponentName
+uniqueNameFromCurrentCallStackTraced :: DebugWarning => { skipFrames :: Int, prefix :: String } -> ComponentName
 uniqueNameFromCurrentCallStackTraced = ComponentName <<< uniqueNameFromCurrentCallStackTraced_
 
-foreign import uniqueNameFromCurrentCallStack_ :: { skipFrames :: Int } -> String
+foreign import uniqueNameFromCurrentCallStack_ :: { skipFrames :: Int, prefix :: String } -> String
 
-foreign import uniqueNameFromCurrentCallStackTraced_ :: { skipFrames :: Int } -> String
+foreign import uniqueNameFromCurrentCallStackTraced_ :: { skipFrames :: Int, prefix :: String } -> String

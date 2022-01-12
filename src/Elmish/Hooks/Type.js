@@ -1,20 +1,21 @@
-const uuidV5 = require('uuid/v5')
+const stackTraceParser = require('stacktrace-parser')
 
-const uniqueNameFromCurrentCallStack_ = ({ trace }) => ({ skipFrames }) => {
+const uniqueNameFromCurrentCallStack_ = ({ trace }) => ({ skipFrames, prefix }) => {
   const stack = new Error().stack
-  const stackLines = stack.split('\n')
-  // TODO: Add tests to ensure this stays correct: See
-  // https://github.com/collegevine/purescript-elmish-hooks/pull/3#discussion_r774324284
-  // for an example.
-  const hookCallSite = stackLines[skipFrames + 1]
+  const stackLines = stackTraceParser.parse(stack)
+  const hookCallSite = stackLines[skipFrames]
+  const file = cleanName(hookCallSite.file.replace(/^(http(s?):\/\/)?[^\/]+/, ''))
+  const methodName = cleanName(hookCallSite.methodName)
   if (trace) {
     console.log('Hook Call Site:')
     console.log(hookCallSite)
     console.log('Full Stack Trace:')
     console.log(stack)
   }
-  return uuidV5(hookCallSite, '31877c6f-998d-44e6-99e6-3cd31a643f1d')
+  return `${prefix}_${file}_${methodName}_${hookCallSite.lineNumber}_${hookCallSite.column}`
 }
+
+const cleanName = name => name.replace(/[^\d\w]+/g, '_').replace(/(^_|_$)/g, '')
 
 exports.uniqueNameFromCurrentCallStack_ = uniqueNameFromCurrentCallStack_({ trace: false })
 exports.uniqueNameFromCurrentCallStackTraced_ = uniqueNameFromCurrentCallStack_({ trace: true })
