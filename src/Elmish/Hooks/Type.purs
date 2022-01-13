@@ -107,14 +107,17 @@ mkHook name mkDef =
 -- |   pure $ H.input_ "" { value: name, onChange: setName <?| eventTargetValue }
 -- | ```
 withHooks :: Hook ReactElement -> ReactElement
-withHooks (Hook hook) =
+withHooks hook = withHooks' name hook
+  where
+    name = uniqueNameFromCurrentCallStack { skipFrames: 3, prefix: "WithHooks" }
+
+withHooks' :: ComponentName -> Hook ReactElement -> ReactElement
+withHooks' name (Hook hook) =
   unit # wrapWithLocalState name \_ ->
     { init: pure unit
     , update: const absurd
     , view: const $ const $ hook identity
     }
-  where
-    name = uniqueNameFromCurrentCallStack { skipFrames: 3, prefix: "WithHooks" }
 
 -- | When there is only one hook, it might make more sense to invoke it with
 -- | continuation-passing style. This helper makes that easier, accepting a
@@ -128,7 +131,9 @@ withHooks (Hook hook) =
 -- |   H.input_ "" { value: name, onChange: setName <?| eventTargetValue }
 -- | ```
 withHook :: forall a. Hook a -> (a -> ReactElement) -> ReactElement
-withHook hook render = withHooks $ render <$> hook
+withHook hook = \render -> withHooks' name $ render <$> hook
+  where
+    name = uniqueNameFromCurrentCallStack { skipFrames: 3, prefix: "WithHook" }
 
 infixl 1 withHook as ==>
 
@@ -143,7 +148,9 @@ infixl 1 withHook as ==>
 -- |   H.input_ "" { value: name, onChange: setName <?| eventTargetValue }
 -- | ```
 withHookCurried :: forall a b. Hook (a /\ b) -> (a -> b -> ReactElement) -> ReactElement
-withHookCurried hook = withHook hook <<< uncurry
+withHookCurried hook = \render -> withHooks' name $ (uncurry render) <$> hook
+  where
+    name = uniqueNameFromCurrentCallStack { skipFrames: 3, prefix: "WithHookCurried" }
 
 infixl 1 withHookCurried as =/>
 
