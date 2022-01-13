@@ -57017,8 +57017,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         map: function(f) {
           return function(v) {
             return function(render) {
-              return v(function($22) {
-                return render(f($22));
+              return v(function($23) {
+                return render(f($23));
               });
             };
           };
@@ -57029,8 +57029,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           return function(v1) {
             return function(render) {
               return v(function(f) {
-                return v1(function($23) {
-                  return render(f($23));
+                return v1(function($24) {
+                  return render(f($24));
                 });
               });
             };
@@ -57075,37 +57075,49 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           return bindHook;
         }
       };
-      var uniqueNameFromCurrentCallStackTraced = function(dictDebugWarning) {
-        return function($24) {
-          return Elmish_Component.ComponentName($foreign.uniqueNameFromCurrentCallStackTraced_($24));
+      var withHooks$prime = function(name) {
+        return function(v) {
+          return Elmish_Component.wrapWithLocalState(name)(function(v1) {
+            return {
+              init: Control_Applicative.pure(Elmish_Component.trApplicative)(Data_Unit.unit),
+              update: Data_Function["const"](Data_Void.absurd),
+              view: Data_Function["const"](Data_Function["const"](v(Control_Category.identity(Control_Category.categoryFn))))
+            };
+          })(Data_Unit.unit);
         };
       };
-      var uniqueNameFromCurrentCallStack = function($25) {
-        return Elmish_Component.ComponentName($foreign.uniqueNameFromCurrentCallStack_($25));
+      var uniqueNameFromCurrentCallStackTraced = function(dictDebugWarning) {
+        return function($25) {
+          return Elmish_Component.ComponentName($foreign.uniqueNameFromCurrentCallStackTraced_($25));
+        };
       };
-      var withHooks = function(v) {
+      var uniqueNameFromCurrentCallStack = function($26) {
+        return Elmish_Component.ComponentName($foreign.uniqueNameFromCurrentCallStack_($26));
+      };
+      var withHook = function(hook) {
+        var name = uniqueNameFromCurrentCallStack({
+          skipFrames: 3,
+          prefix: "WithHook"
+        });
+        return function(render) {
+          return withHooks$prime(name)(Data_Functor.map(functorHook)(render)(hook));
+        };
+      };
+      var withHookCurried = function(hook) {
+        var name = uniqueNameFromCurrentCallStack({
+          skipFrames: 3,
+          prefix: "WithHookCurried"
+        });
+        return function(render) {
+          return withHooks$prime(name)(Data_Functor.map(functorHook)(Data_Tuple.uncurry(render))(hook));
+        };
+      };
+      var withHooks = function(hook) {
         var name = uniqueNameFromCurrentCallStack({
           skipFrames: 3,
           prefix: "WithHooks"
         });
-        return Elmish_Component.wrapWithLocalState(name)(function(v1) {
-          return {
-            init: Control_Applicative.pure(Elmish_Component.trApplicative)(Data_Unit.unit),
-            update: Data_Function["const"](Data_Void.absurd),
-            view: Data_Function["const"](Data_Function["const"](v(Control_Category.identity(Control_Category.categoryFn))))
-          };
-        })(Data_Unit.unit);
-      };
-      var withHook = function(hook) {
-        return function(render) {
-          return withHooks(Data_Functor.map(functorHook)(render)(hook));
-        };
-      };
-      var withHookCurried = function(hook) {
-        var $26 = withHook(hook);
-        return function($27) {
-          return $26(Data_Tuple.uncurry($27));
-        };
+        return withHooks$prime(name)(hook);
       };
       var mkHook = function(name) {
         return function(mkDef) {
