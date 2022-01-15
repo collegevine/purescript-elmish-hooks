@@ -9,13 +9,14 @@ import Effect.Class (liftEffect)
 import Elmish (ReactElement)
 import Elmish.HTML.Styled as H
 import Elmish.Hooks (useState, withHooks)
+import Elmish.Hooks as Hooks
 import Elmish.Hooks.UseEffect (useEffect')
 import Web.HTML (window)
 import Web.HTML.HTMLDocument as HTMLDocument
 import Web.HTML.Window as Window
 
 view :: ReactElement
-view = withHooks do
+view = withHooks Hooks.do
   count /\ setCount <- useState 0
 
   useEffect' count \c -> liftEffect do

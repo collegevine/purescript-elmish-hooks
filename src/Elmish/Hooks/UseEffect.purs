@@ -1,5 +1,6 @@
 module Elmish.Hooks.UseEffect
-  ( traced
+  ( UseEffect
+  , traced
   , traced'
   , useEffect
   , useEffect'
@@ -12,9 +13,11 @@ import Debug (class DebugWarning)
 import Effect.Aff (Aff)
 import Elmish (EffectFn1, ComponentDef, createElement, forkVoid, withTrace, (<?|))
 import Elmish.Component (ComponentName)
-import Elmish.Hooks.Type (Hook, mkHook, uniqueNameFromCurrentCallStack, uniqueNameFromCurrentCallStackTraced)
+import Elmish.Hooks.Type (Hook, HookType, mkHook, uniqueNameFromCurrentCallStack, uniqueNameFromCurrentCallStackTraced)
 import Elmish.React.Import (EmptyProps, ImportedReactComponent, ImportedReactComponentConstructorWithContent)
 import Elmish.Ref (Ref, deref, ref)
+
+foreign import data UseEffect :: Type -> HookType
 
 -- | The `useEffect` hook takes an effect (`Aff`) to run and runs it in the
 -- | `init` of the resulting component. E.g.:
@@ -30,7 +33,7 @@ import Elmish.Ref (Ref, deref, ref)
 -- |
 -- |   pure $ H.fragment $ todoView <$> todos
 -- | ```
-useEffect :: Aff Unit -> Hook Unit
+useEffect :: Aff Unit -> Hook (UseEffect Unit) Unit
 useEffect aff =
   useEffect_ name identity unit $ const aff
   where
@@ -49,7 +52,7 @@ useEffect aff =
 -- |
 -- |   pure H.button_ "" { onClick: setCount $ count + 1 } "Click me"
 -- | ```
-useEffect' :: forall a. Eq a => a -> (a -> Aff Unit) -> Hook Unit
+useEffect' :: forall a. Eq a => a -> (a -> Aff Unit) -> Hook (UseEffect a) Unit
 useEffect' deps = \runEffect ->
   useEffect_ name identity deps runEffect
   where
@@ -57,7 +60,7 @@ useEffect' deps = \runEffect ->
 
 -- | A version of `useEffect` that logs info from the name-generating function.
 -- | Intended to be used with qualified imports: `UseEffect.traced`.
-traced :: DebugWarning => Aff Unit -> Hook Unit
+traced :: DebugWarning => Aff Unit -> Hook (UseEffect Unit) Unit
 traced runEffect =
   useEffect_ name withTrace unit $ const runEffect
   where
@@ -65,7 +68,7 @@ traced runEffect =
 
 -- | A version of `useEffect'` that logs info from the name-generating function.
 -- | Intended to be used with qualified imports: `UseEffect.traced'`.
-traced' :: forall a. DebugWarning => Eq a => a -> (a -> Aff Unit) -> Hook Unit
+traced' :: forall a. DebugWarning => Eq a => a -> (a -> Aff Unit) -> Hook (UseEffect a) Unit
 traced' deps = \runEffect ->
   useEffect_ name withTrace deps runEffect
   where
@@ -77,7 +80,7 @@ useEffect_ :: forall a.
   -> (ComponentDef a a -> ComponentDef a a)
   -> a
   -> (a -> Aff Unit)
-  -> Hook Unit
+  -> Hook (UseEffect a) Unit
 useEffect_ name f deps runEffect =
   mkHook name \render -> f
     { init: do

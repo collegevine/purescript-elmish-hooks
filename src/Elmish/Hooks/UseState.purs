@@ -1,5 +1,6 @@
 module Elmish.Hooks.UseState
-  ( traced
+  ( UseState
+  , traced
   , useState
   ) where
 
@@ -10,7 +11,9 @@ import Data.Tuple.Nested (type (/\))
 import Debug (class DebugWarning)
 import Elmish (ComponentDef, Dispatch, withTrace)
 import Elmish.Component (ComponentName)
-import Elmish.Hooks.Type (Hook, mkHook, uniqueNameFromCurrentCallStack, uniqueNameFromCurrentCallStackTraced)
+import Elmish.Hooks.Type (Hook, HookType, mkHook, uniqueNameFromCurrentCallStack, uniqueNameFromCurrentCallStackTraced)
+
+foreign import data UseState :: Type -> HookType
 
 -- | The `useState` hook takes an initial state and returns a `Hook`
 -- | encapsulating the current state and a `setState` function. E.g.:
@@ -27,7 +30,7 @@ import Elmish.Hooks.Type (Hook, mkHook, uniqueNameFromCurrentCallStack, uniqueNa
 -- |         else H.empty
 -- |     ]
 -- | ```
-useState :: forall state. state -> Hook (state /\ Dispatch state)
+useState :: forall state. state -> Hook (UseState state) (state /\ Dispatch state)
 useState state = useState' name identity state
   where
     name = uniqueNameFromCurrentCallStack { skipFrames: 3, prefix: "UseState" }
@@ -35,7 +38,7 @@ useState state = useState' name identity state
 -- | A version of `useState` that logs messages, state changes, render times,
 -- | and info from the name-generating function. Intended to be used with
 -- | qualified imports: `UseState.traced`.
-traced :: forall state. DebugWarning => state -> Hook (state /\ Dispatch state)
+traced :: forall state. DebugWarning => state -> Hook (UseState state) (state /\ Dispatch state)
 traced state = useState' name withTrace state
   where
     name = uniqueNameFromCurrentCallStackTraced { skipFrames: 3, prefix: "UseState_Traced" }
@@ -44,7 +47,7 @@ useState' :: forall state.
   ComponentName
   -> (ComponentDef state state -> ComponentDef state state)
   -> state
-  -> Hook (state /\ Dispatch state)
+  -> Hook (UseState state) (state /\ Dispatch state)
 useState' name = \f initialState ->
   mkHook name \render -> f
     { init: pure initialState
