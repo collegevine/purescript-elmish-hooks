@@ -7,6 +7,7 @@ module Elmish.Hooks.Type
   , bind
   , discard
   , mkHook
+  , pure
   , uniqueNameFromCurrentCallStack
   , uniqueNameFromCurrentCallStackTraced
   , withHook
@@ -17,13 +18,14 @@ module Elmish.Hooks.Type
   )
   where
 
-import Prelude hiding (bind, discard)
+import Prelude hiding (bind, discard, pure)
 
 import Data.Tuple (uncurry)
 import Data.Tuple.Nested (type (/\))
 import Debug (class DebugWarning)
 import Elmish (ReactElement, ComponentDef)
 import Elmish.Component (ComponentName(..), wrapWithLocalState)
+import Prelude as Prelude
 
 foreign import data HookType :: Type
 
@@ -57,19 +59,15 @@ newtype Hook (t :: HookType) a = Hook ((a -> ReactElement) -> ReactElement)
 instance Functor (Hook t) where
   map f (Hook hook) = Hook \render -> hook (render <<< f)
 
-instance Apply (Hook t) where
-  apply (Hook hookF) (Hook hook) = Hook \render ->
-    hookF \f -> hook (render <<< f)
-
-instance Applicative (Hook t) where
-  pure a = Hook \render -> render a
-
 bind :: forall t t' a b. Hook t a -> (a -> Hook t' b) -> Hook (t <> t') b
 bind (Hook hookA) k = Hook \render ->
   hookA \a -> case k a of Hook hookB -> hookB \b -> render b
 
 discard :: forall t t' a b. Discard a => Hook t a -> (a -> Hook t' b) -> Hook (t <> t') b
 discard = bind
+
+pure :: forall a. a -> Hook Pure a
+pure a = Hook \render -> render a
 
 -- | Given a `ComponentName` and a function to create a `ComponentDef` (from a
 -- | render function `a -> ReactElement`), `mkHook` creates a `Hook a`. The name
@@ -130,7 +128,7 @@ withHooks hook = withHooks' name hook
 withHooks' :: forall t. ComponentName -> Hook t ReactElement -> ReactElement
 withHooks' name (Hook hook) =
   unit # wrapWithLocalState name \_ ->
-    { init: pure unit
+    { init: Prelude.pure unit
     , update: const absurd
     , view: const $ const $ hook identity
     }

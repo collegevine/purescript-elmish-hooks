@@ -19,7 +19,7 @@ import Web.Storage.Storage (getItem, setItem)
 view :: ReactElement
 view = withHooks Hooks.do
   foo /\ setFoo <- useLocalStorage "foo" ""
-  pure $
+  Hooks.pure $
     H.div "row"
     [ H.div "col-12 col-md-6 col-lg-4"
       [ H.h4 "" $
@@ -42,6 +42,6 @@ useLocalStorage key defaultValue = Hooks.do
     case v of
       Just v' -> setState v'
       Nothing -> setItem key defaultValue =<< localStorage =<< window
-  pure $ state /\ \v -> do
+  Hooks.pure $ state /\ \v -> do
     setState v
     setItem key v =<< localStorage =<< window

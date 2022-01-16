@@ -21,7 +21,7 @@ view = withHooks Hooks.do
     delay $ Milliseconds 2000.0
     liftEffect $ setTodos $ Just ["Do thing", "Do another thing", "Some more stuff"]
 
-  pure $
+  Hooks.pure $
     H.div "row"
     [ H.div "col-12 col-md-6 col-lg-4"
       [ H.h2 ""
