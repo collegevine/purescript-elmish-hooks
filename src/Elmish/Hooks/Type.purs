@@ -61,7 +61,7 @@ instance Functor (Hook t) where
 
 bind :: forall t t' a b. Hook t a -> (a -> Hook t' b) -> Hook (t <> t') b
 bind (Hook hookA) k = Hook \render ->
-  hookA \a -> case k a of Hook hookB -> hookB \b -> render b
+  hookA \a -> case k a of Hook hookB -> hookB render
 
 discard :: forall t t' a b. Discard a => Hook t a -> (a -> Hook t' b) -> Hook (t <> t') b
 discard = bind
