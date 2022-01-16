@@ -8,7 +8,7 @@ import Data.Tuple.Nested ((/\))
 import Effect.Class (liftEffect)
 import Elmish (ReactElement)
 import Elmish.HTML.Styled as H
-import Elmish.Hooks (useEffect, useState, withHooks)
+import Elmish.Hooks (useState, withHooks)
 import Elmish.Hooks as Hooks
 import Elmish.Hooks.UseEffect (useEffect')
 import Web.HTML (window)
