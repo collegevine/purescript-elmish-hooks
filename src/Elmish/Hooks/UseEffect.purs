@@ -24,14 +24,14 @@ foreign import data UseEffect :: Type -> HookType
 -- |
 -- | ```purs
 -- | todos :: ReactElement
--- | todos = withHooks do
+-- | todos = withHooks Hooks.do
 -- |   todos /\ setTodos <- useState []
 -- |
 -- |   useEffect do
 -- |     todos <- API.fetchTodos
 -- |     liftEffect $ setTodos todos
 -- |
--- |   pure $ H.fragment $ todoView <$> todos
+-- |   Hooks.pure $ H.fragment $ todoView <$> todos
 -- | ```
 useEffect :: Aff Unit -> Hook (UseEffect Unit) Unit
 useEffect aff =
@@ -44,13 +44,13 @@ useEffect aff =
 -- |
 -- | ```purs
 -- | view :: ReactElement
--- | view = withHooks do
+-- | view = withHooks Hooks.do
 -- |   count /\ setCount <- useState 0
 -- |
 -- |   useEffect' count \c -> liftEffect $
 -- |     HTMLDocument.setTitle ("You clicked " <> show c <> " times") =<< document =<< window
 -- |
--- |   pure H.button_ "" { onClick: setCount $ count + 1 } "Click me"
+-- |   Hooks.pure H.button_ "" { onClick: setCount $ count + 1 } "Click me"
 -- | ```
 useEffect' :: forall a. Eq a => a -> (a -> Aff Unit) -> Hook (UseEffect a) Unit
 useEffect' deps = \runEffect ->

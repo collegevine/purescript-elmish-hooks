@@ -20,9 +20,9 @@ foreign import data UseState :: Type -> HookType
 -- |
 -- | ```purs
 -- | view :: ReactElement
--- | view = withHooks do
+-- | view = withHooks Hooks.do
 -- |   visible /\ setVisible <- useState false
--- |   pure $
+-- |   Hooks.pure $
 -- |     H.fragment
 -- |     [ H.button_ "" { onClick: setVisible $ not visible } "Toggle visibility"
 -- |     , if visible

@@ -27,10 +27,29 @@ import Elmish (ReactElement, ComponentDef)
 import Elmish.Component (ComponentName(..), wrapWithLocalState)
 import Prelude as Prelude
 
+-- | Represents the type of a hook and is used to ensure hooks are safe. For
+-- | example, the following will not compile because we track `HookType`:
+-- |
+-- | ```purs
+-- | withHooks Hooks.do
+-- |   if someCondition then Hooks.do
+-- |     x <- useState ""
+-- |     _ <- useState 0
+-- |     Hooks.pure x
+-- |   else Hooks.do
+-- |     _ <- useState 0
+-- |     useState ""
+-- | ```
+-- |
+-- | because the first block has a `HookType` of `UseState String <> UseState
+-- | Int <> Pure` and the second is `UseState Int <> UseState String`. The same
+-- | hooks need to be used in the same order for the hook types to match.
 foreign import data HookType :: Type
 
+-- | The `HookType` of `pure`.
 foreign import data Pure :: HookType
 
+-- | A type which allows appending two `HookType`s.
 foreign import data AppendHookType :: HookType -> HookType -> HookType
 
 infixr 1 type AppendHookType as <>
@@ -53,6 +72,17 @@ infixr 1 type AppendHookType as <>
 -- | withHooks do
 -- |   foo /\ setFoo <- useState ""
 -- |   pure …
+-- | ```
+-- |
+-- | Finally, to make sure we don’t use two hooks with different state-types in
+-- | a conditional (which could cause unexpected issues for React) we have a
+-- | `HookType` parameter, which accumulates when we call `bind`. For this we
+-- | need to use qualified do notation:
+-- |
+-- | ```purs
+-- | withHooks Hooks.do
+-- |   foo /\ setFoo <- useState ""
+-- |   Hooks.pure …
 -- | ```
 newtype Hook (t :: HookType) a = Hook ((a -> ReactElement) -> ReactElement)
 
@@ -94,10 +124,15 @@ pure a = Hook \render -> render a
 -- | passed. `uniqueNameFromCurrentCallStackTraced` can be used to help find the
 -- | correct number.
 -- |
+-- | Finally, when creating a hook with `mkHook`, you’ll need to create a
+-- | `HookType` by `foreign import`ing it.
+-- |
 -- | As an example of how to use `mkHook`, `useEffect` uses it like so:
 -- |
 -- | ```purs
--- | useEffect :: Aff Unit -> Hook Unit
+-- | foreign import data UseEffect :: Type -> HookType
+-- |
+-- | useEffect :: Aff Unit -> Hook (UseEffect Unit) Unit
 -- | useEffect init =
 -- |   mkHook name \render ->
 -- |     { init: forkVoid init
@@ -116,9 +151,9 @@ mkHook name mkDef =
 -- |
 -- | ```purs
 -- | view :: ReactElement
--- | view = withHooks do
+-- | view = withHooks Hooks.do
 -- |   name /\ setName <- useState ""
--- |   pure $ H.input_ "" { value: name, onChange: setName <?| eventTargetValue }
+-- |   Hooks.pure $ H.input_ "" { value: name, onChange: setName <?| eventTargetValue }
 -- | ```
 withHooks :: forall t. Hook t ReactElement -> ReactElement
 withHooks hook = withHooks' name hook

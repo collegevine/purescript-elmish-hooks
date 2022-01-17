@@ -1,17 +1,19 @@
 -- | A React hook-like library for Elmish. Uses a continuation monad to
--- | encapsulate state or effects. Similarly to React, hooks should be used at
--- | the top level of a `withHooks do …` block, not inside conditionals.
+-- | encapsulate state or effects.
 -- |
 -- | ```purs
+-- | import Elmish.Hooks (withHooks, useEffect, useState)
+-- | import Elmish.Hooks as Hooks
+-- |
 -- | todos :: ReactElement
--- | todos = withHooks do
+-- | todos = withHooks Hooks.do
 -- |   todos /\ setTodos <- useState []
 -- |
 -- |   useEffect do
 -- |     todos <- API.fetchTodos
 -- |     liftEffect $ setTodos todos
 -- |
--- |   pure $ H.fragment $ todoView <$> todos
+-- |   Hooks.pure $ H.fragment $ todoView <$> todos
 -- | ```
 module Elmish.Hooks
   ( module Type
