@@ -9,7 +9,7 @@ import Data.Tuple.Nested (type (/\), (/\))
 import Effect.Class (liftEffect)
 import Elmish (ReactElement, Dispatch, (<?|))
 import Elmish.HTML.Styled as H
-import Elmish.Hooks (Hook, Pure, UseEffect, UseState, type (<>), useEffect, useState, withHooks)
+import Elmish.Hooks (type (<>), Hook, UseEffect, UseState, useEffect, useState, withHooks)
 import Elmish.Hooks as Hooks
 import Utils (eventTargetValue)
 import Web.HTML (window)
@@ -34,7 +34,7 @@ view = withHooks Hooks.do
       ]
     ]
 
-type UseLocalStorage = UseState String <> UseEffect Unit <> Pure
+type UseLocalStorage = UseState String <> UseEffect Unit
 
 useLocalStorage :: String -> String -> Hook UseLocalStorage (String /\ Dispatch String)
 useLocalStorage key defaultValue = Hooks.do

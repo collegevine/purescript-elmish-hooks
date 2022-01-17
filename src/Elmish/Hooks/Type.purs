@@ -1,5 +1,6 @@
 module Elmish.Hooks.Type
-  ( AppendHookType
+  ( class AppendHookTypeClass
+  , AppendHookType
   , Hook
   , HookType
   , Pure
@@ -13,8 +14,7 @@ module Elmish.Hooks.Type
   , withHooks
   , (=/>)
   , (==>)
-  )
-  where
+  ) where
 
 import Prelude hiding (bind, discard, pure)
 
@@ -51,6 +51,12 @@ foreign import data AppendHookType :: HookType -> HookType -> HookType
 
 infixr 1 type AppendHookType as <>
 
+class AppendHookTypeClass (left :: HookType) (right :: HookType) (result :: HookType) | left right -> result
+
+instance AppendHookTypeClass Pure right right
+else instance AppendHookTypeClass left Pure left
+else instance AppendHookTypeClass left right (left <> right)
+
 -- | The type of a hook, e.g. the result of calling `useState`. It turns out
 -- | that hooks can be modeled as a continuation, where the callback function
 -- | returns a new component (created with `wrapWithLocalState`) given the
@@ -86,11 +92,20 @@ newtype Hook (t :: HookType) a = Hook ((a -> ReactElement) -> ReactElement)
 instance Functor (Hook t) where
   map f (Hook hook) = Hook \render -> hook (render <<< f)
 
-bind :: forall t t' a b. Hook t a -> (a -> Hook t' b) -> Hook (t <> t') b
+bind :: forall left right result a b.
+  AppendHookTypeClass left right result
+  => Hook left a
+  -> (a -> Hook right b)
+  -> Hook result b
 bind (Hook hookA) k = Hook \render ->
   hookA \a -> case k a of Hook hookB -> hookB render
 
-discard :: forall t t' a b. Discard a => Hook t a -> (a -> Hook t' b) -> Hook (t <> t') b
+discard :: forall left right result a b.
+  Discard a
+  => AppendHookTypeClass left right result
+  => Hook left a
+  -> (a -> Hook right b)
+  -> Hook result b
 discard = bind
 
 pure :: forall a. a -> Hook Pure a

@@ -21,6 +21,13 @@ view = withHooks Hooks.do
     delay $ Milliseconds 2000.0
     liftEffect $ setTodos $ Just ["Do thing", "Do another thing", "Some more stuff"]
 
+  _ <-
+    if true then Hooks.do
+      x <- useState 0
+      Hooks.pure x
+    else
+      useState 0
+
   Hooks.pure $
     H.div "row"
     [ H.div "col-12 col-md-6 col-lg-4"
