@@ -33,7 +33,9 @@ todos = withHooks Hooks.do
 Custom hooks can also be created. One way is to build on other hooks using the `Hook` monad:
 
 ```purs
-useLocalStorage :: String -> String -> Hook (UseState String <> UseEffect Unit <> Pure) (String /\ Dispatch String)
+type UseLocalStorage = UseState String <> UseEffect Unit <> Pure
+
+useLocalStorage :: String -> String -> Hook UseLocalStorage (String /\ Dispatch String)
 useLocalStorage key defaultValue = Hooks.do
   state /\ setState <- useState defaultValue
 

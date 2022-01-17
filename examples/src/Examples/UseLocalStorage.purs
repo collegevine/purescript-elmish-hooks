@@ -34,7 +34,9 @@ view = withHooks Hooks.do
       ]
     ]
 
-useLocalStorage :: String -> String -> Hook (UseState String <> UseEffect Unit <> Pure) (String /\ Dispatch String)
+type UseLocalStorage = UseState String <> UseEffect Unit <> Pure
+
+useLocalStorage :: String -> String -> Hook UseLocalStorage (String /\ Dispatch String)
 useLocalStorage key defaultValue = Hooks.do
   state /\ setState <- useState defaultValue
   useEffect $ liftEffect do
