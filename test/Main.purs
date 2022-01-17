@@ -38,12 +38,6 @@ spec = do
         , H.div "with-hooks-2-parent" $ withHooks component
         , H.div "with-hooks-3-parent" withHooksComponent
         , H.div "with-hooks-4-parent" withHooksComponent
-        , H.div "with-hooks-5-parent" $ withHooks Hooks.do
-            _ <- useState ""
-            Hooks.pure $ H.div "" "content"
-        , H.div "with-hooks-6-parent" $ withHooks Hooks.do
-            _ <- useState ""
-            Hooks.pure $ H.div "" "content"
         ]
 
     describe "withHooks" do
@@ -61,22 +55,6 @@ spec = do
           withHooks4Name <- find ".with-hooks-4-parent" >> childAt 0 >> name
           withHooks3Name `shouldContain` "WithHooks"
           withHooks3Name `shouldEqual` withHooks4Name
-
-    describe "useState" do
-      it "has a unique name when used twice" $
-        testElement wrappedComponent do
-          useState5Name <- find ".with-hooks-5-parent" >> childAt 0 >> childAt 0 >> name
-          useState6Name <- find ".with-hooks-6-parent" >> childAt 0 >> childAt 0 >> name
-          useState5Name `shouldContain` "UseState"
-          useState6Name `shouldContain` "UseState"
-          useState5Name `shouldNotEqual` useState6Name
-
-      it "has the same when same reference used twice" $
-        testElement wrappedComponent do
-          useState1Name <- find ".with-hooks-1-parent" >> childAt 0 >> childAt 0 >> name
-          useState2Name <- find ".with-hooks-2-parent" >> childAt 0 >> childAt 0 >> name
-          useState1Name `shouldContain` "UseState"
-          useState1Name `shouldEqual` useState2Name
 
     describe "withHook" do
       let

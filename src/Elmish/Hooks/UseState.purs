@@ -10,8 +10,8 @@ import Data.Tuple (curry)
 import Data.Tuple.Nested (type (/\))
 import Debug (class DebugWarning)
 import Elmish (ComponentDef, Dispatch, withTrace)
-import Elmish.Component (ComponentName)
-import Elmish.Hooks.Type (Hook, HookType, mkHook, uniqueNameFromCurrentCallStack, uniqueNameFromCurrentCallStackTraced)
+import Elmish.Component (ComponentName(..))
+import Elmish.Hooks.Type (Hook, HookType, mkHook)
 
 foreign import data UseState :: Type -> HookType
 
@@ -31,17 +31,12 @@ foreign import data UseState :: Type -> HookType
 -- |     ]
 -- | ```
 useState :: forall state. state -> Hook (UseState state) (state /\ Dispatch state)
-useState state = useState' name identity state
-  where
-    name = uniqueNameFromCurrentCallStack { skipFrames: 3, prefix: "UseState" }
+useState state = useState' (ComponentName "UseState") identity state
 
--- | A version of `useState` that logs messages, state changes, render times,
--- | and info from the name-generating function. Intended to be used with
--- | qualified imports: `UseState.traced`.
+-- | A version of `useState` that logs messages, state changes and render times.
+-- | Intended to be used with qualified imports: `UseState.traced`.
 traced :: forall state. DebugWarning => state -> Hook (UseState state) (state /\ Dispatch state)
-traced state = useState' name withTrace state
-  where
-    name = uniqueNameFromCurrentCallStackTraced { skipFrames: 3, prefix: "UseState_Traced" }
+traced state = useState' (ComponentName "UseState_Traced") withTrace state
 
 useState' :: forall state.
   ComponentName

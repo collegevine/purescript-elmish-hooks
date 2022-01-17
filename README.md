@@ -56,7 +56,7 @@ foreign import data :: UseMousePosition :: HookType
 
 useMousePosition :: String -> Hook UseMousePosition (Maybe { x :: Number, y :: Number })
 useMousePosition className =
-  mkHook name \render ->
+  mkHook (ComponentName "UseMousePosition") \render ->
     { init: pure Nothing
     , update: \_ pos -> pure pos
     , view: \pos dispatch ->
@@ -72,8 +72,6 @@ useMousePosition className =
           } $
           render pos
     }
-  where
-    name = uniqueNameFromCurrentCallStack { skipFrames: 3, prefix: "UseMousePosition" }
 ```
 
 ### Continuation-Passing Style

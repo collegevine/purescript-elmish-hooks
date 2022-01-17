@@ -8,8 +8,6 @@ module Elmish.Hooks.Type
   , discard
   , mkHook
   , pure
-  , uniqueNameFromCurrentCallStack
-  , uniqueNameFromCurrentCallStackTraced
   , withHook
   , withHookCurried
   , withHooks
@@ -22,7 +20,6 @@ import Prelude hiding (bind, discard, pure)
 
 import Data.Tuple (uncurry)
 import Data.Tuple.Nested (type (/\))
-import Debug (class DebugWarning)
 import Elmish (ReactElement, ComponentDef)
 import Elmish.Component (ComponentName(..), wrapWithLocalState)
 import Prelude as Prelude
@@ -100,32 +97,9 @@ pure :: forall a. a -> Hook Pure a
 pure a = Hook \render -> render a
 
 -- | Given a `ComponentName` and a function to create a `ComponentDef` (from a
--- | render function `a -> ReactElement`), `mkHook` creates a `Hook a`. The name
--- | can be anything, but it’s recommended to use
--- | `uniqueNameFromCurrentCallStack` to create a unique name based on where the
--- | hook is called from in the stack trace. `uniqueNameFromCurrentCallStack`
--- | accepts a `skipFrames :: Int` argument to indicate how many frames back it
--- | should look for the call site of the hook, as well as a `prefix` argument
--- | that will be the prefix of the resulting `ComponentName`.
--- |
--- | It’s also recommended to create the name in a where clause and make your
--- | hook a function accepting one argument. Even if your hook takes more than
--- | one argument, you can put the rest o the arguments in a lambda in the
--- | function body:
--- |
--- | ```purs
--- | myHook x = \y z -> mkHook …
--- |   where
--- |     name = uniqueNameFromCurrentCallStack { skipFrames: 3, prefix: "MyHook" }
--- | ```
--- |
--- | This ensures that the number of frames to skip is predictably 3. If
--- | defining the function differently, a different number of frames can be
--- | passed. `uniqueNameFromCurrentCallStackTraced` can be used to help find the
--- | correct number.
--- |
--- | Finally, when creating a hook with `mkHook`, you’ll need to create a
--- | `HookType` by `foreign import`ing it.
+-- | render function `a -> ReactElement`), `mkHook` creates a `Hook a`. When
+-- | creating a hook with `mkHook`, you’ll need to create a `HookType` by
+-- | `foreign import`ing it.
 -- |
 -- | As an example of how to use `mkHook`, `useEffect` uses it like so:
 -- |
@@ -134,13 +108,11 @@ pure a = Hook \render -> render a
 -- |
 -- | useEffect :: Aff Unit -> Hook (UseEffect Unit) Unit
 -- | useEffect init =
--- |   mkHook name \render ->
+-- |   mkHook (ComponentName "UseEffect") \render ->
 -- |     { init: forkVoid init
 -- |     , update: \_ msg -> absurd msg
 -- |     , view: \_ _ -> render unit
 -- |     }
--- |   where
--- |     name = ComponentName $ genStableUUID { skipFrames: 3, prefix: "UseEffect" }
 -- | ```
 mkHook :: forall msg state t a. ComponentName -> ((a -> ReactElement) -> ComponentDef msg state) -> Hook t a
 mkHook name mkDef =
@@ -207,12 +179,4 @@ infixl 1 withHookCurried as =/>
 uniqueNameFromCurrentCallStack :: { skipFrames :: Int, prefix :: String } -> ComponentName
 uniqueNameFromCurrentCallStack = ComponentName <<< uniqueNameFromCurrentCallStack_
 
--- | Generates a `ComponentName` to be passed to `mkHook`, like
--- | `uniqueNameFromCurrentCallStack`, but logs the stack trace and specific
--- | line to the console.
-uniqueNameFromCurrentCallStackTraced :: DebugWarning => { skipFrames :: Int, prefix :: String } -> ComponentName
-uniqueNameFromCurrentCallStackTraced = ComponentName <<< uniqueNameFromCurrentCallStackTraced_
-
 foreign import uniqueNameFromCurrentCallStack_ :: { skipFrames :: Int, prefix :: String } -> String
-
-foreign import uniqueNameFromCurrentCallStackTraced_ :: { skipFrames :: Int, prefix :: String } -> String

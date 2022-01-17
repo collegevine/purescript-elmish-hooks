@@ -12,8 +12,8 @@ import Data.Maybe (Maybe(..))
 import Debug (class DebugWarning)
 import Effect.Aff (Aff)
 import Elmish (EffectFn1, ComponentDef, createElement, forkVoid, withTrace, (<?|))
-import Elmish.Component (ComponentName)
-import Elmish.Hooks.Type (Hook, HookType, mkHook, uniqueNameFromCurrentCallStack, uniqueNameFromCurrentCallStackTraced)
+import Elmish.Component (ComponentName(..))
+import Elmish.Hooks.Type (Hook, HookType, mkHook)
 import Elmish.React.Import (EmptyProps, ImportedReactComponent, ImportedReactComponentConstructorWithContent)
 import Elmish.Ref (Ref, deref, ref)
 
@@ -34,10 +34,7 @@ foreign import data UseEffect :: Type -> HookType
 -- |   Hooks.pure $ H.fragment $ todoView <$> todos
 -- | ```
 useEffect :: Aff Unit -> Hook (UseEffect Unit) Unit
-useEffect aff =
-  useEffect_ name identity unit $ const aff
-  where
-    name = uniqueNameFromCurrentCallStack { skipFrames: 3, prefix: "UseEffect" }
+useEffect runEffect = useEffect_ (ComponentName "UseEffect") identity unit $ const runEffect
 
 -- | This is like `useEffect`, but allows passing a value which, when it
 -- | changes, will trigger the effect to run again. E.g.:
@@ -53,26 +50,17 @@ useEffect aff =
 -- |   Hooks.pure H.button_ "" { onClick: setCount $ count + 1 } "Click me"
 -- | ```
 useEffect' :: forall a. Eq a => a -> (a -> Aff Unit) -> Hook (UseEffect a) Unit
-useEffect' deps = \runEffect ->
-  useEffect_ name identity deps runEffect
-  where
-    name = uniqueNameFromCurrentCallStack { skipFrames: 3, prefix: "UseEffectPrime" }
+useEffect' deps runEffect = useEffect_ (ComponentName "UseEffectPrime") identity deps runEffect
 
--- | A version of `useEffect` that logs info from the name-generating function.
--- | Intended to be used with qualified imports: `UseEffect.traced`.
+-- | A version of `useEffect` that logs messages, state changes and render
+-- | times. Intended to be used with qualified imports: `UseEffect.traced`.
 traced :: DebugWarning => Aff Unit -> Hook (UseEffect Unit) Unit
-traced runEffect =
-  useEffect_ name withTrace unit $ const runEffect
-  where
-    name = uniqueNameFromCurrentCallStackTraced { skipFrames: 3, prefix: "UseEffect_Traced" }
+traced runEffect = useEffect_ (ComponentName "UseEffect_Traced") withTrace unit $ const runEffect
 
--- | A version of `useEffect'` that logs info from the name-generating function.
--- | Intended to be used with qualified imports: `UseEffect.traced'`.
+-- | A version of `useEffect'` that logs messages, state changes and render
+-- | times. Intended to be used with qualified imports: `UseEffect.traced'`.
 traced' :: forall a. DebugWarning => Eq a => a -> (a -> Aff Unit) -> Hook (UseEffect a) Unit
-traced' deps = \runEffect ->
-  useEffect_ name withTrace deps runEffect
-  where
-    name = uniqueNameFromCurrentCallStackTraced { skipFrames: 3, prefix: "UseEffect_TracedPrime" }
+traced' deps runEffect = useEffect_ (ComponentName "UseEffect_TracedPrime") withTrace deps runEffect
 
 useEffect_ :: forall a.
   Eq a
