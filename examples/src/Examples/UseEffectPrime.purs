@@ -9,20 +9,21 @@ import Effect.Class (liftEffect)
 import Elmish (ReactElement)
 import Elmish.HTML.Styled as H
 import Elmish.Hooks (useState, withHooks)
+import Elmish.Hooks as Hooks
 import Elmish.Hooks.UseEffect (useEffect')
 import Web.HTML (window)
 import Web.HTML.HTMLDocument as HTMLDocument
 import Web.HTML.Window as Window
 
 view :: ReactElement
-view = withHooks do
+view = withHooks Hooks.do
   count /\ setCount <- useState 0
 
   useEffect' count \c -> liftEffect do
     doc <- Window.document =<< window
     HTMLDocument.setTitle ("You clicked " <> show c <> " times") doc
 
-  pure $
+  Hooks.pure $
     H.div "row mt-3"
     [ H.div "col-12 col-md-6 col-lg-4"
       [ H.h2 ""

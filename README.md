@@ -17,29 +17,26 @@ Hooks allow introducing local state or effects without writing a new component. 
 
 ```purs
 todos :: ReactElement
-todos = withHooks do
+todos = withHooks Hooks.do
   todos /\ setTodos <- useState []
 
   useEffect do
     todos <- API.fetchTodos
     liftEffect $ setTodos todos
 
-  pure $
+  Hooks.pure $
     H.fragment $ todoView <$> todos
 ```
-
-> **NOTE:** Hooks should always be used either:
->
-> 1. At the top level of a `withHooks` block, not inside any conditionals
-> 2. At the top level of a “custom hook”
 
 ### Custom Hooks
 
 Custom hooks can also be created. One way is to build on other hooks using the `Hook` monad:
 
 ```purs
-useLocalStorage :: String -> String -> Hook (String /\ Dispatch String)
-useLocalStorage key defaultValue = do
+type UseLocalStorage = UseState String <> UseEffect Unit <> Pure
+
+useLocalStorage :: String -> String -> Hook UseLocalStorage (String /\ Dispatch String)
+useLocalStorage key defaultValue = Hooks.do
   state /\ setState <- useState defaultValue
 
   useEffect $ liftEffect do
@@ -47,7 +44,7 @@ useLocalStorage key defaultValue = do
       Just v -> setState v
       Nothing -> setItem key defaultValue =<< localStorage =<< window
 
-  pure $ state /\ \v -> do
+  Hooks.pure $ state /\ \v -> do
     setState v
     setItem key v =<< localStorage =<< window
 ```
@@ -55,7 +52,9 @@ useLocalStorage key defaultValue = do
 A more flexible approach, when that doesn’t work, is to use the `mkHook` function provided by this library:
 
 ```purs
-useMousePosition :: String -> Hook (Maybe { x :: Number, y :: Number })
+foreign import data :: UseMousePosition :: HookType
+
+useMousePosition :: String -> Hook UseMousePosition (Maybe { x :: Number, y :: Number })
 useMousePosition className =
   mkHook name \render ->
     { init: pure Nothing

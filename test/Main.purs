@@ -9,6 +9,7 @@ import Elmish.Enzyme as Enzyme
 import Elmish.Enzyme.Adapter as Adapter
 import Elmish.HTML.Styled as H
 import Elmish.Hooks (useState, withHooks, (=/>), (==>))
+import Elmish.Hooks as Hooks
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual, shouldNotEqual)
 import Test.Spec.Assertions.String (shouldContain)
@@ -26,9 +27,9 @@ spec :: Spec Unit
 spec = do
   describe "naming" do
     let
-      component = do
+      component = Hooks.do
         _ <- useState ""
-        pure $ H.div "" "content"
+        Hooks.pure $ H.div "" "content"
 
       withHooksComponent = withHooks component
 
@@ -37,12 +38,12 @@ spec = do
         , H.div "with-hooks-2-parent" $ withHooks component
         , H.div "with-hooks-3-parent" withHooksComponent
         , H.div "with-hooks-4-parent" withHooksComponent
-        , H.div "with-hooks-5-parent" $ withHooks do
+        , H.div "with-hooks-5-parent" $ withHooks Hooks.do
             _ <- useState ""
-            pure $ H.div "" "content"
-        , H.div "with-hooks-6-parent" $ withHooks do
+            Hooks.pure $ H.div "" "content"
+        , H.div "with-hooks-6-parent" $ withHooks Hooks.do
             _ <- useState ""
-            pure $ H.div "" "content"
+            Hooks.pure $ H.div "" "content"
         ]
 
     describe "withHooks" do
