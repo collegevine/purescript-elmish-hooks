@@ -1,5 +1,6 @@
 module Elmish.Hooks.Type
-  ( AppendHookType
+  ( class ComposedHookTypes
+  , AppendHookType
   , Hook
   , HookType
   , Pure
@@ -8,21 +9,17 @@ module Elmish.Hooks.Type
   , discard
   , mkHook
   , pure
-  , uniqueNameFromCurrentCallStack
-  , uniqueNameFromCurrentCallStackTraced
   , withHook
   , withHookCurried
   , withHooks
   , (=/>)
   , (==>)
-  )
-  where
+  ) where
 
 import Prelude hiding (bind, discard, pure)
 
 import Data.Tuple (uncurry)
 import Data.Tuple.Nested (type (/\))
-import Debug (class DebugWarning)
 import Elmish (ReactElement, ComponentDef)
 import Elmish.Component (ComponentName(..), wrapWithLocalState)
 import Prelude as Prelude
@@ -42,17 +39,25 @@ import Prelude as Prelude
 -- | ```
 -- |
 -- | because the first block has a `HookType` of `UseState String <> UseState
--- | Int <> Pure` and the second is `UseState Int <> UseState String`. The same
--- | hooks need to be used in the same order for the hook types to match.
+-- | Int` and the second is `UseState Int <> UseState String`. The same hooks
+-- | need to be used in the same order for the hook types to match.
 foreign import data HookType :: Type
 
--- | The `HookType` of `pure`.
+-- | The `HookType` of `pure` — the identity of the `HookType` monoid.
 foreign import data Pure :: HookType
 
 -- | A type which allows appending two `HookType`s.
 foreign import data AppendHookType :: HookType -> HookType -> HookType
 
 infixr 1 type AppendHookType as <>
+
+-- | This class represents the type level function for composing `HookType`s,
+-- | with instances for appending the identity and arbitrary `HookType`s.
+class ComposedHookTypes (left :: HookType) (right :: HookType) (result :: HookType) | left right -> result
+
+instance ComposedHookTypes Pure right right
+else instance ComposedHookTypes left Pure left
+else instance ComposedHookTypes left right (left <> right)
 
 -- | The type of a hook, e.g. the result of calling `useState`. It turns out
 -- | that hooks can be modeled as a continuation, where the callback function
@@ -89,43 +94,29 @@ newtype Hook (t :: HookType) a = Hook ((a -> ReactElement) -> ReactElement)
 instance Functor (Hook t) where
   map f (Hook hook) = Hook \render -> hook (render <<< f)
 
-bind :: forall t t' a b. Hook t a -> (a -> Hook t' b) -> Hook (t <> t') b
+bind :: forall left right result a b.
+  ComposedHookTypes left right result
+  => Hook left a
+  -> (a -> Hook right b)
+  -> Hook result b
 bind (Hook hookA) k = Hook \render ->
   hookA \a -> case k a of Hook hookB -> hookB render
 
-discard :: forall t t' a b. Discard a => Hook t a -> (a -> Hook t' b) -> Hook (t <> t') b
+discard :: forall left right result a b.
+  Discard a
+  => ComposedHookTypes left right result
+  => Hook left a
+  -> (a -> Hook right b)
+  -> Hook result b
 discard = bind
 
 pure :: forall a. a -> Hook Pure a
 pure a = Hook \render -> render a
 
 -- | Given a `ComponentName` and a function to create a `ComponentDef` (from a
--- | render function `a -> ReactElement`), `mkHook` creates a `Hook a`. The name
--- | can be anything, but it’s recommended to use
--- | `uniqueNameFromCurrentCallStack` to create a unique name based on where the
--- | hook is called from in the stack trace. `uniqueNameFromCurrentCallStack`
--- | accepts a `skipFrames :: Int` argument to indicate how many frames back it
--- | should look for the call site of the hook, as well as a `prefix` argument
--- | that will be the prefix of the resulting `ComponentName`.
--- |
--- | It’s also recommended to create the name in a where clause and make your
--- | hook a function accepting one argument. Even if your hook takes more than
--- | one argument, you can put the rest o the arguments in a lambda in the
--- | function body:
--- |
--- | ```purs
--- | myHook x = \y z -> mkHook …
--- |   where
--- |     name = uniqueNameFromCurrentCallStack { skipFrames: 3, prefix: "MyHook" }
--- | ```
--- |
--- | This ensures that the number of frames to skip is predictably 3. If
--- | defining the function differently, a different number of frames can be
--- | passed. `uniqueNameFromCurrentCallStackTraced` can be used to help find the
--- | correct number.
--- |
--- | Finally, when creating a hook with `mkHook`, you’ll need to create a
--- | `HookType` by `foreign import`ing it.
+-- | render function `a -> ReactElement`), `mkHook` creates a `Hook a`. When
+-- | creating a hook with `mkHook`, you’ll need to create a `HookType` by
+-- | `foreign import`ing it.
 -- |
 -- | As an example of how to use `mkHook`, `useEffect` uses it like so:
 -- |
@@ -134,13 +125,11 @@ pure a = Hook \render -> render a
 -- |
 -- | useEffect :: Aff Unit -> Hook (UseEffect Unit) Unit
 -- | useEffect init =
--- |   mkHook name \render ->
+-- |   mkHook (ComponentName "UseEffect") \render ->
 -- |     { init: forkVoid init
 -- |     , update: \_ msg -> absurd msg
 -- |     , view: \_ _ -> render unit
 -- |     }
--- |   where
--- |     name = ComponentName $ genStableUUID { skipFrames: 3, prefix: "UseEffect" }
 -- | ```
 mkHook :: forall msg state t a. ComponentName -> ((a -> ReactElement) -> ComponentDef msg state) -> Hook t a
 mkHook name mkDef =
@@ -207,12 +196,4 @@ infixl 1 withHookCurried as =/>
 uniqueNameFromCurrentCallStack :: { skipFrames :: Int, prefix :: String } -> ComponentName
 uniqueNameFromCurrentCallStack = ComponentName <<< uniqueNameFromCurrentCallStack_
 
--- | Generates a `ComponentName` to be passed to `mkHook`, like
--- | `uniqueNameFromCurrentCallStack`, but logs the stack trace and specific
--- | line to the console.
-uniqueNameFromCurrentCallStackTraced :: DebugWarning => { skipFrames :: Int, prefix :: String } -> ComponentName
-uniqueNameFromCurrentCallStackTraced = ComponentName <<< uniqueNameFromCurrentCallStackTraced_
-
 foreign import uniqueNameFromCurrentCallStack_ :: { skipFrames :: Int, prefix :: String } -> String
-
-foreign import uniqueNameFromCurrentCallStackTraced_ :: { skipFrames :: Int, prefix :: String } -> String
