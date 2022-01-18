@@ -39,8 +39,8 @@ import Prelude as Prelude
 -- | ```
 -- |
 -- | because the first block has a `HookType` of `UseState String <> UseState
--- | Int <> Pure` and the second is `UseState Int <> UseState String`. The same
--- | hooks need to be used in the same order for the hook types to match.
+-- | Int` and the second is `UseState Int <> UseState String`. The same hooks
+-- | need to be used in the same order for the hook types to match.
 foreign import data HookType :: Type
 
 -- | The `HookType` of `pure`.
