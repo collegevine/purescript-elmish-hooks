@@ -1,5 +1,5 @@
 module Elmish.Hooks.Type
-  ( class AppendHookTypeClass
+  ( class ComposedHookTypes
   , AppendHookType
   , Hook
   , HookType
@@ -51,11 +51,13 @@ foreign import data AppendHookType :: HookType -> HookType -> HookType
 
 infixr 1 type AppendHookType as <>
 
-class AppendHookTypeClass (left :: HookType) (right :: HookType) (result :: HookType) | left right -> result
+-- | This class represents the type level function for composing `HookType`s,
+-- | with instances for appending the identity and arbitrary `HookType`s.
+class ComposedHookTypes (left :: HookType) (right :: HookType) (result :: HookType) | left right -> result
 
-instance AppendHookTypeClass Pure right right
-else instance AppendHookTypeClass left Pure left
-else instance AppendHookTypeClass left right (left <> right)
+instance ComposedHookTypes Pure right right
+else instance ComposedHookTypes left Pure left
+else instance ComposedHookTypes left right (left <> right)
 
 -- | The type of a hook, e.g. the result of calling `useState`. It turns out
 -- | that hooks can be modeled as a continuation, where the callback function
@@ -93,7 +95,7 @@ instance Functor (Hook t) where
   map f (Hook hook) = Hook \render -> hook (render <<< f)
 
 bind :: forall left right result a b.
-  AppendHookTypeClass left right result
+  ComposedHookTypes left right result
   => Hook left a
   -> (a -> Hook right b)
   -> Hook result b
@@ -102,7 +104,7 @@ bind (Hook hookA) k = Hook \render ->
 
 discard :: forall left right result a b.
   Discard a
-  => AppendHookTypeClass left right result
+  => ComposedHookTypes left right result
   => Hook left a
   -> (a -> Hook right b)
   -> Hook result b
