@@ -43,7 +43,7 @@ import Prelude as Prelude
 -- | need to be used in the same order for the hook types to match.
 foreign import data HookType :: Type
 
--- | The `HookType` of `pure`.
+-- | The `HookType` of `pure` — the identity of the `HookType` monoid.
 foreign import data Pure :: HookType
 
 -- | A type which allows appending two `HookType`s.
