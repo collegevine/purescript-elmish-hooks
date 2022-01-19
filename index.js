@@ -57009,8 +57009,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         map: function(f) {
           return function(v) {
             return function(render) {
-              return v(function($19) {
-                return render(f($19));
+              return v(function($21) {
+                return render(f($21));
               });
             };
           };
@@ -57018,6 +57018,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       };
       var composedHookTypesPure = {};
       var composedHookTypesPure1 = {};
+      var composedHookTypes$less$greater$less$greater = function(dictComposedHookTypes) {
+        return {};
+      };
       var composedHookTypes$less$greater = {};
       var withHooks$prime = function(name) {
         return function(v) {
@@ -57030,8 +57033,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           })(Data_Unit.unit);
         };
       };
-      var uniqueNameFromCurrentCallStack = function($20) {
-        return Elmish_Component.ComponentName($foreign.uniqueNameFromCurrentCallStack_($20));
+      var uniqueNameFromCurrentCallStack = function($22) {
+        return Elmish_Component.ComponentName($foreign.uniqueNameFromCurrentCallStack_($22));
       };
       var withHook = function(hook) {
         var name = uniqueNameFromCurrentCallStack({
@@ -57097,6 +57100,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         withHooks,
         composedHookTypesPure1,
         composedHookTypesPure,
+        "composedHookTypes<><>": composedHookTypes$less$greater$less$greater,
         "composedHookTypes<>": composedHookTypes$less$greater,
         functorHook
       };
