@@ -55,8 +55,22 @@ infixr 1 type AppendHookType as <>
 -- | with instances for appending the identity and arbitrary `HookType`s.
 class ComposedHookTypes (left :: HookType) (right :: HookType) (result :: HookType) | left right -> result
 
-instance ComposedHookTypes Pure right right
-else instance ComposedHookTypes left Pure left
+-- Identity 1: Pure <> t = t
+instance ComposedHookTypes Pure t t
+-- Identity 2: t <> Pure = t
+else instance ComposedHookTypes t Pure t
+-- Associativity: Because the `<>` operator is right associative, this
+-- recursively “unnests” the right-most operand of the left argument,
+-- accumulating the result into `right'`. The left-most piece is already
+-- guaranteed to be the smallest piece due to the right associativity of `<>`,
+-- so it adds that to `right'`. E.g.:
+--
+-- (a <> (b <> c)) <> (d <> (e <> f))
+-- = a <> ((b <> c) <> (d <> (e <> f)))
+-- = a <> (b <> (c <> (d <> (e <> f)))) <- grouped correctly
+else instance ComposedHookTypes l2 right right' => ComposedHookTypes (l1 <> l2) right (l1 <> right')
+-- This is the base, non-identity case. When `left` is not a composition, it
+-- appends the two arguments with `<>`.
 else instance ComposedHookTypes left right (left <> right)
 
 -- | The type of a hook, e.g. the result of calling `useState`. It turns out
