@@ -3,13 +3,14 @@ module Test.Main where
 import Prelude
 
 import Effect (Effect)
-import Effect.Aff (launchAff_)
+import Effect.Aff (Aff, launchAff_)
 import Elmish.Enzyme (childAt, find, name, testElement, (>>))
 import Elmish.Enzyme as Enzyme
 import Elmish.Enzyme.Adapter as Adapter
 import Elmish.HTML.Styled as H
-import Elmish.Hooks (useState, withHooks, (=/>), (==>))
+import Elmish.Hooks (useEffect, useState, withHooks, (=/>), (==>))
 import Elmish.Hooks as Hooks
+import Elmish.Hooks.UseEffect (useEffect')
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual, shouldNotEqual)
 import Test.Spec.Assertions.String (shouldContain)
@@ -111,3 +112,45 @@ spec = do
           withHook4Name <- find ".with-hook-4-parent" >> childAt 0 >> name
           withHook3Name `shouldContain` "WithHookCurried"
           withHook3Name `shouldEqual` withHook4Name
+
+    describe "ComposedHookTypes" do
+      it "is associative" do
+        let
+          hook1 = Hooks.do
+            Hooks.do
+              Hooks.do
+                _ <- useState ""
+                Hooks.do
+                  useEffect $ pure unit
+                  useEffect' 0 $ const $ pure unit
+              _ <- useState false
+              useEffect $ pure unit
+            useEffect' "" $ const $ pure unit
+            Hooks.do
+              _ <- useState 0
+              useEffect $ pure unit
+
+          hook2 = Hooks.do
+            _ <- useState ""
+            useEffect $ pure unit
+            useEffect' 0 $ const $ pure unit
+            _ <- useState false
+            useEffect $ pure unit
+            useEffect' "" $ const $ pure unit
+            _ <- useState 0
+            useEffect $ pure unit
+
+        assertSameType hook1 hook2
+
+      it "has an identity" do
+        let
+          hook1 = Hooks.do
+            x <- useState ""
+            Hooks.pure x
+
+          hook2 = useState ""
+
+        assertSameType hook1 hook2
+
+assertSameType :: forall a. a -> a -> Aff Unit
+assertSameType _ _ = pure unit
