@@ -52,7 +52,7 @@ useLocalStorage key defaultValue = Hooks.do
 A more flexible approach, when that doesn’t work, is to use the `mkHook` function provided by this library:
 
 ```purs
-foreign import data :: UseMousePosition :: HookType
+foreign import data :: UseMousePosition :: HookType -> HookType
 
 useMousePosition :: String -> Hook UseMousePosition (Maybe { x :: Number, y :: Number })
 useMousePosition className =

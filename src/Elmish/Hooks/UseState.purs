@@ -13,7 +13,7 @@ import Elmish (ComponentDef, Dispatch, withTrace)
 import Elmish.Component (ComponentName(..))
 import Elmish.Hooks.Type (Hook, HookType, mkHook)
 
-foreign import data UseState :: Type -> HookType
+foreign import data UseState :: Type -> HookType -> HookType
 
 -- | The `useState` hook takes an initial state and returns a `Hook`
 -- | encapsulating the current state and a `setState` function. E.g.:

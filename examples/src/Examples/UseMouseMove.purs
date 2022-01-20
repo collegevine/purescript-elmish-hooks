@@ -37,7 +37,7 @@ view =
               H.empty
   ]
 
-foreign import data UseMousePosition :: HookType
+foreign import data UseMousePosition :: HookType -> HookType
 
 useMousePosition :: String -> Hook UseMousePosition (Maybe { x :: Number, y :: Number })
 useMousePosition className =

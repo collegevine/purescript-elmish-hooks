@@ -17,7 +17,7 @@ import Elmish.Hooks.Type (Hook, HookType, mkHook)
 import Elmish.React.Import (EmptyProps, ImportedReactComponent, ImportedReactComponentConstructorWithContent)
 import Elmish.Ref (Ref, deref, ref)
 
-foreign import data UseEffect :: Type -> HookType
+foreign import data UseEffect :: Type -> HookType -> HookType
 
 -- | The `useEffect` hook takes an effect (`Aff`) to run and runs it in the
 -- | `init` of the resulting component. E.g.:
