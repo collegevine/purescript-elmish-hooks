@@ -2,7 +2,7 @@ module Elmish.Hooks.Type
   ( class ComposedHookTypes
   , AppendHookType
   , Hook, Hook'
-  , HookType
+  , HookType, HookType'
   , Pure
   , type (<>)
   , bind
@@ -41,19 +41,21 @@ import Prelude as Prelude
 -- | because the first block has a `HookType` of `UseState String <> UseState
 -- | Int` and the second is `UseState Int <> UseState String`. The same hooks
 -- | need to be used in the same order for the hook types to match.
-foreign import data HookType :: Type
+foreign import data HookType' :: Type
+
+type HookType = HookType' -> HookType'
 
 -- | The `HookType` of `pure` — the identity of the `HookType` monoid.
-foreign import data Pure :: HookType
+foreign import data Pure :: HookType'
 
 -- | A type which allows appending `HookType`s via composition.
-type AppendHookType (h1 :: HookType -> HookType) (h2 :: HookType -> HookType) t = h1 (h2 t)
+type AppendHookType (h1 :: HookType) (h2 :: HookType) t = h1 (h2 t)
 
 infixr 6 type AppendHookType as <>
 
--- | This class represents the type level function for composing `HookType`s,
--- | with instances for appending the identity and arbitrary `HookType`s.
-class ComposedHookTypes (left :: HookType) (right :: HookType) (result :: HookType) | left right -> result
+-- | This class represents the type level function for composing `HookType'`s,
+-- | with instances for appending the identity and arbitrary `HookType'`s.
+class ComposedHookTypes (left :: HookType') (right :: HookType') (result :: HookType') | left right -> result
 
 -- Base case 1: Pure <> t = t
 instance ComposedHookTypes Pure t t
@@ -89,7 +91,7 @@ else instance ComposedHookTypes l2 right right' => ComposedHookTypes (l1 l2) rig
 -- |
 -- | Finally, to make sure we don’t use two hooks with different state-types in
 -- | a conditional (which could cause unexpected issues for React) we have a
--- | `HookType` parameter, which accumulates when we call `bind`. For this we
+-- | `HookType'` parameter, which accumulates when we call `bind`. For this we
 -- | need to use qualified do notation:
 -- |
 -- | ```purs
@@ -97,11 +99,11 @@ else instance ComposedHookTypes l2 right right' => ComposedHookTypes (l1 l2) rig
 -- |   foo /\ setFoo <- useState ""
 -- |   Hooks.pure …
 -- | ```
-data Hook' (t :: HookType) a = Hook ((a -> ReactElement) -> ReactElement)
+data Hook' (t :: HookType') a = Hook ((a -> ReactElement) -> ReactElement)
 type role Hook' nominal representational
 
 -- | A Convenient wrapper which applies `Pure` to the given hook type.
-type Hook (t :: HookType -> HookType) a = Hook' (t Pure) a
+type Hook (t :: HookType) a = Hook' (t Pure) a
 
 instance Functor (Hook' t) where
   map f (Hook hook) = Hook \render -> hook (render <<< f)
