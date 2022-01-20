@@ -46,7 +46,7 @@ foreign import data HookType :: Type
 -- | The `HookType` of `pure` — the identity of the `HookType` monoid.
 foreign import data Pure :: HookType
 
--- | A type which allows appending `HookType`s via type application.
+-- | A type which allows appending `HookType`s via composition.
 type AppendHookType (h1 :: HookType -> HookType) (h2 :: HookType -> HookType) t = h1 (h2 t)
 
 infixr 6 type AppendHookType as <>
