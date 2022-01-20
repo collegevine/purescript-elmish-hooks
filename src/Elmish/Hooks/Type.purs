@@ -53,7 +53,7 @@ infixr 6 type AppendHookType as <>
 
 -- | This class represents the type level function for composing `HookType`s,
 -- | with instances for appending the identity and arbitrary `HookType`s.
-class ComposedHookTypes (a :: HookType) (b :: HookType) (c :: HookType) | a b -> c
+class ComposedHookTypes (left :: HookType) (right :: HookType) (result :: HookType) | left right -> result
 
 -- Base case 1: Pure <> t = t
 instance ComposedHookTypes Pure t t
