@@ -1,8 +1,8 @@
 module Elmish.Hooks.Type
   ( class ComposedHookTypes
   , AppendHookType
-  , Hook
-  , HookType
+  , Hook, Hook'
+  , HookType, HookType'
   , Pure
   , type (<>)
   , bind
@@ -41,37 +41,33 @@ import Prelude as Prelude
 -- | because the first block has a `HookType` of `UseState String <> UseState
 -- | Int` and the second is `UseState Int <> UseState String`. The same hooks
 -- | need to be used in the same order for the hook types to match.
-foreign import data HookType :: Type
+foreign import data HookType' :: Type
+
+type HookType = HookType' -> HookType'
 
 -- | The `HookType` of `pure` — the identity of the `HookType` monoid.
-foreign import data Pure :: HookType
+foreign import data Pure :: HookType'
 
--- | A type which allows appending two `HookType`s.
-foreign import data AppendHookType :: HookType -> HookType -> HookType
+-- | A type which allows appending `HookType`s via type application.
+type AppendHookType (h :: HookType) t = h t
 
-infixr 1 type AppendHookType as <>
+infixr 6 type AppendHookType as <>
 
--- | This class represents the type level function for composing `HookType`s,
--- | with instances for appending the identity and arbitrary `HookType`s.
-class ComposedHookTypes (left :: HookType) (right :: HookType) (result :: HookType) | left right -> result
+-- | This class represents the type level function for composing `HookType'`s,
+-- | with instances for appending the identity and arbitrary `HookType'`s.
+class ComposedHookTypes (left :: HookType') (right :: HookType') (result :: HookType') | left right -> result
 
--- Identity 1: Pure <> t = t
+-- Base case 1: Pure <> t = t
 instance ComposedHookTypes Pure t t
--- Identity 2: t <> Pure = t
+-- Base case 2: t <> Pure = t
 else instance ComposedHookTypes t Pure t
--- Associativity: Because the `<>` operator is right associative, this
--- recursively “unnests” the right-most operand of the left argument,
--- accumulating the result into `right'`. The left-most piece is already
--- guaranteed to be the smallest piece due to the right associativity of `<>`,
--- so it adds that to `right'`. E.g.:
+-- Recursive case: Recursively “unnests” the right-most operand of the left
+-- argument, accumulating the result into `right'`. E.g.:
 --
 -- (a <> (b <> c)) <> (d <> (e <> f))
 -- = a <> ((b <> c) <> (d <> (e <> f)))
 -- = a <> (b <> (c <> (d <> (e <> f)))) <- grouped correctly
 else instance ComposedHookTypes l2 right right' => ComposedHookTypes (l1 <> l2) right (l1 <> right')
--- This is the base, non-identity case. When `left` is not a composition, it
--- appends the two arguments with `<>`.
-else instance ComposedHookTypes left right (left <> right)
 
 -- | The type of a hook, e.g. the result of calling `useState`. It turns out
 -- | that hooks can be modeled as a continuation, where the callback function
@@ -95,7 +91,7 @@ else instance ComposedHookTypes left right (left <> right)
 -- |
 -- | Finally, to make sure we don’t use two hooks with different state-types in
 -- | a conditional (which could cause unexpected issues for React) we have a
--- | `HookType` parameter, which accumulates when we call `bind`. For this we
+-- | `HookType'` parameter, which accumulates when we call `bind`. For this we
 -- | need to use qualified do notation:
 -- |
 -- | ```purs
@@ -103,28 +99,32 @@ else instance ComposedHookTypes left right (left <> right)
 -- |   foo /\ setFoo <- useState ""
 -- |   Hooks.pure …
 -- | ```
-newtype Hook (t :: HookType) a = Hook ((a -> ReactElement) -> ReactElement)
+data Hook' (t :: HookType') a = Hook ((a -> ReactElement) -> ReactElement)
+type role Hook' nominal representational
 
-instance Functor (Hook t) where
+-- | A Convenient wrapper which applies `Pure` to the given hook type.
+type Hook (t :: HookType) a = Hook' (t Pure) a
+
+instance Functor (Hook' t) where
   map f (Hook hook) = Hook \render -> hook (render <<< f)
 
-bind :: forall left right result a b.
-  ComposedHookTypes left right result
-  => Hook left a
-  -> (a -> Hook right b)
-  -> Hook result b
+bind :: forall ta tb tr a b.
+  ComposedHookTypes ta tb tr
+  => Hook' ta a
+  -> (a -> Hook' tb b)
+  -> Hook' tr b
 bind (Hook hookA) k = Hook \render ->
   hookA \a -> case k a of Hook hookB -> hookB render
 
-discard :: forall left right result a b.
+discard :: forall ta tb tr a b.
   Discard a
-  => ComposedHookTypes left right result
-  => Hook left a
-  -> (a -> Hook right b)
-  -> Hook result b
+  => ComposedHookTypes ta tb tr
+  => Hook' ta a
+  -> (a -> Hook' tb b)
+  -> Hook' tr b
 discard = bind
 
-pure :: forall a. a -> Hook Pure a
+pure :: forall a. a -> Hook' Pure a
 pure a = Hook \render -> render a
 
 -- | Given a `ComponentName` and a function to create a `ComponentDef` (from a
@@ -145,7 +145,7 @@ pure a = Hook \render -> render a
 -- |     , view: \_ _ -> render unit
 -- |     }
 -- | ```
-mkHook :: forall msg state t a. ComponentName -> ((a -> ReactElement) -> ComponentDef msg state) -> Hook t a
+mkHook :: forall msg state t a. ComponentName -> ((a -> ReactElement) -> ComponentDef msg state) -> Hook' t a
 mkHook name mkDef =
   Hook \render -> wrapWithLocalState name mkDef render
 
@@ -158,12 +158,12 @@ mkHook name mkDef =
 -- |   name /\ setName <- useState ""
 -- |   Hooks.pure $ H.input_ "" { value: name, onChange: setName <?| eventTargetValue }
 -- | ```
-withHooks :: forall t. Hook t ReactElement -> ReactElement
+withHooks :: forall t. Hook' t ReactElement -> ReactElement
 withHooks hook = withHooks' name hook
   where
     name = uniqueNameFromCurrentCallStack { skipFrames: 3, prefix: "WithHooks" }
 
-withHooks' :: forall t. ComponentName -> Hook t ReactElement -> ReactElement
+withHooks' :: forall t. ComponentName -> Hook' t ReactElement -> ReactElement
 withHooks' name (Hook hook) =
   unit # wrapWithLocalState name \_ ->
     { init: Prelude.pure unit
@@ -182,7 +182,7 @@ withHooks' name (Hook hook) =
 -- | view = useState "" ==> \(name /\ setName) ->
 -- |   H.input_ "" { value: name, onChange: setName <?| eventTargetValue }
 -- | ```
-withHook :: forall t a. Hook t a -> (a -> ReactElement) -> ReactElement
+withHook :: forall t a. Hook' t a -> (a -> ReactElement) -> ReactElement
 withHook hook = \render -> withHooks' name $ render <$> hook
   where
     name = uniqueNameFromCurrentCallStack { skipFrames: 3, prefix: "WithHook" }
@@ -199,7 +199,7 @@ infixl 1 withHook as ==>
 -- | view = useState "" =/> \name setName ->
 -- |   H.input_ "" { value: name, onChange: setName <?| eventTargetValue }
 -- | ```
-withHookCurried :: forall t a b. Hook t (a /\ b) -> (a -> b -> ReactElement) -> ReactElement
+withHookCurried :: forall t a b. Hook' t (a /\ b) -> (a -> b -> ReactElement) -> ReactElement
 withHookCurried hook = \render -> withHooks' name $ (uncurry render) <$> hook
   where
     name = uniqueNameFromCurrentCallStack { skipFrames: 3, prefix: "WithHookCurried" }

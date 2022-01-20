@@ -21,6 +21,6 @@ module Elmish.Hooks
   , module UseState
   ) where
 
-import Elmish.Hooks.Type (Hook, HookType, Pure, type (<>), bind, discard, mkHook, pure, withHooks, (==>), (=/>)) as Type
+import Elmish.Hooks.Type (Hook, HookType, type (<>), bind, discard, mkHook, pure, withHooks, (==>), (=/>)) as Type
 import Elmish.Hooks.UseEffect (UseEffect, useEffect) as UseEffect
 import Elmish.Hooks.UseState (UseState, useState) as UseState

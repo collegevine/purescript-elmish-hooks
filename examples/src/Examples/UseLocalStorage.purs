@@ -34,7 +34,7 @@ view = withHooks Hooks.do
       ]
     ]
 
-type UseLocalStorage = UseState String <> UseEffect Unit
+type UseLocalStorage t = UseState String <> UseEffect Unit <> t
 
 useLocalStorage :: String -> String -> Hook UseLocalStorage (String /\ Dispatch String)
 useLocalStorage key defaultValue = Hooks.do
