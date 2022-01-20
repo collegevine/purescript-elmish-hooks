@@ -48,8 +48,8 @@ type HookType = HookType' -> HookType'
 -- | The `HookType` of `pure` — the identity of the `HookType` monoid.
 foreign import data Pure :: HookType'
 
--- | A type which allows appending `HookType`s via composition.
-type AppendHookType (h1 :: HookType) (h2 :: HookType) t = h1 (h2 t)
+-- | A type which allows appending `HookType`s via type application.
+type AppendHookType (h :: HookType) t = h t
 
 infixr 6 type AppendHookType as <>
 
@@ -64,10 +64,10 @@ else instance ComposedHookTypes t Pure t
 -- Recursive case: Recursively “unnests” the right-most operand of the left
 -- argument, accumulating the result into `right'`. E.g.:
 --
--- (a (b c)) <> (d (e f))
--- = a ((b c) <> (d (e f)))
--- = a (b (c (d (e f)))) <- grouped correctly
-else instance ComposedHookTypes l2 right right' => ComposedHookTypes (l1 l2) right (l1 right')
+-- (a <> (b <> c)) <> (d <> (e <> f))
+-- = a <> ((b <> c) <> (d <> (e <> f)))
+-- = a <> (b <> (c <> (d <> (e <> f)))) <- grouped correctly
+else instance ComposedHookTypes l2 right right' => ComposedHookTypes (l1 <> l2) right (l1 <> right')
 
 -- | The type of a hook, e.g. the result of calling `useState`. It turns out
 -- | that hooks can be modeled as a continuation, where the callback function
