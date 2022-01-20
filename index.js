@@ -57005,14 +57005,24 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var Data_Unit = require_Data3();
       var Data_Void = require_Data5();
       var Elmish_Component = require_Elmish4();
-      var functorHook = {
+      var Hook = function() {
+        function Hook2(value0) {
+          this.value0 = value0;
+        }
+        ;
+        Hook2.create = function(value0) {
+          return new Hook2(value0);
+        };
+        return Hook2;
+      }();
+      var functorHook$prime = {
         map: function(f) {
           return function(v) {
-            return function(render) {
-              return v(function($21) {
-                return render(f($21));
+            return new Hook(function(render) {
+              return v.value0(function($24) {
+                return render(f($24));
               });
-            };
+            });
           };
         }
       };
@@ -57021,20 +57031,19 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var composedHookTypes$less$greater$less$greater = function(dictComposedHookTypes) {
         return {};
       };
-      var composedHookTypes$less$greater = {};
       var withHooks$prime = function(name) {
         return function(v) {
           return Elmish_Component.wrapWithLocalState(name)(function(v1) {
             return {
               init: Control_Applicative.pure(Elmish_Component.trApplicative)(Data_Unit.unit),
               update: Data_Function["const"](Data_Void.absurd),
-              view: Data_Function["const"](Data_Function["const"](v(Control_Category.identity(Control_Category.categoryFn))))
+              view: Data_Function["const"](Data_Function["const"](v.value0(Control_Category.identity(Control_Category.categoryFn))))
             };
           })(Data_Unit.unit);
         };
       };
-      var uniqueNameFromCurrentCallStack = function($22) {
-        return Elmish_Component.ComponentName($foreign.uniqueNameFromCurrentCallStack_($22));
+      var uniqueNameFromCurrentCallStack = function($25) {
+        return Elmish_Component.ComponentName($foreign.uniqueNameFromCurrentCallStack_($25));
       };
       var withHook = function(hook) {
         var name = uniqueNameFromCurrentCallStack({
@@ -57042,7 +57051,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           prefix: "WithHook"
         });
         return function(render) {
-          return withHooks$prime(name)(Data_Functor.map(functorHook)(render)(hook));
+          return withHooks$prime(name)(Data_Functor.map(functorHook$prime)(render)(hook));
         };
       };
       var withHookCurried = function(hook) {
@@ -57051,7 +57060,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           prefix: "WithHookCurried"
         });
         return function(render) {
-          return withHooks$prime(name)(Data_Functor.map(functorHook)(Data_Tuple.uncurry(render))(hook));
+          return withHooks$prime(name)(Data_Functor.map(functorHook$prime)(Data_Tuple.uncurry(render))(hook));
         };
       };
       var withHooks = function(hook) {
@@ -57062,26 +57071,26 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         return withHooks$prime(name)(hook);
       };
       var pure = function(a) {
-        return function(render) {
+        return new Hook(function(render) {
           return render(a);
-        };
+        });
       };
       var mkHook = function(name) {
         return function(mkDef) {
-          return function(render) {
+          return new Hook(function(render) {
             return Elmish_Component.wrapWithLocalState(name)(mkDef)(render);
-          };
+          });
         };
       };
       var bind = function(dictComposedHookTypes) {
         return function(v) {
           return function(k) {
-            return function(render) {
-              return v(function(a) {
+            return new Hook(function(render) {
+              return v.value0(function(a) {
                 var v1 = k(a);
-                return v1(render);
+                return v1.value0(render);
               });
-            };
+            });
           };
         };
       };
@@ -57101,8 +57110,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         composedHookTypesPure1,
         composedHookTypesPure,
         "composedHookTypes<><>": composedHookTypes$less$greater$less$greater,
-        "composedHookTypes<>": composedHookTypes$less$greater,
-        functorHook
+        "functorHook'": functorHook$prime
       };
     }
   });
