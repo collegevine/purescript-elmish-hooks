@@ -1,4 +1,4 @@
-import stackTraceParser from 'stacktrace-parser';
+import * as stackTraceParser from 'stacktrace-parser';
 
 export function uniqueNameFromCurrentCallStack_({ skipFrames, prefix }) {
   const stack = new Error().stack
