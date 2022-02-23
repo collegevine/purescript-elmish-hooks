@@ -1,6 +1,6 @@
 let upstream =
-      https://raw.githubusercontent.com/purescript/package-sets/psc-0.14.5-20220102/src/packages.dhall sha256:17ca27f650e91813019dd8c21595b3057d6f4986118d22205bdc7d6ed1ca28e8
+      https://raw.githubusercontent.com/working-group-purescript-es/package-sets/main/packages.dhall
+        sha256:bd4871410dc601d8d634ff1b09bbcdb048c8eb192b1cbbfc0f3271e92329d363
 
 in  upstream
-  with elmish.version = "v0.5.8"
-  with elmish-enzyme.version = "v0.0.3"
+  with metadata.version = "v0.15.0"

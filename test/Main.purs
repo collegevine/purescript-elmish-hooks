@@ -4,6 +4,7 @@ import Prelude
 
 import Effect (Effect)
 import Effect.Aff (Aff, launchAff_)
+import Effect.Class (liftEffect)
 import Elmish.Enzyme (childAt, find, name, testElement, (>>))
 import Elmish.Enzyme as Enzyme
 import Elmish.Enzyme.Adapter as Adapter
@@ -20,9 +21,10 @@ import Test.Spec.Runner (runSpec)
 foreign import _configureJsDomViaFfi :: Type
 
 main :: Effect Unit
-main = do
-  Enzyme.configure Adapter.unofficialReact_17
-  launchAff_ $ runSpec [specReporter] spec
+main = launchAff_ do
+  adapter <- Adapter.unofficialReact_17
+  liftEffect $ Enzyme.configure adapter
+  runSpec [specReporter] spec
 
 spec :: Spec Unit
 spec = do
