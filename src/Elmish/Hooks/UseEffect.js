@@ -1,4 +1,4 @@
-const React = require("react")
+import React from "react";
 
 class UseEffectLifeCycles extends React.Component {
   componentDidUpdate(prevProps) {
@@ -10,4 +10,4 @@ class UseEffectLifeCycles extends React.Component {
   }
 }
 
-exports.useEffectLifeCycles_ = UseEffectLifeCycles
+export {UseEffectLifeCycles as useEffectLifeCycles_};
