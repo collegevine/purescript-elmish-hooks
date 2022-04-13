@@ -37,6 +37,8 @@ type Ref = Maybe HTMLElement /\ (EffectFn1 HTMLElement Unit)
 useRef :: Hook UseRef Ref
 useRef = Hooks.do
   ref /\ setRef <- useState Nothing
-  Hooks.pure $ ref /\ setRef <?| \r -> if (eqByReference r <$> ref) == Just true then Nothing else Just (Just r)
+  Hooks.pure $ ref /\ setRef <?| \r -> case eqByReference r <$> ref of
+    Just true -> Nothing
+    _ -> Just $ Just r
 
 foreign import eqByReference :: forall a. a -> a -> Boolean
