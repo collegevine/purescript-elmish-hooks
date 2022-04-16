@@ -14,7 +14,7 @@ import Effect.Aff (Aff)
 import Elmish (EffectFn1, ComponentDef, createElement, forkVoid, withTrace, (<?|))
 import Elmish.Component (ComponentName(..))
 import Elmish.Hooks.Type (Hook, HookType, mkHook)
-import Elmish.React.Import (EmptyProps, ImportedReactComponent, ImportedReactComponentConstructorWithContent)
+import Elmish.React.Import (ImportedReactComponent, ImportedReactComponentConstructorWithContent)
 import Elmish.Ref (Ref, deref, ref)
 
 foreign import data UseEffect :: Type -> HookType
@@ -89,13 +89,12 @@ useEffect_ name f deps runEffect =
           render unit
     }
 
-type Props deps r =
+type Props deps =
   ( componentDidUpdate :: EffectFn1 (Ref "deps" deps) Unit
   , deps :: Ref "deps" deps
-  | r
   )
 
-useEffectLifeCycles :: forall deps. ImportedReactComponentConstructorWithContent (Props deps) EmptyProps
+useEffectLifeCycles :: forall deps. ImportedReactComponentConstructorWithContent (Props deps)
 useEffectLifeCycles = createElement useEffectLifeCycles_
 
 foreign import useEffectLifeCycles_ :: ImportedReactComponent
