@@ -7,7 +7,6 @@
   , "prelude"
   , "psci-support"
   , "tuples"
-  , "web-html"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs" ]
