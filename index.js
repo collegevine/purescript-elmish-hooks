@@ -39343,13 +39343,96 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }
   });
 
-  // output/Elmish.React/index.js
+  // output/Elmish.React.Ref/foreign.js
+  var require_foreign33 = __commonJS({
+    "output/Elmish.React.Ref/foreign.js"(exports) {
+      exports.eqByReference = (a) => (b) => a === b;
+    }
+  });
+
+  // output/Elmish.Dispatch/index.js
   var require_Elmish = __commonJS({
+    "output/Elmish.Dispatch/index.js"(exports, module) {
+      "use strict";
+      var Control_Applicative = require_Control4();
+      var Data_Maybe = require_Data15();
+      var Data_Unit = require_Data3();
+      var Effect = require_Effect();
+      var Effect_Uncurried = require_Effect8();
+      var handleMaybe = function(dispatch) {
+        return function(fn) {
+          return Effect_Uncurried.mkEffectFn1(function() {
+            var $0 = Data_Maybe.maybe(Control_Applicative.pure(Effect.applicativeEffect)(Data_Unit.unit))(dispatch);
+            return function($1) {
+              return $0(fn($1));
+            };
+          }());
+        };
+      };
+      var handle = function(dispatch) {
+        return function(fn) {
+          return function($2) {
+            return dispatch(fn($2))();
+          };
+        };
+      };
+      module.exports = {
+        handle,
+        handleMaybe,
+        mkEffectFn1: Effect_Uncurried.mkEffectFn1,
+        mkEffectFn2: Effect_Uncurried.mkEffectFn2
+      };
+    }
+  });
+
+  // output/Elmish.React.Ref/index.js
+  var require_Elmish_React = __commonJS({
+    "output/Elmish.React.Ref/index.js"(exports, module) {
+      "use strict";
+      var $foreign = require_foreign33();
+      var Data_Boolean = require_Data();
+      var Data_Maybe = require_Data15();
+      var Data_Nullable = require_Data30();
+      var Elmish_Dispatch = require_Elmish();
+      var canPassToJavaScriptRef = {};
+      var callbackRef = function(ref) {
+        return function(setRef) {
+          return Elmish_Dispatch.handleMaybe(setRef)(function(ref$prime) {
+            var v = Data_Nullable.toMaybe(ref$prime);
+            if (ref instanceof Data_Maybe.Nothing && v instanceof Data_Maybe.Nothing) {
+              return Data_Maybe.Nothing.value;
+            }
+            ;
+            if (ref instanceof Data_Maybe.Just && v instanceof Data_Maybe.Just) {
+              if ($foreign.eqByReference(ref.value0)(v.value0)) {
+                return Data_Maybe.Nothing.value;
+              }
+              ;
+              if (Data_Boolean.otherwise) {
+                return Data_Maybe.Just.create(new Data_Maybe.Just(v.value0));
+              }
+              ;
+            }
+            ;
+            return new Data_Maybe.Just(v);
+          });
+        };
+      };
+      module.exports = {
+        callbackRef,
+        canPassToJavaScriptRef
+      };
+    }
+  });
+
+  // output/Elmish.React/index.js
+  var require_Elmish2 = __commonJS({
     "output/Elmish.React/index.js"(exports, module) {
       "use strict";
       var $foreign = require_foreign31();
       var Control_Category = require_Control2();
       var Effect_Uncurried = require_Effect8();
+      var Elmish_React_Ref = require_Elmish_React();
       var validReactPropsRecord = function(dictCanPassToJavaScript) {
         return {};
       };
@@ -39411,13 +39494,14 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         reactChildrenString,
         reactChildrenSingle,
         tojsReactElement,
-        renderToString: $foreign.renderToString
+        renderToString: $foreign.renderToString,
+        callbackRef: Elmish_React_Ref.callbackRef
       };
     }
   });
 
   // output/Elmish.State/index.js
-  var require_Elmish2 = __commonJS({
+  var require_Elmish3 = __commonJS({
     "output/Elmish.State/index.js"(exports, module) {
       "use strict";
       var Control_Applicative = require_Control4();
@@ -39427,7 +39511,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var Data_Unit = require_Data3();
       var Effect = require_Effect();
       var Effect_Ref = require_Effect5();
-      var Elmish_React = require_Elmish();
+      var Elmish_React = require_Elmish2();
       var localState = function(v) {
         return {
           initialize: function(component) {
@@ -39476,7 +39560,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Elmish.Trace/foreign.js
-  var require_foreign33 = __commonJS({
+  var require_foreign34 = __commonJS({
     "output/Elmish.Trace/foreign.js"(exports) {
       exports.traceTime = function(name) {
         return function(f) {
@@ -39491,10 +39575,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Elmish.Trace/index.js
-  var require_Elmish3 = __commonJS({
+  var require_Elmish4 = __commonJS({
     "output/Elmish.Trace/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign33();
+      var $foreign = require_foreign34();
       module.exports = {
         traceTime: $foreign.traceTime
       };
@@ -39502,7 +39586,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Elmish.Component/index.js
-  var require_Elmish4 = __commonJS({
+  var require_Elmish5 = __commonJS({
     "output/Elmish.Component/index.js"(exports, module) {
       "use strict";
       var $foreign = require_foreign17();
@@ -39518,8 +39602,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var Effect = require_Effect();
       var Effect_Aff = require_Effect7();
       var Effect_Class = require_Effect2();
-      var Elmish_State = require_Elmish2();
-      var Elmish_Trace = require_Elmish3();
+      var Elmish_State = require_Elmish3();
+      var Elmish_Trace = require_Elmish4();
       var ComponentName = function(x) {
         return x;
       };
@@ -39765,7 +39849,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.DOM.NonElementParentNode/foreign.js
-  var require_foreign34 = __commonJS({
+  var require_foreign35 = __commonJS({
     "output/Web.DOM.NonElementParentNode/foreign.js"(exports) {
       "use strict";
       exports._getElementById = function(id) {
@@ -39782,7 +39866,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_DOM = __commonJS({
     "output/Web.DOM.NonElementParentNode/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign34();
+      var $foreign = require_foreign35();
       var Data_Functor = require_Data4();
       var Data_Nullable = require_Data30();
       var Effect = require_Effect();
@@ -39800,7 +39884,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML/foreign.js
-  var require_foreign35 = __commonJS({
+  var require_foreign36 = __commonJS({
     "output/Web.HTML/foreign.js"(exports) {
       "use strict";
       exports.window = function() {
@@ -39863,7 +39947,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLAnchorElement/foreign.js
-  var require_foreign36 = __commonJS({
+  var require_foreign37 = __commonJS({
     "output/Web.HTML.HTMLAnchorElement/foreign.js"(exports) {
       "use strict";
       exports.target = function(a) {
@@ -39959,7 +40043,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.Internal.FFI/foreign.js
-  var require_foreign37 = __commonJS({
+  var require_foreign38 = __commonJS({
     "output/Web.Internal.FFI/foreign.js"(exports) {
       "use strict";
       exports._unsafeReadProtoTagged = function(nothing, just, name, value) {
@@ -39989,7 +40073,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_Internal = __commonJS({
     "output/Web.Internal.FFI/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign37();
+      var $foreign = require_foreign38();
       var Data_Maybe = require_Data15();
       var unsafeReadProtoTagged = function(name) {
         return function(value) {
@@ -40006,7 +40090,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML2 = __commonJS({
     "output/Web.HTML.HTMLAnchorElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign36();
+      var $foreign = require_foreign37();
       var Unsafe_Coerce = require_Unsafe();
       var Web_Internal_FFI = require_Web_Internal();
       var toParentNode = Unsafe_Coerce.unsafeCoerce;
@@ -40060,7 +40144,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLAreaElement/foreign.js
-  var require_foreign38 = __commonJS({
+  var require_foreign39 = __commonJS({
     "output/Web.HTML.HTMLAreaElement/foreign.js"(exports) {
       "use strict";
       exports.alt = function(area) {
@@ -40171,7 +40255,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML3 = __commonJS({
     "output/Web.HTML.HTMLAreaElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign38();
+      var $foreign = require_foreign39();
       var Unsafe_Coerce = require_Unsafe();
       var Web_Internal_FFI = require_Web_Internal();
       var toParentNode = Unsafe_Coerce.unsafeCoerce;
@@ -40225,7 +40309,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLAudioElement/foreign.js
-  var require_foreign39 = __commonJS({
+  var require_foreign40 = __commonJS({
     "output/Web.HTML.HTMLAudioElement/foreign.js"(exports) {
       "use strict";
       exports.create = function() {
@@ -40243,7 +40327,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML4 = __commonJS({
     "output/Web.HTML.HTMLAudioElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign39();
+      var $foreign = require_foreign40();
       var Unsafe_Coerce = require_Unsafe();
       var Web_Internal_FFI = require_Web_Internal();
       var toParentNode = Unsafe_Coerce.unsafeCoerce;
@@ -40326,7 +40410,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLBaseElement/foreign.js
-  var require_foreign40 = __commonJS({
+  var require_foreign41 = __commonJS({
     "output/Web.HTML.HTMLBaseElement/foreign.js"(exports) {
       "use strict";
       exports.href = function(base) {
@@ -40360,7 +40444,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML6 = __commonJS({
     "output/Web.HTML.HTMLBaseElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign40();
+      var $foreign = require_foreign41();
       var Unsafe_Coerce = require_Unsafe();
       var Web_Internal_FFI = require_Web_Internal();
       var toParentNode = Unsafe_Coerce.unsafeCoerce;
@@ -40440,7 +40524,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLButtonElement/foreign.js
-  var require_foreign41 = __commonJS({
+  var require_foreign42 = __commonJS({
     "output/Web.HTML.HTMLButtonElement/foreign.js"(exports) {
       "use strict";
       exports.autofocus = function(button) {
@@ -40612,7 +40696,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML8 = __commonJS({
     "output/Web.HTML.HTMLButtonElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign41();
+      var $foreign = require_foreign42();
       var Data_Functor = require_Data4();
       var Data_Nullable = require_Data30();
       var Effect = require_Effect();
@@ -40686,7 +40770,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLCanvasElement/foreign.js
-  var require_foreign42 = __commonJS({
+  var require_foreign43 = __commonJS({
     "output/Web.HTML.HTMLCanvasElement/foreign.js"(exports) {
       "use strict";
       exports.width = function(canvas) {
@@ -40720,7 +40804,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML9 = __commonJS({
     "output/Web.HTML.HTMLCanvasElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign42();
+      var $foreign = require_foreign43();
       var Unsafe_Coerce = require_Unsafe();
       var Web_Internal_FFI = require_Web_Internal();
       var toParentNode = Unsafe_Coerce.unsafeCoerce;
@@ -40800,7 +40884,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLDataElement/foreign.js
-  var require_foreign43 = __commonJS({
+  var require_foreign44 = __commonJS({
     "output/Web.HTML.HTMLDataElement/foreign.js"(exports) {
       "use strict";
       exports.value = function(data) {
@@ -40822,7 +40906,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML11 = __commonJS({
     "output/Web.HTML.HTMLDataElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign43();
+      var $foreign = require_foreign44();
       var Unsafe_Coerce = require_Unsafe();
       var Web_Internal_FFI = require_Web_Internal();
       var toParentNode = Unsafe_Coerce.unsafeCoerce;
@@ -40861,7 +40945,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLDataListElement/foreign.js
-  var require_foreign44 = __commonJS({
+  var require_foreign45 = __commonJS({
     "output/Web.HTML.HTMLDataListElement/foreign.js"(exports) {
       "use strict";
       exports.options = function(dle) {
@@ -40876,7 +40960,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML12 = __commonJS({
     "output/Web.HTML.HTMLDataListElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign44();
+      var $foreign = require_foreign45();
       var Unsafe_Coerce = require_Unsafe();
       var Web_Internal_FFI = require_Web_Internal();
       var toParentNode = Unsafe_Coerce.unsafeCoerce;
@@ -40953,7 +41037,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLDocument/foreign.js
-  var require_foreign45 = __commonJS({
+  var require_foreign46 = __commonJS({
     "output/Web.HTML.HTMLDocument/foreign.js"(exports) {
       "use strict";
       exports._documentElement = function(doc) {
@@ -41154,7 +41238,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML14 = __commonJS({
     "output/Web.HTML.HTMLDocument/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign45();
+      var $foreign = require_foreign46();
       var Data_Functor = require_Data4();
       var Data_Maybe = require_Data15();
       var Data_Nullable = require_Data30();
@@ -41238,7 +41322,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLElement/foreign.js
-  var require_foreign46 = __commonJS({
+  var require_foreign47 = __commonJS({
     "output/Web.HTML.HTMLElement/foreign.js"(exports) {
       "use strict";
       exports._read = function(nothing, just, value) {
@@ -41427,7 +41511,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML15 = __commonJS({
     "output/Web.HTML.HTMLElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign46();
+      var $foreign = require_foreign47();
       var Data_Functor = require_Data4();
       var Data_Maybe = require_Data15();
       var Data_Nullable = require_Data30();
@@ -41510,7 +41594,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLEmbedElement/foreign.js
-  var require_foreign47 = __commonJS({
+  var require_foreign48 = __commonJS({
     "output/Web.HTML.HTMLEmbedElement/foreign.js"(exports) {
       "use strict";
       exports.src = function(embed) {
@@ -41568,7 +41652,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML16 = __commonJS({
     "output/Web.HTML.HTMLEmbedElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign47();
+      var $foreign = require_foreign48();
       var Unsafe_Coerce = require_Unsafe();
       var Web_Internal_FFI = require_Web_Internal();
       var toParentNode = Unsafe_Coerce.unsafeCoerce;
@@ -41613,7 +41697,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLFieldSetElement/foreign.js
-  var require_foreign48 = __commonJS({
+  var require_foreign49 = __commonJS({
     "output/Web.HTML.HTMLFieldSetElement/foreign.js"(exports) {
       "use strict";
       exports.disabled = function(fieldset) {
@@ -41696,7 +41780,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML17 = __commonJS({
     "output/Web.HTML.HTMLFieldSetElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign48();
+      var $foreign = require_foreign49();
       var Data_Functor = require_Data4();
       var Data_Nullable = require_Data30();
       var Effect = require_Effect();
@@ -41755,7 +41839,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLFormElement/foreign.js
-  var require_foreign49 = __commonJS({
+  var require_foreign50 = __commonJS({
     "output/Web.HTML.HTMLFormElement/foreign.js"(exports) {
       "use strict";
       exports.acceptCharset = function(form) {
@@ -41898,7 +41982,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML18 = __commonJS({
     "output/Web.HTML.HTMLFormElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign49();
+      var $foreign = require_foreign50();
       var Unsafe_Coerce = require_Unsafe();
       var Web_Internal_FFI = require_Web_Internal();
       var toParentNode = Unsafe_Coerce.unsafeCoerce;
@@ -42075,7 +42159,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLIFrameElement/foreign.js
-  var require_foreign50 = __commonJS({
+  var require_foreign51 = __commonJS({
     "output/Web.HTML.HTMLIFrameElement/foreign.js"(exports) {
       "use strict";
       exports.src = function(iframe) {
@@ -42155,7 +42239,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML22 = __commonJS({
     "output/Web.HTML.HTMLIFrameElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign50();
+      var $foreign = require_foreign51();
       var Data_Functor = require_Data4();
       var Data_Nullable = require_Data30();
       var Effect = require_Effect();
@@ -42219,7 +42303,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLImageElement/foreign.js
-  var require_foreign51 = __commonJS({
+  var require_foreign52 = __commonJS({
     "output/Web.HTML.HTMLImageElement/foreign.js"(exports) {
       "use strict";
       exports.create = function() {
@@ -42757,7 +42841,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML23 = __commonJS({
     "output/Web.HTML.HTMLImageElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign51();
+      var $foreign = require_foreign52();
       var Control_Bind = require_Control5();
       var Data_Functor = require_Data4();
       var Data_Maybe = require_Data15();
@@ -42874,7 +42958,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLInputElement/foreign.js
-  var require_foreign52 = __commonJS({
+  var require_foreign53 = __commonJS({
     "output/Web.HTML.HTMLInputElement/foreign.js"(exports) {
       "use strict";
       exports.accept = function(input) {
@@ -43600,7 +43684,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML25 = __commonJS({
     "output/Web.HTML.HTMLInputElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign52();
+      var $foreign = require_foreign53();
       var Data_Functor = require_Data4();
       var Data_Nullable = require_Data30();
       var Effect = require_Effect();
@@ -43768,7 +43852,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLKeygenElement/foreign.js
-  var require_foreign53 = __commonJS({
+  var require_foreign54 = __commonJS({
     "output/Web.HTML.HTMLKeygenElement/foreign.js"(exports) {
       "use strict";
       exports.autofocus = function(keygen) {
@@ -43885,7 +43969,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML26 = __commonJS({
     "output/Web.HTML.HTMLKeygenElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign53();
+      var $foreign = require_foreign54();
       var Data_Functor = require_Data4();
       var Data_Nullable = require_Data30();
       var Effect = require_Effect();
@@ -43950,7 +44034,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLLIElement/foreign.js
-  var require_foreign54 = __commonJS({
+  var require_foreign55 = __commonJS({
     "output/Web.HTML.HTMLLIElement/foreign.js"(exports) {
       "use strict";
       exports.value = function(li) {
@@ -43972,7 +44056,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML27 = __commonJS({
     "output/Web.HTML.HTMLLIElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign54();
+      var $foreign = require_foreign55();
       var Unsafe_Coerce = require_Unsafe();
       var Web_Internal_FFI = require_Web_Internal();
       var toParentNode = Unsafe_Coerce.unsafeCoerce;
@@ -44011,7 +44095,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLLabelElement/foreign.js
-  var require_foreign55 = __commonJS({
+  var require_foreign56 = __commonJS({
     "output/Web.HTML.HTMLLabelElement/foreign.js"(exports) {
       "use strict";
       exports._form = function(label) {
@@ -44043,7 +44127,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML28 = __commonJS({
     "output/Web.HTML.HTMLLabelElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign55();
+      var $foreign = require_foreign56();
       var Data_Functor = require_Data4();
       var Data_Nullable = require_Data30();
       var Effect = require_Effect();
@@ -44099,7 +44183,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLLegendElement/foreign.js
-  var require_foreign56 = __commonJS({
+  var require_foreign57 = __commonJS({
     "output/Web.HTML.HTMLLegendElement/foreign.js"(exports) {
       "use strict";
       exports._form = function(le) {
@@ -44114,7 +44198,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML29 = __commonJS({
     "output/Web.HTML.HTMLLegendElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign56();
+      var $foreign = require_foreign57();
       var Data_Functor = require_Data4();
       var Data_Nullable = require_Data30();
       var Effect = require_Effect();
@@ -44161,7 +44245,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLLinkElement/foreign.js
-  var require_foreign57 = __commonJS({
+  var require_foreign58 = __commonJS({
     "output/Web.HTML.HTMLLinkElement/foreign.js"(exports) {
       "use strict";
       exports.disabled = function(link) {
@@ -44272,7 +44356,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML30 = __commonJS({
     "output/Web.HTML.HTMLLinkElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign57();
+      var $foreign = require_foreign58();
       var Unsafe_Coerce = require_Unsafe();
       var Web_Internal_FFI = require_Web_Internal();
       var toParentNode = Unsafe_Coerce.unsafeCoerce;
@@ -44326,7 +44410,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLMapElement/foreign.js
-  var require_foreign58 = __commonJS({
+  var require_foreign59 = __commonJS({
     "output/Web.HTML.HTMLMapElement/foreign.js"(exports) {
       "use strict";
       exports.name = function(map) {
@@ -44358,7 +44442,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML31 = __commonJS({
     "output/Web.HTML.HTMLMapElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign58();
+      var $foreign = require_foreign59();
       var Unsafe_Coerce = require_Unsafe();
       var Web_Internal_FFI = require_Web_Internal();
       var toParentNode = Unsafe_Coerce.unsafeCoerce;
@@ -44399,7 +44483,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLMediaElement/foreign.js
-  var require_foreign59 = __commonJS({
+  var require_foreign60 = __commonJS({
     "output/Web.HTML.HTMLMediaElement/foreign.js"(exports) {
       "use strict";
       exports.src = function(media) {
@@ -44616,7 +44700,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Data.Enum/foreign.js
-  var require_foreign60 = __commonJS({
+  var require_foreign61 = __commonJS({
     "output/Data.Enum/foreign.js"(exports) {
       "use strict";
       exports.toCharCode = function(c) {
@@ -44676,7 +44760,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Data.Unfoldable/foreign.js
-  var require_foreign61 = __commonJS({
+  var require_foreign62 = __commonJS({
     "output/Data.Unfoldable/foreign.js"(exports) {
       "use strict";
       exports.unfoldrArrayImpl = function(isNothing) {
@@ -44705,7 +44789,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Data.Unfoldable1/foreign.js
-  var require_foreign62 = __commonJS({
+  var require_foreign63 = __commonJS({
     "output/Data.Unfoldable1/foreign.js"(exports) {
       "use strict";
       exports.unfoldr1ArrayImpl = function(isNothing) {
@@ -45327,7 +45411,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Data31 = __commonJS({
     "output/Data.Unfoldable1/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign62();
+      var $foreign = require_foreign63();
       var Data_Boolean = require_Data();
       var Data_Maybe = require_Data15();
       var Data_Semigroup_Traversable = require_Data_Semigroup2();
@@ -45421,7 +45505,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Data32 = __commonJS({
     "output/Data.Unfoldable/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign61();
+      var $foreign = require_foreign62();
       var Data_Function = require_Data2();
       var Data_Functor = require_Data4();
       var Data_Maybe = require_Data15();
@@ -45503,7 +45587,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Data33 = __commonJS({
     "output/Data.Enum/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign60();
+      var $foreign = require_foreign61();
       var Control_Alternative = require_Control13();
       var Control_Apply = require_Control3();
       var Control_Bind = require_Control5();
@@ -46726,7 +46810,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML32 = __commonJS({
     "output/Web.HTML.HTMLMediaElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign59();
+      var $foreign = require_foreign60();
       var Data_Enum = require_Data33();
       var Data_Functor = require_Data4();
       var Data_Maybe = require_Data15();
@@ -46842,7 +46926,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLMetaElement/foreign.js
-  var require_foreign63 = __commonJS({
+  var require_foreign64 = __commonJS({
     "output/Web.HTML.HTMLMetaElement/foreign.js"(exports) {
       "use strict";
       exports.name = function(meta) {
@@ -46888,7 +46972,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML33 = __commonJS({
     "output/Web.HTML.HTMLMetaElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign63();
+      var $foreign = require_foreign64();
       var Unsafe_Coerce = require_Unsafe();
       var Web_Internal_FFI = require_Web_Internal();
       var toParentNode = Unsafe_Coerce.unsafeCoerce;
@@ -46931,7 +47015,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLMeterElement/foreign.js
-  var require_foreign64 = __commonJS({
+  var require_foreign65 = __commonJS({
     "output/Web.HTML.HTMLMeterElement/foreign.js"(exports) {
       "use strict";
       exports.value = function(meter) {
@@ -47018,7 +47102,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML34 = __commonJS({
     "output/Web.HTML.HTMLMeterElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign64();
+      var $foreign = require_foreign65();
       var Unsafe_Coerce = require_Unsafe();
       var Web_Internal_FFI = require_Web_Internal();
       var toParentNode = Unsafe_Coerce.unsafeCoerce;
@@ -47068,7 +47152,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLModElement/foreign.js
-  var require_foreign65 = __commonJS({
+  var require_foreign66 = __commonJS({
     "output/Web.HTML.HTMLModElement/foreign.js"(exports) {
       "use strict";
       exports.cite = function(mod) {
@@ -47102,7 +47186,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML35 = __commonJS({
     "output/Web.HTML.HTMLModElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign65();
+      var $foreign = require_foreign66();
       var Unsafe_Coerce = require_Unsafe();
       var Web_Internal_FFI = require_Web_Internal();
       var toParentNode = Unsafe_Coerce.unsafeCoerce;
@@ -47143,7 +47227,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLOListElement/foreign.js
-  var require_foreign66 = __commonJS({
+  var require_foreign67 = __commonJS({
     "output/Web.HTML.HTMLOListElement/foreign.js"(exports) {
       "use strict";
       exports.reversed = function(ol) {
@@ -47189,7 +47273,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML36 = __commonJS({
     "output/Web.HTML.HTMLOListElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign66();
+      var $foreign = require_foreign67();
       var Unsafe_Coerce = require_Unsafe();
       var Web_Internal_FFI = require_Web_Internal();
       var toParentNode = Unsafe_Coerce.unsafeCoerce;
@@ -47232,7 +47316,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLObjectElement/foreign.js
-  var require_foreign67 = __commonJS({
+  var require_foreign68 = __commonJS({
     "output/Web.HTML.HTMLObjectElement/foreign.js"(exports) {
       "use strict";
       exports.data_ = function(object) {
@@ -47361,7 +47445,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML37 = __commonJS({
     "output/Web.HTML.HTMLObjectElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign67();
+      var $foreign = require_foreign68();
       var Data_Functor = require_Data4();
       var Data_Nullable = require_Data30();
       var Effect = require_Effect();
@@ -47434,7 +47518,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLOptGroupElement/foreign.js
-  var require_foreign68 = __commonJS({
+  var require_foreign69 = __commonJS({
     "output/Web.HTML.HTMLOptGroupElement/foreign.js"(exports) {
       "use strict";
       exports.disabled = function(optgroup) {
@@ -47468,7 +47552,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML38 = __commonJS({
     "output/Web.HTML.HTMLOptGroupElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign68();
+      var $foreign = require_foreign69();
       var Unsafe_Coerce = require_Unsafe();
       var Web_Internal_FFI = require_Web_Internal();
       var toParentNode = Unsafe_Coerce.unsafeCoerce;
@@ -47509,7 +47593,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLOptionElement/foreign.js
-  var require_foreign69 = __commonJS({
+  var require_foreign70 = __commonJS({
     "output/Web.HTML.HTMLOptionElement/foreign.js"(exports) {
       "use strict";
       exports.disabled = function(option) {
@@ -47601,7 +47685,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML39 = __commonJS({
     "output/Web.HTML.HTMLOptionElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign69();
+      var $foreign = require_foreign70();
       var Data_Functor = require_Data4();
       var Data_Nullable = require_Data30();
       var Effect = require_Effect();
@@ -47661,7 +47745,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLOutputElement/foreign.js
-  var require_foreign70 = __commonJS({
+  var require_foreign71 = __commonJS({
     "output/Web.HTML.HTMLOutputElement/foreign.js"(exports) {
       "use strict";
       exports._form = function(output) {
@@ -47754,7 +47838,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML40 = __commonJS({
     "output/Web.HTML.HTMLOutputElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign70();
+      var $foreign = require_foreign71();
       var Data_Functor = require_Data4();
       var Data_Nullable = require_Data30();
       var Effect = require_Effect();
@@ -47854,7 +47938,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLParamElement/foreign.js
-  var require_foreign71 = __commonJS({
+  var require_foreign72 = __commonJS({
     "output/Web.HTML.HTMLParamElement/foreign.js"(exports) {
       "use strict";
       exports.name = function(param) {
@@ -47888,7 +47972,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML42 = __commonJS({
     "output/Web.HTML.HTMLParamElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign71();
+      var $foreign = require_foreign72();
       var Unsafe_Coerce = require_Unsafe();
       var Web_Internal_FFI = require_Web_Internal();
       var toParentNode = Unsafe_Coerce.unsafeCoerce;
@@ -47968,7 +48052,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLProgressElement/foreign.js
-  var require_foreign72 = __commonJS({
+  var require_foreign73 = __commonJS({
     "output/Web.HTML.HTMLProgressElement/foreign.js"(exports) {
       "use strict";
       exports.value = function(progress) {
@@ -48012,7 +48096,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML44 = __commonJS({
     "output/Web.HTML.HTMLProgressElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign72();
+      var $foreign = require_foreign73();
       var Unsafe_Coerce = require_Unsafe();
       var Web_Internal_FFI = require_Web_Internal();
       var toParentNode = Unsafe_Coerce.unsafeCoerce;
@@ -48055,7 +48139,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLQuoteElement/foreign.js
-  var require_foreign73 = __commonJS({
+  var require_foreign74 = __commonJS({
     "output/Web.HTML.HTMLQuoteElement/foreign.js"(exports) {
       "use strict";
       exports.cite = function(quote) {
@@ -48077,7 +48161,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML45 = __commonJS({
     "output/Web.HTML.HTMLQuoteElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign73();
+      var $foreign = require_foreign74();
       var Unsafe_Coerce = require_Unsafe();
       var Web_Internal_FFI = require_Web_Internal();
       var toParentNode = Unsafe_Coerce.unsafeCoerce;
@@ -48116,7 +48200,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLScriptElement/foreign.js
-  var require_foreign74 = __commonJS({
+  var require_foreign75 = __commonJS({
     "output/Web.HTML.HTMLScriptElement/foreign.js"(exports) {
       "use strict";
       exports.src = function(script) {
@@ -48210,7 +48294,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML46 = __commonJS({
     "output/Web.HTML.HTMLScriptElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign74();
+      var $foreign = require_foreign75();
       var Unsafe_Coerce = require_Unsafe();
       var Web_Internal_FFI = require_Web_Internal();
       var toParentNode = Unsafe_Coerce.unsafeCoerce;
@@ -48261,7 +48345,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLSelectElement/foreign.js
-  var require_foreign75 = __commonJS({
+  var require_foreign76 = __commonJS({
     "output/Web.HTML.HTMLSelectElement/foreign.js"(exports) {
       "use strict";
       exports.autofocus = function(select) {
@@ -48431,7 +48515,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML47 = __commonJS({
     "output/Web.HTML.HTMLSelectElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign75();
+      var $foreign = require_foreign76();
       var Data_Functor = require_Data4();
       var Data_Nullable = require_Data30();
       var Effect = require_Effect();
@@ -48505,7 +48589,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLSourceElement/foreign.js
-  var require_foreign76 = __commonJS({
+  var require_foreign77 = __commonJS({
     "output/Web.HTML.HTMLSourceElement/foreign.js"(exports) {
       "use strict";
       exports.src = function(source) {
@@ -48551,7 +48635,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML48 = __commonJS({
     "output/Web.HTML.HTMLSourceElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign76();
+      var $foreign = require_foreign77();
       var Unsafe_Coerce = require_Unsafe();
       var Web_Internal_FFI = require_Web_Internal();
       var toParentNode = Unsafe_Coerce.unsafeCoerce;
@@ -48633,7 +48717,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLStyleElement/foreign.js
-  var require_foreign77 = __commonJS({
+  var require_foreign78 = __commonJS({
     "output/Web.HTML.HTMLStyleElement/foreign.js"(exports) {
       "use strict";
       exports.media = function(style) {
@@ -48667,7 +48751,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML50 = __commonJS({
     "output/Web.HTML.HTMLStyleElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign77();
+      var $foreign = require_foreign78();
       var Unsafe_Coerce = require_Unsafe();
       var Web_Internal_FFI = require_Web_Internal();
       var toParentNode = Unsafe_Coerce.unsafeCoerce;
@@ -48747,7 +48831,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLTableCellElement/foreign.js
-  var require_foreign78 = __commonJS({
+  var require_foreign79 = __commonJS({
     "output/Web.HTML.HTMLTableCellElement/foreign.js"(exports) {
       "use strict";
       exports.colSpan = function(cell) {
@@ -48786,7 +48870,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML52 = __commonJS({
     "output/Web.HTML.HTMLTableCellElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign78();
+      var $foreign = require_foreign79();
       var Unsafe_Coerce = require_Unsafe();
       var Web_Internal_FFI = require_Web_Internal();
       var toParentNode = Unsafe_Coerce.unsafeCoerce;
@@ -48828,7 +48912,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLTableColElement/foreign.js
-  var require_foreign79 = __commonJS({
+  var require_foreign80 = __commonJS({
     "output/Web.HTML.HTMLTableColElement/foreign.js"(exports) {
       "use strict";
       exports.span = function(col) {
@@ -48850,7 +48934,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML53 = __commonJS({
     "output/Web.HTML.HTMLTableColElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign79();
+      var $foreign = require_foreign80();
       var Unsafe_Coerce = require_Unsafe();
       var Web_Internal_FFI = require_Web_Internal();
       var toParentNode = Unsafe_Coerce.unsafeCoerce;
@@ -48932,7 +49016,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLTableElement/foreign.js
-  var require_foreign80 = __commonJS({
+  var require_foreign81 = __commonJS({
     "output/Web.HTML.HTMLTableElement/foreign.js"(exports) {
       "use strict";
       exports._caption = function(table) {
@@ -49049,7 +49133,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML55 = __commonJS({
     "output/Web.HTML.HTMLTableElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign80();
+      var $foreign = require_foreign81();
       var Data_Functor = require_Data4();
       var Data_Nullable = require_Data30();
       var Effect = require_Effect();
@@ -49138,7 +49222,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLTableHeaderCellElement/foreign.js
-  var require_foreign81 = __commonJS({
+  var require_foreign82 = __commonJS({
     "output/Web.HTML.HTMLTableHeaderCellElement/foreign.js"(exports) {
       "use strict";
       exports.scope = function(cell) {
@@ -49172,7 +49256,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML56 = __commonJS({
     "output/Web.HTML.HTMLTableHeaderCellElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign81();
+      var $foreign = require_foreign82();
       var Unsafe_Coerce = require_Unsafe();
       var Web_Internal_FFI = require_Web_Internal();
       var toParentNode = Unsafe_Coerce.unsafeCoerce;
@@ -49217,7 +49301,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLTableRowElement/foreign.js
-  var require_foreign82 = __commonJS({
+  var require_foreign83 = __commonJS({
     "output/Web.HTML.HTMLTableRowElement/foreign.js"(exports) {
       "use strict";
       exports.rowIndex = function(row) {
@@ -49256,7 +49340,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML57 = __commonJS({
     "output/Web.HTML.HTMLTableRowElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign82();
+      var $foreign = require_foreign83();
       var Unsafe_Coerce = require_Unsafe();
       var Web_Internal_FFI = require_Web_Internal();
       var toParentNode = Unsafe_Coerce.unsafeCoerce;
@@ -49301,7 +49385,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLTableSectionElement/foreign.js
-  var require_foreign83 = __commonJS({
+  var require_foreign84 = __commonJS({
     "output/Web.HTML.HTMLTableSectionElement/foreign.js"(exports) {
       "use strict";
       exports.rows = function(section) {
@@ -49330,7 +49414,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML58 = __commonJS({
     "output/Web.HTML.HTMLTableSectionElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign83();
+      var $foreign = require_foreign84();
       var Unsafe_Coerce = require_Unsafe();
       var Web_Internal_FFI = require_Web_Internal();
       var toParentNode = Unsafe_Coerce.unsafeCoerce;
@@ -49373,7 +49457,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLTemplateElement/foreign.js
-  var require_foreign84 = __commonJS({
+  var require_foreign85 = __commonJS({
     "output/Web.HTML.HTMLTemplateElement/foreign.js"(exports) {
       "use strict";
       exports.content = function(template) {
@@ -49388,7 +49472,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML59 = __commonJS({
     "output/Web.HTML.HTMLTemplateElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign84();
+      var $foreign = require_foreign85();
       var Unsafe_Coerce = require_Unsafe();
       var Web_Internal_FFI = require_Web_Internal();
       var toParentNode = Unsafe_Coerce.unsafeCoerce;
@@ -49426,7 +49510,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLTextAreaElement/foreign.js
-  var require_foreign85 = __commonJS({
+  var require_foreign86 = __commonJS({
     "output/Web.HTML.HTMLTextAreaElement/foreign.js"(exports) {
       "use strict";
       exports.autocomplete = function(textarea) {
@@ -49730,7 +49814,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML60 = __commonJS({
     "output/Web.HTML.HTMLTextAreaElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign85();
+      var $foreign = require_foreign86();
       var Data_Functor = require_Data4();
       var Data_Nullable = require_Data30();
       var Effect = require_Effect();
@@ -49840,7 +49924,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLTimeElement/foreign.js
-  var require_foreign86 = __commonJS({
+  var require_foreign87 = __commonJS({
     "output/Web.HTML.HTMLTimeElement/foreign.js"(exports) {
       "use strict";
       exports.dateTime = function(time) {
@@ -49862,7 +49946,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML61 = __commonJS({
     "output/Web.HTML.HTMLTimeElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign86();
+      var $foreign = require_foreign87();
       var Unsafe_Coerce = require_Unsafe();
       var Web_Internal_FFI = require_Web_Internal();
       var toParentNode = Unsafe_Coerce.unsafeCoerce;
@@ -49901,7 +49985,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLTitleElement/foreign.js
-  var require_foreign87 = __commonJS({
+  var require_foreign88 = __commonJS({
     "output/Web.HTML.HTMLTitleElement/foreign.js"(exports) {
       "use strict";
       exports.text = function(title) {
@@ -49923,7 +50007,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML62 = __commonJS({
     "output/Web.HTML.HTMLTitleElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign87();
+      var $foreign = require_foreign88();
       var Unsafe_Coerce = require_Unsafe();
       var Web_Internal_FFI = require_Web_Internal();
       var toParentNode = Unsafe_Coerce.unsafeCoerce;
@@ -49962,7 +50046,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLTrackElement/foreign.js
-  var require_foreign88 = __commonJS({
+  var require_foreign89 = __commonJS({
     "output/Web.HTML.HTMLTrackElement/foreign.js"(exports) {
       "use strict";
       exports.kind = function(track) {
@@ -50244,7 +50328,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML63 = __commonJS({
     "output/Web.HTML.HTMLTrackElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign88();
+      var $foreign = require_foreign89();
       var Data_Enum = require_Data33();
       var Data_Functor = require_Data4();
       var Data_Maybe = require_Data15();
@@ -50347,7 +50431,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.HTMLVideoElement/foreign.js
-  var require_foreign89 = __commonJS({
+  var require_foreign90 = __commonJS({
     "output/Web.HTML.HTMLVideoElement/foreign.js"(exports) {
       "use strict";
       exports.width = function(video) {
@@ -50403,7 +50487,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML65 = __commonJS({
     "output/Web.HTML.HTMLVideoElement/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign89();
+      var $foreign = require_foreign90();
       var Unsafe_Coerce = require_Unsafe();
       var Web_Internal_FFI = require_Web_Internal();
       var toParentNode = Unsafe_Coerce.unsafeCoerce;
@@ -50452,7 +50536,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.History/foreign.js
-  var require_foreign90 = __commonJS({
+  var require_foreign91 = __commonJS({
     "output/Web.HTML.History/foreign.js"(exports) {
       "use strict";
       exports.back = function(history) {
@@ -50506,7 +50590,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML66 = __commonJS({
     "output/Web.HTML.History/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign90();
+      var $foreign = require_foreign91();
       var Data_Ord = require_Data12();
       var URL = function(x) {
         return x;
@@ -50607,7 +50691,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.Location/foreign.js
-  var require_foreign91 = __commonJS({
+  var require_foreign92 = __commonJS({
     "output/Web.HTML.Location/foreign.js"(exports) {
       "use strict";
       exports.hash = function(location) {
@@ -50744,7 +50828,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML67 = __commonJS({
     "output/Web.HTML.Location/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign91();
+      var $foreign = require_foreign92();
       module.exports = {
         hash: $foreign.hash,
         setHash: $foreign.setHash,
@@ -50772,7 +50856,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.Navigator/foreign.js
-  var require_foreign92 = __commonJS({
+  var require_foreign93 = __commonJS({
     "output/Web.HTML.Navigator/foreign.js"(exports) {
       "use strict";
       exports.language = function(navigator2) {
@@ -50807,7 +50891,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML68 = __commonJS({
     "output/Web.HTML.Navigator/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign92();
+      var $foreign = require_foreign93();
       module.exports = {
         language: $foreign.language,
         languages: $foreign.languages,
@@ -50819,7 +50903,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.HTML.Window/foreign.js
-  var require_foreign93 = __commonJS({
+  var require_foreign94 = __commonJS({
     "output/Web.HTML.Window/foreign.js"(exports) {
       "use strict";
       exports.document = function(window2) {
@@ -51032,7 +51116,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_HTML69 = __commonJS({
     "output/Web.HTML.Window/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign93();
+      var $foreign = require_foreign94();
       var Data_Functor = require_Data4();
       var Data_Nullable = require_Data30();
       var Data_Ord = require_Data12();
@@ -51146,7 +51230,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web = __commonJS({
     "output/Web.HTML/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign35();
+      var $foreign = require_foreign36();
       var Web_HTML_Common = require_Web_HTML();
       var Web_HTML_HTMLAnchorElement = require_Web_HTML2();
       var Web_HTML_HTMLAreaElement = require_Web_HTML3();
@@ -51222,7 +51306,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Elmish.Boot/index.js
-  var require_Elmish5 = __commonJS({
+  var require_Elmish6 = __commonJS({
     "output/Elmish.Boot/index.js"(exports, module) {
       "use strict";
       var Control_Applicative = require_Control4();
@@ -51234,8 +51318,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var Effect = require_Effect();
       var Effect_Class = require_Effect2();
       var Effect_Class_Console = require_Effect_Class();
-      var Elmish_Component = require_Elmish4();
-      var Elmish_React = require_Elmish();
+      var Elmish_Component = require_Elmish5();
+      var Elmish_React = require_Elmish2();
       var Web_DOM_NonElementParentNode = require_Web_DOM();
       var Web_HTML = require_Web();
       var Web_HTML_HTMLDocument = require_Web_HTML14();
@@ -51289,7 +51373,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Foreign.Object/foreign.js
-  var require_foreign94 = __commonJS({
+  var require_foreign95 = __commonJS({
     "output/Foreign.Object/foreign.js"(exports) {
       "use strict";
       exports._copyST = function(m) {
@@ -51406,7 +51490,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Control.Monad.ST.Internal/foreign.js
-  var require_foreign95 = __commonJS({
+  var require_foreign96 = __commonJS({
     "output/Control.Monad.ST.Internal/foreign.js"(exports) {
       "use strict";
       exports.map_ = function(f) {
@@ -51493,7 +51577,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Control_Monad_ST = __commonJS({
     "output/Control.Monad.ST.Internal/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign95();
+      var $foreign = require_foreign96();
       var Control_Applicative = require_Control4();
       var Control_Bind = require_Control5();
       var Control_Monad = require_Control7();
@@ -51600,7 +51684,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Data.Array/foreign.js
-  var require_foreign96 = __commonJS({
+  var require_foreign97 = __commonJS({
     "output/Data.Array/foreign.js"(exports) {
       "use strict";
       exports.range = function(start) {
@@ -51925,7 +52009,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Data.Array.ST/foreign.js
-  var require_foreign97 = __commonJS({
+  var require_foreign98 = __commonJS({
     "output/Data.Array.ST/foreign.js"(exports) {
       "use strict";
       exports["new"] = function() {
@@ -52079,7 +52163,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Data_Array = __commonJS({
     "output/Data.Array.ST/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign97();
+      var $foreign = require_foreign98();
       var Control_Bind = require_Control5();
       var Control_Monad_ST_Internal = require_Control_Monad_ST();
       var Data_Maybe = require_Data15();
@@ -52288,7 +52372,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Data34 = __commonJS({
     "output/Data.Array/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign96();
+      var $foreign = require_foreign97();
       var Control_Alt = require_Control6();
       var Control_Applicative = require_Control4();
       var Control_Apply = require_Control3();
@@ -53042,7 +53126,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Data.Function.Uncurried/foreign.js
-  var require_foreign98 = __commonJS({
+  var require_foreign99 = __commonJS({
     "output/Data.Function.Uncurried/foreign.js"(exports) {
       "use strict";
       exports.mkFn0 = function(fn) {
@@ -53240,7 +53324,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Data_Function = __commonJS({
     "output/Data.Function.Uncurried/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign98();
+      var $foreign = require_foreign99();
       var runFn1 = function(f) {
         return f;
       };
@@ -53275,7 +53359,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Data.FunctorWithIndex/foreign.js
-  var require_foreign99 = __commonJS({
+  var require_foreign100 = __commonJS({
     "output/Data.FunctorWithIndex/foreign.js"(exports) {
       "use strict";
       exports.mapWithIndexArray = function(f) {
@@ -53295,7 +53379,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Data35 = __commonJS({
     "output/Data.FunctorWithIndex/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign99();
+      var $foreign = require_foreign100();
       var Data_Bifunctor = require_Data22();
       var Data_Const = require_Data28();
       var Data_Either = require_Data19();
@@ -54705,7 +54789,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Foreign.Object.ST/foreign.js
-  var require_foreign100 = __commonJS({
+  var require_foreign101 = __commonJS({
     "output/Foreign.Object.ST/foreign.js"(exports) {
       "use strict";
       exports["new"] = function() {
@@ -54747,7 +54831,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Foreign_Object = __commonJS({
     "output/Foreign.Object.ST/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign100();
+      var $foreign = require_foreign101();
       var Data_Maybe = require_Data15();
       var peek = $foreign.peekImpl(Data_Maybe.Just.create)(Data_Maybe.Nothing.value);
       module.exports = {
@@ -54763,7 +54847,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Foreign = __commonJS({
     "output/Foreign.Object/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign94();
+      var $foreign = require_foreign95();
       var Control_Applicative = require_Control4();
       var Control_Apply = require_Control3();
       var Control_Bind = require_Control5();
@@ -55196,7 +55280,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Record.Unsafe.Union/foreign.js
-  var require_foreign101 = __commonJS({
+  var require_foreign102 = __commonJS({
     "output/Record.Unsafe.Union/foreign.js"(exports) {
       "use strict";
       exports.unsafeUnionFn = function(r1, r2) {
@@ -55220,7 +55304,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Record_Unsafe = __commonJS({
     "output/Record.Unsafe.Union/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign101();
+      var $foreign = require_foreign102();
       var Data_Function_Uncurried = require_Data_Function();
       var unsafeUnion = Data_Function_Uncurried.runFn2($foreign.unsafeUnionFn);
       module.exports = {
@@ -55409,47 +55493,58 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Elmish_HTML = __commonJS({
     "output/Elmish.HTML.Internal/index.js"(exports, module) {
       "use strict";
-      var Elmish_React = require_Elmish();
+      var Elmish_React = require_Elmish2();
       var Foreign_Object = require_Foreign();
       var Record = require_Record2();
       var Unsafe_Coerce = require_Unsafe();
+      var isSubsetOf = function(dictUnion) {
+        return {};
+      };
       var unsafeCreateDOMComponent = Unsafe_Coerce.unsafeCoerce;
-      var styledTag_ = function(dictReactChildren) {
-        return function(dictValidReactProps) {
-          return function(tag) {
-            return function(cls) {
-              return function(props) {
-                return Elmish_React.createElement()(dictReactChildren)(unsafeCreateDOMComponent(tag))(Record.merge()()(props)({
-                  className: cls
-                }));
-              };
-            };
+      var tagNoContent = function(tagName) {
+        return function(props) {
+          return Elmish_React["createElement'"]()(unsafeCreateDOMComponent(tagName))(props);
+        };
+      };
+      var tag = function(dictReactChildren) {
+        return function(tagName) {
+          return function(props) {
+            return Elmish_React.createElement()(dictReactChildren)(unsafeCreateDOMComponent(tagName))(props);
           };
         };
       };
-      var styledTagNoContent_ = function(dictValidReactProps) {
-        return function(tag) {
+      var styledTag_ = function(dictReactChildren) {
+        return function(tagName) {
           return function(cls) {
             return function(props) {
-              return Elmish_React["createElement'"]()(unsafeCreateDOMComponent(tag))(Record.merge()()(props)({
+              return Elmish_React.createElement()(dictReactChildren)(unsafeCreateDOMComponent(tagName))(Record.merge()()(props)({
                 className: cls
               }));
             };
           };
         };
       };
-      var styledTagNoContent = function(tag) {
+      var styledTagNoContent_ = function(tagName) {
         return function(cls) {
-          return Elmish_React["createElement'"]()(unsafeCreateDOMComponent(tag))({
+          return function(props) {
+            return Elmish_React["createElement'"]()(unsafeCreateDOMComponent(tagName))(Record.merge()()(props)({
+              className: cls
+            }));
+          };
+        };
+      };
+      var styledTagNoContent = function(tagName) {
+        return function(cls) {
+          return Elmish_React["createElement'"]()(unsafeCreateDOMComponent(tagName))({
             className: cls
           });
         };
       };
-      var styledTag = function(tag) {
+      var styledTag = function(tagName) {
         return function(dictReactChildren) {
           return function(cls) {
             return function(content) {
-              return Elmish_React.createElement()(dictReactChildren)(unsafeCreateDOMComponent(tag))({
+              return Elmish_React.createElement()(dictReactChildren)(unsafeCreateDOMComponent(tagName))({
                 className: cls
               })(content);
             };
@@ -55465,11 +55560,14 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         css,
         "_data": _data,
         unsafeCreateDOMComponent,
+        tag,
+        tagNoContent,
         styledTag_,
         styledTag,
         styledTagNoContent,
         styledTagNoContent_,
-        jsCSS
+        jsCSS,
+        isSubsetOf
       };
     }
   });
@@ -55481,14 +55579,14 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var Elmish_HTML_Internal = require_Elmish_HTML();
       var wbr_ = function(dictIsSubsetOf) {
         return function(dictValidReactProps) {
-          return Elmish_HTML_Internal.styledTagNoContent_()("wbr");
+          return Elmish_HTML_Internal.styledTagNoContent_("wbr");
         };
       };
       var wbr = Elmish_HTML_Internal.styledTagNoContent("wbr");
       var video_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("video");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("video");
           };
         };
       };
@@ -55498,7 +55596,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var var_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("var");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("var");
           };
         };
       };
@@ -55508,7 +55606,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var ul_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("ul");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("ul");
           };
         };
       };
@@ -55518,7 +55616,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var u_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("u");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("u");
           };
         };
       };
@@ -55527,14 +55625,14 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       };
       var track_ = function(dictIsSubsetOf) {
         return function(dictValidReactProps) {
-          return Elmish_HTML_Internal.styledTagNoContent_()("track");
+          return Elmish_HTML_Internal.styledTagNoContent_("track");
         };
       };
       var track = Elmish_HTML_Internal.styledTagNoContent("track");
       var tr_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("tr");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("tr");
           };
         };
       };
@@ -55544,7 +55642,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var title_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("title");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("title");
           };
         };
       };
@@ -55554,7 +55652,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var time_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("time");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("time");
           };
         };
       };
@@ -55564,7 +55662,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var thead_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("thead");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("thead");
           };
         };
       };
@@ -55574,7 +55672,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var th_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("th");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("th");
           };
         };
       };
@@ -55584,27 +55682,23 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var tfoot_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("tfoot");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("tfoot");
           };
         };
       };
       var tfoot = function(dictReactChildren) {
         return Elmish_HTML_Internal.styledTag("tfoot")(dictReactChildren);
       };
-      var textarea_ = function(dictReactChildren) {
-        return function(dictIsSubsetOf) {
-          return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("textarea");
-          };
+      var textarea_ = function(dictIsSubsetOf) {
+        return function(dictValidReactProps) {
+          return Elmish_HTML_Internal.styledTagNoContent_("textarea");
         };
       };
-      var textarea = function(dictReactChildren) {
-        return Elmish_HTML_Internal.styledTag("textarea")(dictReactChildren);
-      };
+      var textarea = Elmish_HTML_Internal.styledTagNoContent("textarea");
       var template_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("template");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("template");
           };
         };
       };
@@ -55614,7 +55708,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var td_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("td");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("td");
           };
         };
       };
@@ -55624,7 +55718,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var tbody_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("tbody");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("tbody");
           };
         };
       };
@@ -55634,7 +55728,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var table_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("table");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("table");
           };
         };
       };
@@ -55644,7 +55738,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var svg_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("svg");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("svg");
           };
         };
       };
@@ -55654,7 +55748,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var sup_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("sup");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("sup");
           };
         };
       };
@@ -55664,7 +55758,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var summary_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("summary");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("summary");
           };
         };
       };
@@ -55674,7 +55768,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var sub_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("sub");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("sub");
           };
         };
       };
@@ -55684,7 +55778,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var style_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("style");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("style");
           };
         };
       };
@@ -55694,7 +55788,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var strong_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("strong");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("strong");
           };
         };
       };
@@ -55704,7 +55798,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var span_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("span");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("span");
           };
         };
       };
@@ -55713,14 +55807,14 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       };
       var source_ = function(dictIsSubsetOf) {
         return function(dictValidReactProps) {
-          return Elmish_HTML_Internal.styledTagNoContent_()("source");
+          return Elmish_HTML_Internal.styledTagNoContent_("source");
         };
       };
       var source = Elmish_HTML_Internal.styledTagNoContent("source");
       var small_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("small");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("small");
           };
         };
       };
@@ -55730,7 +55824,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var slot_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("slot");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("slot");
           };
         };
       };
@@ -55740,7 +55834,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var select_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("select");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("select");
           };
         };
       };
@@ -55750,7 +55844,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var section_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("section");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("section");
           };
         };
       };
@@ -55760,7 +55854,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var script_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("script");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("script");
           };
         };
       };
@@ -55770,7 +55864,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var samp_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("samp");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("samp");
           };
         };
       };
@@ -55780,7 +55874,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var s_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("s");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("s");
           };
         };
       };
@@ -55790,7 +55884,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var ruby_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("ruby");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("ruby");
           };
         };
       };
@@ -55800,7 +55894,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var rtc_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("rtc");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("rtc");
           };
         };
       };
@@ -55810,7 +55904,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var rt_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("rt");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("rt");
           };
         };
       };
@@ -55820,7 +55914,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var rp_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("rp");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("rp");
           };
         };
       };
@@ -55830,7 +55924,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var rb_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("rb");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("rb");
           };
         };
       };
@@ -55840,7 +55934,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var q_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("q");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("q");
           };
         };
       };
@@ -55850,7 +55944,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var progress_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("progress");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("progress");
           };
         };
       };
@@ -55860,7 +55954,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var pre_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("pre");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("pre");
           };
         };
       };
@@ -55870,7 +55964,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var picture_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("picture");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("picture");
           };
         };
       };
@@ -55879,14 +55973,14 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       };
       var param_ = function(dictIsSubsetOf) {
         return function(dictValidReactProps) {
-          return Elmish_HTML_Internal.styledTagNoContent_()("param");
+          return Elmish_HTML_Internal.styledTagNoContent_("param");
         };
       };
       var param = Elmish_HTML_Internal.styledTagNoContent("param");
       var p_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("p");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("p");
           };
         };
       };
@@ -55896,7 +55990,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var output_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("output");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("output");
           };
         };
       };
@@ -55906,7 +56000,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var option_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("option");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("option");
           };
         };
       };
@@ -55916,7 +56010,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var optgroup_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("optgroup");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("optgroup");
           };
         };
       };
@@ -55926,7 +56020,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var ol_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("ol");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("ol");
           };
         };
       };
@@ -55936,7 +56030,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var object_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("object");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("object");
           };
         };
       };
@@ -55946,7 +56040,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var noscript_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("noscript");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("noscript");
           };
         };
       };
@@ -55956,7 +56050,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var nav_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("nav");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("nav");
           };
         };
       };
@@ -55966,7 +56060,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var meter_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("meter");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("meter");
           };
         };
       };
@@ -55975,14 +56069,14 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       };
       var meta_ = function(dictIsSubsetOf) {
         return function(dictValidReactProps) {
-          return Elmish_HTML_Internal.styledTagNoContent_()("meta");
+          return Elmish_HTML_Internal.styledTagNoContent_("meta");
         };
       };
       var meta = Elmish_HTML_Internal.styledTagNoContent("meta");
       var menuitem_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("menuitem");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("menuitem");
           };
         };
       };
@@ -55992,7 +56086,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var menu_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("menu");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("menu");
           };
         };
       };
@@ -56002,7 +56096,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var math_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("math");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("math");
           };
         };
       };
@@ -56012,7 +56106,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var mark_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("mark");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("mark");
           };
         };
       };
@@ -56022,7 +56116,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var map_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("map");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("map");
           };
         };
       };
@@ -56032,7 +56126,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var main_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("main");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("main");
           };
         };
       };
@@ -56041,14 +56135,14 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       };
       var link_ = function(dictIsSubsetOf) {
         return function(dictValidReactProps) {
-          return Elmish_HTML_Internal.styledTagNoContent_()("link");
+          return Elmish_HTML_Internal.styledTagNoContent_("link");
         };
       };
       var link = Elmish_HTML_Internal.styledTagNoContent("link");
       var li_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("li");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("li");
           };
         };
       };
@@ -56058,7 +56152,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var legend_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("legend");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("legend");
           };
         };
       };
@@ -56068,7 +56162,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var label_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("label");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("label");
           };
         };
       };
@@ -56078,7 +56172,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var keygen_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("keygen");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("keygen");
           };
         };
       };
@@ -56088,7 +56182,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var kbd_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("kbd");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("kbd");
           };
         };
       };
@@ -56098,7 +56192,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var ins_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("ins");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("ins");
           };
         };
       };
@@ -56107,20 +56201,20 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       };
       var input_ = function(dictIsSubsetOf) {
         return function(dictValidReactProps) {
-          return Elmish_HTML_Internal.styledTagNoContent_()("input");
+          return Elmish_HTML_Internal.styledTagNoContent_("input");
         };
       };
       var input = Elmish_HTML_Internal.styledTagNoContent("input");
       var img_ = function(dictIsSubsetOf) {
         return function(dictValidReactProps) {
-          return Elmish_HTML_Internal.styledTagNoContent_()("img");
+          return Elmish_HTML_Internal.styledTagNoContent_("img");
         };
       };
       var img = Elmish_HTML_Internal.styledTagNoContent("img");
       var iframe_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("iframe");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("iframe");
           };
         };
       };
@@ -56130,7 +56224,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var i_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("i");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("i");
           };
         };
       };
@@ -56140,7 +56234,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var html_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("html");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("html");
           };
         };
       };
@@ -56149,14 +56243,14 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       };
       var hr_ = function(dictIsSubsetOf) {
         return function(dictValidReactProps) {
-          return Elmish_HTML_Internal.styledTagNoContent_()("hr");
+          return Elmish_HTML_Internal.styledTagNoContent_("hr");
         };
       };
       var hr = Elmish_HTML_Internal.styledTagNoContent("hr");
       var hgroup_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("hgroup");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("hgroup");
           };
         };
       };
@@ -56166,7 +56260,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var header_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("header");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("header");
           };
         };
       };
@@ -56176,7 +56270,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var head_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("head");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("head");
           };
         };
       };
@@ -56186,7 +56280,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var h6_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("h6");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("h6");
           };
         };
       };
@@ -56196,7 +56290,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var h5_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("h5");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("h5");
           };
         };
       };
@@ -56206,7 +56300,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var h4_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("h4");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("h4");
           };
         };
       };
@@ -56216,7 +56310,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var h3_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("h3");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("h3");
           };
         };
       };
@@ -56226,7 +56320,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var h2_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("h2");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("h2");
           };
         };
       };
@@ -56236,7 +56330,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var h1_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("h1");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("h1");
           };
         };
       };
@@ -56246,7 +56340,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var form_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("form");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("form");
           };
         };
       };
@@ -56256,7 +56350,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var footer_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("footer");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("footer");
           };
         };
       };
@@ -56266,7 +56360,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var figure_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("figure");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("figure");
           };
         };
       };
@@ -56276,7 +56370,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var figcaption_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("figcaption");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("figcaption");
           };
         };
       };
@@ -56286,7 +56380,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var fieldset_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("fieldset");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("fieldset");
           };
         };
       };
@@ -56295,14 +56389,14 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       };
       var embed_ = function(dictIsSubsetOf) {
         return function(dictValidReactProps) {
-          return Elmish_HTML_Internal.styledTagNoContent_()("embed");
+          return Elmish_HTML_Internal.styledTagNoContent_("embed");
         };
       };
       var embed = Elmish_HTML_Internal.styledTagNoContent("embed");
       var em_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("em");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("em");
           };
         };
       };
@@ -56312,7 +56406,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var dt_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("dt");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("dt");
           };
         };
       };
@@ -56322,7 +56416,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var dl_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("dl");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("dl");
           };
         };
       };
@@ -56332,7 +56426,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var div_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("div");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("div");
           };
         };
       };
@@ -56342,7 +56436,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var dialog_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("dialog");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("dialog");
           };
         };
       };
@@ -56352,7 +56446,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var dfn_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("dfn");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("dfn");
           };
         };
       };
@@ -56362,7 +56456,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var details_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("details");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("details");
           };
         };
       };
@@ -56372,7 +56466,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var del_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("del");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("del");
           };
         };
       };
@@ -56382,7 +56476,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var dd_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("dd");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("dd");
           };
         };
       };
@@ -56392,7 +56486,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var datalist_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("datalist");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("datalist");
           };
         };
       };
@@ -56402,7 +56496,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var data$prime_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("data");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("data");
           };
         };
       };
@@ -56412,7 +56506,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var colgroup_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("colgroup");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("colgroup");
           };
         };
       };
@@ -56421,14 +56515,14 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       };
       var col_ = function(dictIsSubsetOf) {
         return function(dictValidReactProps) {
-          return Elmish_HTML_Internal.styledTagNoContent_()("col");
+          return Elmish_HTML_Internal.styledTagNoContent_("col");
         };
       };
       var col = Elmish_HTML_Internal.styledTagNoContent("col");
       var code_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("code");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("code");
           };
         };
       };
@@ -56438,7 +56532,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var cite_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("cite");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("cite");
           };
         };
       };
@@ -56448,7 +56542,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var caption_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("caption");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("caption");
           };
         };
       };
@@ -56458,7 +56552,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var canvas_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("canvas");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("canvas");
           };
         };
       };
@@ -56468,7 +56562,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var button_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("button");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("button");
           };
         };
       };
@@ -56477,14 +56571,14 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       };
       var br_ = function(dictIsSubsetOf) {
         return function(dictValidReactProps) {
-          return Elmish_HTML_Internal.styledTagNoContent_()("br");
+          return Elmish_HTML_Internal.styledTagNoContent_("br");
         };
       };
       var br = Elmish_HTML_Internal.styledTagNoContent("br");
       var body_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("body");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("body");
           };
         };
       };
@@ -56494,7 +56588,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var blockquote_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("blockquote");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("blockquote");
           };
         };
       };
@@ -56504,7 +56598,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var bdo_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("bdo");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("bdo");
           };
         };
       };
@@ -56514,7 +56608,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var bdi_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("bdi");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("bdi");
           };
         };
       };
@@ -56523,14 +56617,14 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       };
       var base_ = function(dictIsSubsetOf) {
         return function(dictValidReactProps) {
-          return Elmish_HTML_Internal.styledTagNoContent_()("base");
+          return Elmish_HTML_Internal.styledTagNoContent_("base");
         };
       };
       var base = Elmish_HTML_Internal.styledTagNoContent("base");
       var b_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("b");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("b");
           };
         };
       };
@@ -56540,7 +56634,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var audio_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("audio");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("audio");
           };
         };
       };
@@ -56550,7 +56644,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var aside_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("aside");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("aside");
           };
         };
       };
@@ -56560,7 +56654,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var article_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("article");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("article");
           };
         };
       };
@@ -56569,14 +56663,14 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       };
       var area_ = function(dictIsSubsetOf) {
         return function(dictValidReactProps) {
-          return Elmish_HTML_Internal.styledTagNoContent_()("area");
+          return Elmish_HTML_Internal.styledTagNoContent_("area");
         };
       };
       var area = Elmish_HTML_Internal.styledTagNoContent("area");
       var address_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("address");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("address");
           };
         };
       };
@@ -56586,7 +56680,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var abbr_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("abbr");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("abbr");
           };
         };
       };
@@ -56596,7 +56690,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var a_ = function(dictReactChildren) {
         return function(dictIsSubsetOf) {
           return function(dictValidReactProps) {
-            return Elmish_HTML_Internal.styledTag_(dictReactChildren)()("a");
+            return Elmish_HTML_Internal.styledTag_(dictReactChildren)("a");
           };
         };
       };
@@ -56845,18 +56939,18 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Elmish.React.DOM/foreign.js
-  var require_foreign102 = __commonJS({
+  var require_foreign103 = __commonJS({
     "output/Elmish.React.DOM/foreign.js"(exports) {
       exports.fragment_ = require_react().Fragment;
     }
   });
 
   // output/Elmish.React.DOM/index.js
-  var require_Elmish_React = __commonJS({
+  var require_Elmish_React2 = __commonJS({
     "output/Elmish.React.DOM/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign102();
-      var Elmish_React = require_Elmish();
+      var $foreign = require_foreign103();
+      var Elmish_React = require_Elmish2();
       var Unsafe_Coerce = require_Unsafe();
       var text = Unsafe_Coerce.unsafeCoerce;
       var fragment = Elmish_React.createElement()(Elmish_React.reactChildrenArray)($foreign.fragment_)({});
@@ -56977,7 +57071,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Elmish.Hooks.Type/foreign.js
-  var require_foreign103 = __commonJS({
+  var require_foreign104 = __commonJS({
     "output/Elmish.Hooks.Type/foreign.js"(exports) {
       var stackTraceParser = require_stack_trace_parser_cjs();
       exports.uniqueNameFromCurrentCallStack_ = ({ skipFrames, prefix }) => {
@@ -56996,7 +57090,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Elmish_Hooks = __commonJS({
     "output/Elmish.Hooks.Type/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign103();
+      var $foreign = require_foreign104();
       var Control_Applicative = require_Control4();
       var Control_Category = require_Control2();
       var Data_Function = require_Data2();
@@ -57004,7 +57098,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var Data_Tuple = require_Data21();
       var Data_Unit = require_Data3();
       var Data_Void = require_Data5();
-      var Elmish_Component = require_Elmish4();
+      var Elmish_Component = require_Elmish5();
       var Hook = function() {
         function Hook2(value0) {
           this.value0 = value0;
@@ -57116,7 +57210,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Elmish.Hooks.UseEffect/foreign.js
-  var require_foreign104 = __commonJS({
+  var require_foreign105 = __commonJS({
     "output/Elmish.Hooks.UseEffect/foreign.js"(exports) {
       var React = require_react();
       var UseEffectLifeCycles = class extends React.Component {
@@ -57131,43 +57225,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }
   });
 
-  // output/Elmish.Dispatch/index.js
-  var require_Elmish6 = __commonJS({
-    "output/Elmish.Dispatch/index.js"(exports, module) {
-      "use strict";
-      var Control_Applicative = require_Control4();
-      var Data_Maybe = require_Data15();
-      var Data_Unit = require_Data3();
-      var Effect = require_Effect();
-      var Effect_Uncurried = require_Effect8();
-      var handleMaybe = function(dispatch) {
-        return function(fn) {
-          return Effect_Uncurried.mkEffectFn1(function() {
-            var $0 = Data_Maybe.maybe(Control_Applicative.pure(Effect.applicativeEffect)(Data_Unit.unit))(dispatch);
-            return function($1) {
-              return $0(fn($1));
-            };
-          }());
-        };
-      };
-      var handle = function(dispatch) {
-        return function(fn) {
-          return function($2) {
-            return dispatch(fn($2))();
-          };
-        };
-      };
-      module.exports = {
-        handle,
-        handleMaybe,
-        mkEffectFn1: Effect_Uncurried.mkEffectFn1,
-        mkEffectFn2: Effect_Uncurried.mkEffectFn2
-      };
-    }
-  });
-
   // output/Elmish.Foreign/foreign.js
-  var require_foreign105 = __commonJS({
+  var require_foreign106 = __commonJS({
     "output/Elmish.Foreign/foreign.js"(exports) {
       exports.isString = function(s) {
         return typeof s === "string";
@@ -57211,7 +57270,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Data.Int/foreign.js
-  var require_foreign106 = __commonJS({
+  var require_foreign107 = __commonJS({
     "output/Data.Int/foreign.js"(exports) {
       "use strict";
       exports.fromNumberImpl = function(just) {
@@ -57271,7 +57330,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Data.Number/foreign.js
-  var require_foreign107 = __commonJS({
+  var require_foreign108 = __commonJS({
     "output/Data.Number/foreign.js"(exports) {
       "use strict";
       exports.nan = NaN;
@@ -57293,7 +57352,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Data38 = __commonJS({
     "output/Data.Number/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign107();
+      var $foreign = require_foreign108();
       var Data_Maybe = require_Data15();
       var fromString = function(str) {
         return $foreign.fromStringImpl(str, $foreign["isFinite"], Data_Maybe.Just.create, Data_Maybe.Nothing.value);
@@ -57309,7 +57368,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Math/foreign.js
-  var require_foreign108 = __commonJS({
+  var require_foreign109 = __commonJS({
     "output/Math/foreign.js"(exports) {
       "use strict";
       exports.abs = Math.abs;
@@ -57384,7 +57443,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Math = __commonJS({
     "output/Math/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign108();
+      var $foreign = require_foreign109();
       module.exports = {
         abs: $foreign.abs,
         acos: $foreign.acos,
@@ -57423,7 +57482,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Data39 = __commonJS({
     "output/Data.Int/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign106();
+      var $foreign = require_foreign107();
       var Control_Category = require_Control2();
       var Data_Boolean = require_Data();
       var Data_Bounded = require_Data13();
@@ -57672,7 +57731,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Foreign/foreign.js
-  var require_foreign109 = __commonJS({
+  var require_foreign110 = __commonJS({
     "output/Foreign/foreign.js"(exports) {
       "use strict";
       exports.typeOf = function(value) {
@@ -61131,7 +61190,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Data.String.CodeUnits/foreign.js
-  var require_foreign110 = __commonJS({
+  var require_foreign111 = __commonJS({
     "output/Data.String.CodeUnits/foreign.js"(exports) {
       "use strict";
       exports.fromCharArray = function(a) {
@@ -61242,7 +61301,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Data.String.Unsafe/foreign.js
-  var require_foreign111 = __commonJS({
+  var require_foreign112 = __commonJS({
     "output/Data.String.Unsafe/foreign.js"(exports) {
       "use strict";
       exports.charAt = function(i) {
@@ -61264,7 +61323,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Data_String = __commonJS({
     "output/Data.String.Unsafe/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign111();
+      var $foreign = require_foreign112();
       module.exports = {
         "char": $foreign["char"],
         charAt: $foreign.charAt
@@ -61276,7 +61335,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Data_String2 = __commonJS({
     "output/Data.String.CodeUnits/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign110();
+      var $foreign = require_foreign111();
       var Data_Boolean = require_Data();
       var Data_Maybe = require_Data15();
       var Data_String_Unsafe = require_Data_String();
@@ -61402,7 +61461,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Foreign2 = __commonJS({
     "output/Foreign/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign109();
+      var $foreign = require_foreign110();
       var Control_Applicative = require_Control4();
       var Control_Monad_Error_Class = require_Control_Monad_Error();
       var Control_Monad_Except_Trans = require_Control_Monad_Except();
@@ -61751,7 +61810,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Elmish7 = __commonJS({
     "output/Elmish.Foreign/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign105();
+      var $foreign = require_foreign106();
       var Data_Array = require_Data34();
       var Data_Boolean = require_Data();
       var Data_Either = require_Data19();
@@ -61811,6 +61870,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           return {};
         };
       };
+      var canPassToJavaScriptOpt = function(dictCanPassToJavaScript) {
+        return {};
+      };
       var canPassToJavaScriptObject = function(dictCanPassToJavaScript) {
         return {};
       };
@@ -61854,8 +61916,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var validatePrimitive = function(expected) {
         return function(isValidType) {
           return function(x) {
-            var $102 = isValidType(x);
-            if ($102) {
+            var $107 = isValidType(x);
+            if ($107) {
               return Valid.value;
             }
             ;
@@ -61900,8 +61962,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       };
       var canReceiveFromJavaScriptI = {
         validateForeignType: function(v) {
-          return validatePrimitive("Int")(Data_HeytingAlgebra.conj(Data_HeytingAlgebra.heytingAlgebraFunction(Data_HeytingAlgebra.heytingAlgebraBoolean))($foreign.isNumber)(function($132) {
-            return Data_Maybe.isJust(Data_Int.fromNumber(Foreign.unsafeFromForeign($132)));
+          return validatePrimitive("Int")(Data_HeytingAlgebra.conj(Data_HeytingAlgebra.heytingAlgebraFunction(Data_HeytingAlgebra.heytingAlgebraBoolean))($foreign.isNumber)(function($137) {
+            return Data_Maybe.isJust(Data_Int.fromNumber(Foreign.unsafeFromForeign($137)));
           }));
         }
       };
@@ -61945,7 +62007,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
                   });
                 }
                 ;
-                throw new Error("Failed pattern match at Elmish.Foreign (line 199, column 1 - line 202, column 69): " + [v.constructor.name, v1.constructor.name]);
+                throw new Error("Failed pattern match at Elmish.Foreign (line 204, column 1 - line 207, column 69): " + [v.constructor.name, v1.constructor.name]);
               };
             }
           };
@@ -61981,7 +62043,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
                       });
                     }
                     ;
-                    throw new Error("Failed pattern match at Elmish.Foreign (line 184, column 29 - line 186, column 51): " + [v32.constructor.name]);
+                    throw new Error("Failed pattern match at Elmish.Foreign (line 185, column 29 - line 187, column 51): " + [v32.constructor.name]);
                   };
                 };
                 var v3 = Data_FoldableWithIndex.findMapWithIndex(Data_FoldableWithIndex.foldableWithIndexArray)(invalidElem)(Foreign.unsafeFromForeign(v1));
@@ -61997,10 +62059,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
                   });
                 }
                 ;
-                throw new Error("Failed pattern match at Elmish.Foreign (line 180, column 21 - line 182, column 101): " + [v3.constructor.name]);
+                throw new Error("Failed pattern match at Elmish.Foreign (line 181, column 21 - line 183, column 101): " + [v3.constructor.name]);
               }
               ;
-              throw new Error("Failed pattern match at Elmish.Foreign (line 177, column 6 - line 186, column 51): " + [v.constructor.name, v1.constructor.name]);
+              throw new Error("Failed pattern match at Elmish.Foreign (line 178, column 6 - line 187, column 51): " + [v.constructor.name, v1.constructor.name]);
             };
           }
         };
@@ -62027,10 +62089,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
                   });
                 }
                 ;
-                throw new Error("Failed pattern match at Elmish.Foreign (line 194, column 11 - line 196, column 82): " + [v3.constructor.name]);
+                throw new Error("Failed pattern match at Elmish.Foreign (line 195, column 11 - line 197, column 82): " + [v3.constructor.name]);
               }
               ;
-              throw new Error("Failed pattern match at Elmish.Foreign (line 190, column 1 - line 196, column 82): " + [v.constructor.name, v1.constructor.name]);
+              throw new Error("Failed pattern match at Elmish.Foreign (line 191, column 1 - line 197, column 82): " + [v.constructor.name, v1.constructor.name]);
             };
           }
         };
@@ -62068,14 +62130,23 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
                         }));
                       }
                       ;
-                      throw new Error("Failed pattern match at Elmish.Foreign (line 149, column 29 - line 151, column 97): " + [v6.constructor.name]);
+                      throw new Error("Failed pattern match at Elmish.Foreign (line 150, column 29 - line 152, column 97): " + [v6.constructor.name]);
                     };
                   };
                 };
                 return Foreign_Object.foldMaybe(invalidElem)(Valid.value)(Foreign.unsafeFromForeign(v1));
               }
               ;
-              throw new Error("Failed pattern match at Elmish.Foreign (line 143, column 6 - line 151, column 97): " + [v.constructor.name, v1.constructor.name]);
+              throw new Error("Failed pattern match at Elmish.Foreign (line 144, column 6 - line 152, column 97): " + [v.constructor.name, v1.constructor.name]);
+            };
+          }
+        };
+      };
+      var canReceiveFromJavaScriptO2 = function(dictCanReceiveFromJavaScript) {
+        return {
+          validateForeignType: function(v) {
+            return function(v1) {
+              return validateForeignType(canReceiveFromJavaScriptN1(dictCanReceiveFromJavaScript))(Type_Proxy["Proxy"].value)(v1);
             };
           }
         };
@@ -62101,7 +62172,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
                     return validateJsRecord(dictCanReceiveFromJavaScriptRecord)(Type_Proxy["Proxy"].value)(v1);
                   }
                   ;
-                  throw new Error("Failed pattern match at Elmish.Foreign (line 225, column 9 - line 227, column 55): " + [validHead.constructor.name]);
+                  throw new Error("Failed pattern match at Elmish.Foreign (line 230, column 9 - line 232, column 55): " + [validHead.constructor.name]);
                 };
               }
             };
@@ -62117,8 +62188,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           ;
           if (v1 instanceof Invalid) {
             return Data_Either.Left.create(Data_Array.fold(Data_Monoid.monoidString)([v1.value0.path, function() {
-              var $130 = v1.value0.path === "";
-              if ($130) {
+              var $135 = v1.value0.path === "";
+              if ($135) {
                 return "Expected ";
               }
               ;
@@ -62126,13 +62197,13 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
             }(), v1.value0.expected, " but got: ", $foreign.showForeign(v1.value0.got)]));
           }
           ;
-          throw new Error("Failed pattern match at Elmish.Foreign (line 245, column 18 - line 253, column 6): " + [v1.constructor.name]);
+          throw new Error("Failed pattern match at Elmish.Foreign (line 250, column 18 - line 258, column 6): " + [v1.constructor.name]);
         };
       };
       var readForeign = function(dictCanReceiveFromJavaScript) {
-        var $133 = readForeign$prime(dictCanReceiveFromJavaScript);
-        return function($134) {
-          return Data_Either.hush($133($134));
+        var $138 = readForeign$prime(dictCanReceiveFromJavaScript);
+        return function($139) {
+          return Data_Either.hush($138($139));
         };
       };
       var getArgument = function(args) {
@@ -62178,6 +62249,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         canReceiveFromJavaScriptA1,
         canPassToJavaScriptNullab,
         canReceiveFromJavaScriptN1,
+        canPassToJavaScriptOpt,
+        canReceiveFromJavaScriptO2,
         canPassToJavaScriptRecord2,
         canReceiveFromJavaScriptR1,
         canPassToJavaScriptForeig,
@@ -62192,19 +62265,19 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }
   });
 
-  // output/Elmish.Ref/index.js
+  // output/Elmish.Opaque/index.js
   var require_Elmish8 = __commonJS({
-    "output/Elmish.Ref/index.js"(exports, module) {
+    "output/Elmish.Opaque/index.js"(exports, module) {
       "use strict";
       var Data_Maybe = require_Data15();
       var Data_Symbol = require_Data6();
       var Elmish_Foreign = require_Elmish7();
       var Foreign_Object = require_Foreign();
       var Type_Proxy = require_Type();
-      var Ref = function(x) {
+      var Opaque = function(x) {
         return x;
       };
-      var writejsRef = function(dictIsSymbol) {
+      var canPassToJavaScriptOpaque = function(dictIsSymbol) {
         return {};
       };
       var refName = function(dictIsSymbol) {
@@ -62212,12 +62285,17 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           return "ref:" + Data_Symbol.reflectSymbol(dictIsSymbol)(p);
         };
       };
-      var ref = function(dictIsSymbol) {
-        return function(a) {
-          return Ref(Foreign_Object.singleton(refName(dictIsSymbol)(Type_Proxy["Proxy"].value))(a));
+      var unwrap = function(dictIsSymbol) {
+        return function(v) {
+          return Data_Maybe.fromJust()(Foreign_Object.lookup(refName(dictIsSymbol)(Type_Proxy["Proxy"].value))(v));
         };
       };
-      var readjsRef = function(dictIsSymbol) {
+      var wrap = function(dictIsSymbol) {
+        return function(a) {
+          return Opaque(Foreign_Object.singleton(refName(dictIsSymbol)(Type_Proxy["Proxy"].value))(a));
+        };
+      };
+      var canReceiveFromJavaScriptO = function(dictIsSymbol) {
         return {
           validateForeignType: function(v) {
             return function(v1) {
@@ -62230,26 +62308,21 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
               if (v2 instanceof Data_Maybe.Nothing) {
                 return new Elmish_Foreign.Invalid({
                   path: "",
-                  expected: "Ref",
+                  expected: "Opaque",
                   got: v1
                 });
               }
               ;
-              throw new Error("Failed pattern match at Elmish.Ref (line 72, column 7 - line 74, column 65): " + [v2.constructor.name]);
+              throw new Error("Failed pattern match at Elmish.Opaque (line 74, column 7 - line 76, column 68): " + [v2.constructor.name]);
             };
           }
         };
       };
-      var deref = function(dictIsSymbol) {
-        return function(v) {
-          return Data_Maybe.fromJust()(Foreign_Object.lookup(refName(dictIsSymbol)(Type_Proxy["Proxy"].value))(v));
-        };
-      };
       module.exports = {
-        ref,
-        deref,
-        readjsRef,
-        writejsRef
+        wrap,
+        unwrap,
+        canReceiveFromJavaScriptO,
+        canPassToJavaScriptOpaque
       };
     }
   });
@@ -62258,7 +62331,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Elmish_Hooks2 = __commonJS({
     "output/Elmish.Hooks.UseEffect/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign104();
+      var $foreign = require_foreign105();
       var Control_Applicative = require_Control4();
       var Control_Bind = require_Control5();
       var Control_Category = require_Control2();
@@ -62266,17 +62339,15 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var Data_Function = require_Data2();
       var Data_Maybe = require_Data15();
       var Data_Unit = require_Data3();
-      var Elmish_Component = require_Elmish4();
-      var Elmish_Dispatch = require_Elmish6();
+      var Elmish_Component = require_Elmish5();
+      var Elmish_Dispatch = require_Elmish();
       var Elmish_Hooks_Type = require_Elmish_Hooks();
-      var Elmish_React = require_Elmish();
-      var Elmish_Ref = require_Elmish8();
+      var Elmish_Opaque = require_Elmish8();
+      var Elmish_React = require_Elmish2();
       var useEffectLifeCycles = function(dictReactChildren) {
-        return function(dictIsSubsetOf) {
-          return function(dictIsSubsetOf1) {
-            return function(dictValidReactProps) {
-              return Elmish_React.createElement()(dictReactChildren)($foreign.useEffectLifeCycles_);
-            };
+        return function(dictCoerce) {
+          return function(dictValidReactProps) {
+            return Elmish_React.createElement()(dictReactChildren)($foreign.useEffectLifeCycles_);
           };
         };
       };
@@ -62299,20 +62370,20 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
                     },
                     view: function(v) {
                       return function(dispatch) {
-                        return useEffectLifeCycles(Elmish_React.reactChildrenSingle)()()()({
+                        return useEffectLifeCycles(Elmish_React.reactChildrenSingle)()()({
                           componentDidUpdate: Elmish_Dispatch.handleMaybe(dispatch)(function(prevDeps) {
-                            var $11 = Data_Eq.notEq(dictEq)(Elmish_Ref.deref({
+                            var $10 = Data_Eq.notEq(dictEq)(Elmish_Opaque.unwrap({
                               reflectSymbol: function() {
                                 return "deps";
                               }
                             })(prevDeps))(deps);
-                            if ($11) {
+                            if ($10) {
                               return new Data_Maybe.Just(deps);
                             }
                             ;
                             return Data_Maybe.Nothing.value;
                           }),
-                          deps: Elmish_Ref.ref({
+                          deps: Elmish_Opaque.wrap({
                             reflectSymbol: function() {
                               return "deps";
                             }
@@ -62367,7 +62438,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var Control_Applicative = require_Control4();
       var Control_Category = require_Control2();
       var Data_Tuple = require_Data21();
-      var Elmish_Component = require_Elmish4();
+      var Elmish_Component = require_Elmish5();
       var Elmish_Hooks_Type = require_Elmish_Hooks();
       var useState$prime = function(name) {
         return function(f) {
@@ -62415,8 +62486,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var Elmish_Hooks_Type = require_Elmish_Hooks();
       var Elmish_Hooks_UseEffect = require_Elmish_Hooks2();
       var Elmish_Hooks_UseState = require_Elmish_Hooks3();
-      var Elmish_React = require_Elmish();
-      var Elmish_React_DOM = require_Elmish_React();
+      var Elmish_React = require_Elmish2();
+      var Elmish_React_DOM = require_Elmish_React2();
       var view = Elmish_Hooks_Type.withHooks(Elmish_Hooks_Type.bind()(Elmish_Hooks_UseState.useState(Data_Maybe.Nothing.value))(function(v) {
         return Elmish_Hooks_Type.discard(Control_Bind.discardUnit)()(Elmish_Hooks_UseEffect.useEffect(Control_Bind.discard(Control_Bind.discardUnit)(Effect_Aff.bindAff)(Effect_Aff.delay(2e3))(function() {
           return Effect_Class.liftEffect(Effect_Aff.monadEffectAff)(v.value1(new Data_Maybe.Just(["Do thing", "Do another thing", "Some more stuff"])));
@@ -62459,8 +62530,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var Elmish_Hooks_Type = require_Elmish_Hooks();
       var Elmish_Hooks_UseEffect = require_Elmish_Hooks2();
       var Elmish_Hooks_UseState = require_Elmish_Hooks3();
-      var Elmish_React = require_Elmish();
-      var Elmish_React_DOM = require_Elmish_React();
+      var Elmish_React = require_Elmish2();
+      var Elmish_React_DOM = require_Elmish_React2();
       var Web_HTML = require_Web();
       var Web_HTML_HTMLDocument = require_Web_HTML14();
       var Web_HTML_Window = require_Web_HTML69();
@@ -62513,7 +62584,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Web.Storage.Storage/foreign.js
-  var require_foreign112 = __commonJS({
+  var require_foreign113 = __commonJS({
     "output/Web.Storage.Storage/foreign.js"(exports) {
       "use strict";
       exports.length = function(storage) {
@@ -62563,7 +62634,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var require_Web_Storage = __commonJS({
     "output/Web.Storage.Storage/index.js"(exports, module) {
       "use strict";
-      var $foreign = require_foreign112();
+      var $foreign = require_foreign113();
       var Data_Functor = require_Data4();
       var Data_Nullable = require_Data30();
       var Effect = require_Effect();
@@ -62602,13 +62673,13 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var Effect = require_Effect();
       var Effect_Aff = require_Effect7();
       var Effect_Class = require_Effect2();
-      var Elmish_Dispatch = require_Elmish6();
+      var Elmish_Dispatch = require_Elmish();
       var Elmish_HTML_Styled_Generated = require_Elmish_HTML_Styled();
       var Elmish_Hooks_Type = require_Elmish_Hooks();
       var Elmish_Hooks_UseEffect = require_Elmish_Hooks2();
       var Elmish_Hooks_UseState = require_Elmish_Hooks3();
-      var Elmish_React = require_Elmish();
-      var Elmish_React_DOM = require_Elmish_React();
+      var Elmish_React = require_Elmish2();
+      var Elmish_React_DOM = require_Elmish_React2();
       var Utils = require_Utils();
       var Web_HTML = require_Web();
       var Web_HTML_Window = require_Web_HTML69();
@@ -62660,13 +62731,13 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var Control_Applicative = require_Control4();
       var Data_Function = require_Data2();
       var Data_Maybe = require_Data15();
-      var Elmish_Component = require_Elmish4();
-      var Elmish_Dispatch = require_Elmish6();
+      var Elmish_Component = require_Elmish5();
+      var Elmish_Dispatch = require_Elmish();
       var Elmish_HTML_Internal = require_Elmish_HTML();
       var Elmish_HTML_Styled_Generated = require_Elmish_HTML_Styled();
       var Elmish_Hooks_Type = require_Elmish_Hooks();
-      var Elmish_React = require_Elmish();
-      var Elmish_React_DOM = require_Elmish_React();
+      var Elmish_React = require_Elmish2();
+      var Elmish_React_DOM = require_Elmish_React2();
       var Web_HTML_HTMLElement = require_Web_HTML15();
       var useMousePosition = function(className) {
         return Elmish_Hooks_Type.mkHook("UseMouseMove")(function(render) {
@@ -62742,8 +62813,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var Elmish_HTML_Styled_Generated = require_Elmish_HTML_Styled();
       var Elmish_Hooks_Type = require_Elmish_Hooks();
       var Elmish_Hooks_UseState = require_Elmish_Hooks3();
-      var Elmish_React = require_Elmish();
-      var Elmish_React_DOM = require_Elmish_React();
+      var Elmish_React = require_Elmish2();
+      var Elmish_React_DOM = require_Elmish_React2();
       var view = Elmish_Hooks_Type.withHookCurried(Elmish_Hooks_UseState.useState(false))(function(visible) {
         return function(setVisible) {
           return Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("")([Elmish_HTML_Styled_Generated.h2(Elmish_React.reactChildrenArray)("")([Elmish_HTML_Styled_Generated.code(Elmish_React.reactChildrenString)("")("useState"), Elmish_React_DOM.text(" hook")]), Elmish_HTML_Styled_Generated.button_(Elmish_React.reactChildrenString)()()("btn btn-primary")({
@@ -62778,11 +62849,11 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var Control_Applicative = require_Control4();
       var Data_Unit = require_Data3();
       var Data_Void = require_Data5();
-      var Elmish_Boot = require_Elmish5();
-      var Elmish_Component = require_Elmish4();
+      var Elmish_Boot = require_Elmish6();
+      var Elmish_Component = require_Elmish5();
       var Elmish_HTML_Styled_Generated = require_Elmish_HTML_Styled();
-      var Elmish_React = require_Elmish();
-      var Elmish_React_DOM = require_Elmish_React();
+      var Elmish_React = require_Elmish2();
+      var Elmish_React_DOM = require_Elmish_React2();
       var Examples_UseEffect = require_Examples();
       var Examples_UseEffectPrime = require_Examples2();
       var Examples_UseLocalStorage = require_Examples3();
