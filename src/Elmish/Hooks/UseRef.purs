@@ -23,7 +23,7 @@ type UseRef el = UseState (Maybe el)
 -- | view :: ReactElement
 -- | view = withHooks do
 -- |   inputEl /\ inputRef <- useRef
--- |   let onButtonClick = traverse_ focus inputEl
+-- |   let onButtonClick = traverse_ (focus <<< HTMLInputElement.toHTMLElement) inputEl
 -- |   pure $
 -- |     H.fragment
 -- |     [ H.input_ "form-control" { ref: inputRef, defaultValue: "" }
