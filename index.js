@@ -62774,7 +62774,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           };
         });
       };
-      var view = Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("mt-3 mb-2")([Elmish_HTML_Styled_Generated.h4(Elmish_React.reactChildrenSingle)("")(Elmish_HTML_Styled_Generated.code(Elmish_React.reactChildrenString)("")("useMousePosition")), Elmish_HTML_Styled_Generated.p(Elmish_React.reactChildrenArray)("text-muted")([Elmish_React_DOM.text("This example uses "), Elmish_HTML_Styled_Generated.code(Elmish_React.reactChildrenString)("")("mkHook"), Elmish_React_DOM.text(" to make a custom hook.")]), Elmish_HTML_Styled_Generated.div_(Elmish_React.reactChildrenSingle)()()("w-100 py-6 rounded bg-light border position-relative")({
+      var view = Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("mt-3 mb-2")([Elmish_HTML_Styled_Generated.h4(Elmish_React.reactChildrenSingle)("")(Elmish_HTML_Styled_Generated.code(Elmish_React.reactChildrenString)("")("useMousePosition")), Elmish_HTML_Styled_Generated.p(Elmish_React.reactChildrenArray)("text-muted")([Elmish_React_DOM.text("This example uses "), Elmish_HTML_Styled_Generated.code(Elmish_React.reactChildrenString)("")("mkHook"), Elmish_React_DOM.text(" to make a custom hook.")]), Elmish_HTML_Styled_Generated.div_(Elmish_React.reactChildrenSingle)()()("w-100 py-6 rounded bg-light border position-relative overflow-hidden")({
         style: Elmish_HTML_Internal.css({
           height: 200,
           cursor: "none"
@@ -62805,8 +62805,56 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }
   });
 
-  // output/Examples.UseState/index.js
+  // output/Elmish.Hooks.UseRef/index.js
+  var require_Elmish_Hooks4 = __commonJS({
+    "output/Elmish.Hooks.UseRef/index.js"(exports, module) {
+      "use strict";
+      var Data_Maybe = require_Data15();
+      var Data_Tuple = require_Data21();
+      var Elmish_Hooks_Type = require_Elmish_Hooks();
+      var Elmish_Hooks_UseState = require_Elmish_Hooks3();
+      var Elmish_React_Ref = require_Elmish_React();
+      var useRef = Elmish_Hooks_Type.bind()(Elmish_Hooks_UseState.useState(Data_Maybe.Nothing.value))(function(v) {
+        return Elmish_Hooks_Type.pure(new Data_Tuple.Tuple(v.value0, Elmish_React_Ref.callbackRef(v.value0)(v.value1)));
+      });
+      module.exports = {
+        useRef
+      };
+    }
+  });
+
+  // output/Examples.UseRef/index.js
   var require_Examples5 = __commonJS({
+    "output/Examples.UseRef/index.js"(exports, module) {
+      "use strict";
+      var Data_Foldable = require_Data27();
+      var Effect = require_Effect();
+      var Elmish_HTML_Styled_Generated = require_Elmish_HTML_Styled();
+      var Elmish_Hooks_Type = require_Elmish_Hooks();
+      var Elmish_Hooks_UseRef = require_Elmish_Hooks4();
+      var Elmish_React = require_Elmish2();
+      var Elmish_React_DOM = require_Elmish_React2();
+      var Web_HTML_HTMLElement = require_Web_HTML15();
+      var Web_HTML_HTMLInputElement = require_Web_HTML25();
+      var view = Elmish_Hooks_Type.withHooks(Elmish_Hooks_Type.bind()(Elmish_Hooks_UseRef.useRef)(function(v) {
+        var onButtonClick = Data_Foldable.traverse_(Effect.applicativeEffect)(Data_Foldable.foldableMaybe)(function($4) {
+          return Web_HTML_HTMLElement.focus(Web_HTML_HTMLInputElement.toHTMLElement($4));
+        })(v.value0);
+        return Elmish_Hooks_Type.pure(Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("row mt-3")([Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("col-12 col-md-6 col-lg-4")([Elmish_HTML_Styled_Generated.h2(Elmish_React.reactChildrenArray)("")([Elmish_HTML_Styled_Generated.code(Elmish_React.reactChildrenString)("")("useRef"), Elmish_React_DOM.text(" hook")]), Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("row")([Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenSingle)("col")(Elmish_HTML_Styled_Generated.input_()()("form-control")({
+          ref: v.value1,
+          defaultValue: ""
+        })), Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenSingle)("col-auto")(Elmish_HTML_Styled_Generated.button_(Elmish_React.reactChildrenString)()()("btn btn-primary")({
+          onClick: onButtonClick
+        })("Focus the input"))])])]));
+      }));
+      module.exports = {
+        view
+      };
+    }
+  });
+
+  // output/Examples.UseState/index.js
+  var require_Examples6 = __commonJS({
     "output/Examples.UseState/index.js"(exports, module) {
       "use strict";
       var Elmish_HTML_Internal = require_Elmish_HTML();
@@ -62858,10 +62906,11 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       var Examples_UseEffectPrime = require_Examples2();
       var Examples_UseLocalStorage = require_Examples3();
       var Examples_UseMouseMove = require_Examples4();
-      var Examples_UseState = require_Examples5();
+      var Examples_UseRef = require_Examples5();
+      var Examples_UseState = require_Examples6();
       var view = function(v) {
         return function(v1) {
-          return Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("container mt-4")([Elmish_HTML_Styled_Generated.h1(Elmish_React.reactChildrenArray)("")([Elmish_HTML_Styled_Generated.code(Elmish_React.reactChildrenString)("")("elmish-hooks"), Elmish_React_DOM.text(" examples")]), Elmish_HTML_Styled_Generated.hr("my-4"), Examples_UseState.view, Elmish_HTML_Styled_Generated.hr("my-4"), Examples_UseEffect.view, Examples_UseEffectPrime.view, Elmish_HTML_Styled_Generated.hr("my-4"), Elmish_HTML_Styled_Generated.h2(Elmish_React.reactChildrenString)("")("Custom hooks"), Examples_UseLocalStorage.view, Examples_UseMouseMove.view]);
+          return Elmish_HTML_Styled_Generated.div(Elmish_React.reactChildrenArray)("container mt-4")([Elmish_HTML_Styled_Generated.h1(Elmish_React.reactChildrenArray)("")([Elmish_HTML_Styled_Generated.code(Elmish_React.reactChildrenString)("")("elmish-hooks"), Elmish_React_DOM.text(" examples")]), Elmish_HTML_Styled_Generated.hr("my-4"), Examples_UseState.view, Elmish_HTML_Styled_Generated.hr("my-4"), Examples_UseEffect.view, Elmish_HTML_Styled_Generated.hr("my-4"), Examples_UseEffectPrime.view, Elmish_HTML_Styled_Generated.hr("my-4"), Examples_UseRef.view, Elmish_HTML_Styled_Generated.hr("my-4"), Elmish_HTML_Styled_Generated.h2(Elmish_React.reactChildrenString)("")("Custom hooks"), Examples_UseLocalStorage.view, Examples_UseMouseMove.view]);
         };
       };
       var main = Elmish_Boot.defaultMain({
