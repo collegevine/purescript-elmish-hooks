@@ -15,7 +15,7 @@ import Elmish (EffectFn1, ComponentDef, createElement, forkVoid, withTrace, (<?|
 import Elmish.Component (ComponentName(..))
 import Elmish.Hooks.Type (Hook, HookType, mkHook)
 import Elmish.React.Import (ImportedReactComponent, ImportedReactComponentConstructorWithContent)
-import Elmish.Ref (Ref, deref, ref)
+import Elmish.Opaque (Opaque, unwrap, wrap) as Opaque
 
 foreign import data UseEffect :: Type -> HookType
 
@@ -80,18 +80,18 @@ useEffect_ name f deps runEffect =
     , view: \_ dispatch ->
         useEffectLifeCycles
           { componentDidUpdate: dispatch <?| \prevDeps ->
-              if deref prevDeps /= deps then
+              if Opaque.unwrap prevDeps /= deps then
                 Just deps
               else
                 Nothing
-          , deps: ref deps
+          , deps: Opaque.wrap deps
           } $
           render unit
     }
 
 type Props deps =
-  ( componentDidUpdate :: EffectFn1 (Ref "deps" deps) Unit
-  , deps :: Ref "deps" deps
+  ( componentDidUpdate :: EffectFn1 (Opaque.Opaque "deps" deps) Unit
+  , deps :: Opaque.Opaque "deps" deps
   )
 
 useEffectLifeCycles :: forall deps. ImportedReactComponentConstructorWithContent (Props deps)
