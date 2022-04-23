@@ -18,9 +18,11 @@
 module Elmish.Hooks
   ( module Type
   , module UseEffect
+  , module UseRef
   , module UseState
   ) where
 
 import Elmish.Hooks.Type (Hook, HookType, type (<>), bind, discard, mkHook, pure, withHooks, (==>), (=/>)) as Type
-import Elmish.Hooks.UseEffect (UseEffect, useEffect) as UseEffect
+import Elmish.Hooks.UseEffect (UseEffect, useEffect, useEffect') as UseEffect
+import Elmish.Hooks.UseRef (UseRef, useRef) as UseRef
 import Elmish.Hooks.UseState (UseState, useState) as UseState
