@@ -79,7 +79,7 @@ useEffect_ name f deps runEffect =
         pure newDeps
     , view: \_ dispatch ->
         useEffectLifeCycles
-          { componentDidUpdate: dispatch <?| \prevDeps ->
+          { componentDidUpdate: dispatch <?| \(prevDeps :: _ "deps" _) ->
               if Opaque.unwrap prevDeps /= deps then
                 Just deps
               else
