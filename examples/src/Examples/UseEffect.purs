@@ -10,11 +10,11 @@ import Effect.Aff (Milliseconds(..), delay)
 import Effect.Class (liftEffect)
 import Elmish (ReactElement)
 import Elmish.HTML.Styled as H
-import Elmish.Hooks (useEffect, useState, withHooks)
+import Elmish.Hooks (useEffect, useState)
 import Elmish.Hooks as Hooks
 
 view :: ReactElement
-view = withHooks Hooks.do
+view = Hooks.component Hooks.do
   todos /\ setTodos <- useState Nothing
 
   useEffect do

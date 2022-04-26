@@ -24,7 +24,7 @@ foreign import data UseEffect :: Type -> HookType
 -- |
 -- | ```purs
 -- | todos :: ReactElement
--- | todos = withHooks Hooks.do
+-- | todos = Hooks.component Hooks.do
 -- |   todos /\ setTodos <- useState []
 -- |
 -- |   useEffect do
@@ -41,7 +41,7 @@ useEffect runEffect = useEffect_ (ComponentName "UseEffect") identity unit $ con
 -- |
 -- | ```purs
 -- | view :: ReactElement
--- | view = withHooks Hooks.do
+-- | view = Hooks.component Hooks.do
 -- |   count /\ setCount <- useState 0
 -- |
 -- |   useEffect' count \c -> liftEffect $

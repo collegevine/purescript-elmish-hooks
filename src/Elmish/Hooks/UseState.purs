@@ -20,7 +20,7 @@ foreign import data UseState :: Type -> HookType
 -- |
 -- | ```purs
 -- | view :: ReactElement
--- | view = withHooks Hooks.do
+-- | view = Hooks.component Hooks.do
 -- |   visible /\ setVisible <- useState false
 -- |   Hooks.pure $
 -- |     H.fragment

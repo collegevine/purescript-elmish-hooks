@@ -13,11 +13,11 @@ npm install stacktrace-parser --save
 
 ### Hooks
 
-Hooks allow introducing local state or effects without writing a new component. This library comes with two builtin hooks: `useState` and `useEffect`:
+Hooks allow introducing local state or effects without writing a new `ComponentDef`. This library comes with three builtin hooks: `useState`, `useEffect`, and `useRef`. Here’s what hooks look like in practice:
 
 ```purs
 todos :: ReactElement
-todos = withHooks Hooks.do
+todos = Hooks.component Hooks.do
   todos /\ setTodos <- useState []
 
   useEffect do
@@ -76,7 +76,7 @@ useMousePosition className =
 
 ### Continuation-Passing Style
 
-If you're only using a single hook, sometimes it might be more concise to use CPS via the `==>` or `=/>` operators.
+If you’re only using a single hook, sometimes it might be more concise to use CPS via the `==>` or `=/>` operators.
 
 ```purs
 myInput :: ReactElement

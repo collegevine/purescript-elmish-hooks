@@ -8,7 +8,7 @@ import Data.Maybe (Maybe(..))
 import Elmish (ReactElement, mkEffectFn1, (<|))
 import Elmish.Component (ComponentName(..))
 import Elmish.HTML.Styled as H
-import Elmish.Hooks (Hook, HookType, mkHook, withHooks)
+import Elmish.Hooks (Hook, HookType, mkHook)
 import Elmish.Hooks as Hooks
 import Unsafe.Coerce (unsafeCoerce)
 import Web.HTML.HTMLElement (HTMLElement, getBoundingClientRect)
@@ -25,7 +25,7 @@ view =
     ]
   , H.div_ "w-100 py-6 rounded bg-light border position-relative overflow-hidden"
       { style: H.css { height: 200, cursor: "none" } }$
-        withHooks Hooks.do
+        Hooks.component Hooks.do
           pos <- useMousePosition "position-absolute h-100 w-100"
           Hooks.pure $ case pos of
             Just { x, y } ->

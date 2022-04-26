@@ -2,11 +2,11 @@
 -- | encapsulate state or effects.
 -- |
 -- | ```purs
--- | import Elmish.Hooks (withHooks, useEffect, useState)
+-- | import Elmish.Hooks (useEffect, useState)
 -- | import Elmish.Hooks as Hooks
 -- |
 -- | todos :: ReactElement
--- | todos = withHooks Hooks.do
+-- | todos = Hooks.component Hooks.do
 -- |   todos /\ setTodos <- useState []
 -- |
 -- |   useEffect do
@@ -22,7 +22,7 @@ module Elmish.Hooks
   , module UseState
   ) where
 
-import Elmish.Hooks.Type (Hook, HookType, type (<>), bind, discard, mkHook, pure, withHooks, (==>), (=/>)) as Type
+import Elmish.Hooks.Type (Hook, HookType, type (<>), bind, component, discard, mkHook, pure, (==>), (=/>)) as Type
 import Elmish.Hooks.UseEffect (UseEffect, useEffect, useEffect') as UseEffect
 import Elmish.Hooks.UseRef (UseRef, useRef) as UseRef
 import Elmish.Hooks.UseState (UseState, useState) as UseState

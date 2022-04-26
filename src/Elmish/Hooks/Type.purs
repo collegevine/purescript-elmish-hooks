@@ -6,12 +6,12 @@ module Elmish.Hooks.Type
   , Pure
   , type (<>)
   , bind
+  , component
   , discard
   , mkHook
   , pure
   , withHook
   , withHookCurried
-  , withHooks
   , (=/>)
   , (==>)
   ) where
@@ -28,7 +28,7 @@ import Prelude as Prelude
 -- | example, the following will not compile because we track `HookType`:
 -- |
 -- | ```purs
--- | withHooks Hooks.do
+-- | Hooks.component Hooks.do
 -- |   if someCondition then Hooks.do
 -- |     x <- useState ""
 -- |     _ <- useState 0
@@ -84,7 +84,7 @@ else instance ComposedHookTypes l2 right right' => ComposedHookTypes (l1 <> l2) 
 -- | do-notation, which looks a lot like the React hooks syntax:
 -- |
 -- | ```purs
--- | withHooks do
+-- | Hooks.component do
 -- |   foo /\ setFoo <- useState ""
 -- |   pure …
 -- | ```
@@ -95,7 +95,7 @@ else instance ComposedHookTypes l2 right right' => ComposedHookTypes (l1 <> l2) 
 -- | need to use qualified do notation:
 -- |
 -- | ```purs
--- | withHooks Hooks.do
+-- | Hooks.component Hooks.do
 -- |   foo /\ setFoo <- useState ""
 -- |   Hooks.pure …
 -- | ```
@@ -154,17 +154,17 @@ mkHook name mkDef =
 -- |
 -- | ```purs
 -- | view :: ReactElement
--- | view = withHooks Hooks.do
+-- | view = Hooks.component Hooks.do
 -- |   name /\ setName <- useState ""
 -- |   Hooks.pure $ H.input_ "" { value: name, onChange: setName <?| eventTargetValue }
 -- | ```
-withHooks :: forall t. Hook' t ReactElement -> ReactElement
-withHooks hook = withHooks' name hook
+component :: forall t. Hook' t ReactElement -> ReactElement
+component hook = component' name hook
   where
-    name = uniqueNameFromCurrentCallStack { skipFrames: 3, prefix: "WithHooks" }
+    name = uniqueNameFromCurrentCallStack { skipFrames: 3, prefix: "HooksComponent" }
 
-withHooks' :: forall t. ComponentName -> Hook' t ReactElement -> ReactElement
-withHooks' name (Hook hook) =
+component' :: forall t. ComponentName -> Hook' t ReactElement -> ReactElement
+component' name (Hook hook) =
   unit # wrapWithLocalState name \_ ->
     { init: Prelude.pure unit
     , update: const absurd
@@ -183,7 +183,7 @@ withHooks' name (Hook hook) =
 -- |   H.input_ "" { value: name, onChange: setName <?| eventTargetValue }
 -- | ```
 withHook :: forall t a. Hook' t a -> (a -> ReactElement) -> ReactElement
-withHook hook = \render -> withHooks' name $ render <$> hook
+withHook hook = \render -> component' name $ render <$> hook
   where
     name = uniqueNameFromCurrentCallStack { skipFrames: 3, prefix: "WithHook" }
 
@@ -200,7 +200,7 @@ infixl 1 withHook as ==>
 -- |   H.input_ "" { value: name, onChange: setName <?| eventTargetValue }
 -- | ```
 withHookCurried :: forall t a b. Hook' t (a /\ b) -> (a -> b -> ReactElement) -> ReactElement
-withHookCurried hook = \render -> withHooks' name $ (uncurry render) <$> hook
+withHookCurried hook = \render -> component' name $ (uncurry render) <$> hook
   where
     name = uniqueNameFromCurrentCallStack { skipFrames: 3, prefix: "WithHookCurried" }
 

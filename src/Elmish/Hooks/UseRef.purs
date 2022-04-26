@@ -21,10 +21,10 @@ type UseRef el = UseState (Maybe el)
 -- |
 -- | ```purs
 -- | view :: ReactElement
--- | view = withHooks do
+-- | view = Hooks.component Hooks.do
 -- |   inputEl /\ inputRef <- useRef
 -- |   let onButtonClick = traverse_ (focus <<< HTMLInputElement.toHTMLElement) inputEl
--- |   pure $
+-- |   Hooks.pure $
 -- |     H.fragment
 -- |     [ H.input_ "form-control" { ref: inputRef, defaultValue: "" }
 -- |     , H.button_ "btn btn-primary" { onClick: onButtonClick } "Focus the input"

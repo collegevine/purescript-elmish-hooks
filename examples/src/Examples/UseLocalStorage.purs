@@ -9,7 +9,7 @@ import Data.Tuple.Nested (type (/\), (/\))
 import Effect.Class (liftEffect)
 import Elmish (ReactElement, Dispatch, (<?|))
 import Elmish.HTML.Styled as H
-import Elmish.Hooks (type (<>), Hook, UseEffect, UseState, useEffect, useState, withHooks)
+import Elmish.Hooks (type (<>), Hook, UseEffect, UseState, useEffect, useState)
 import Elmish.Hooks as Hooks
 import Utils (eventTargetValue)
 import Web.HTML (window)
@@ -17,7 +17,7 @@ import Web.HTML.Window (localStorage)
 import Web.Storage.Storage (getItem, setItem)
 
 view :: ReactElement
-view = withHooks Hooks.do
+view = Hooks.component Hooks.do
   foo /\ setFoo <- useLocalStorage "foo" ""
   Hooks.pure $
     H.div "row"
