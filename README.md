@@ -4,7 +4,7 @@ This library offers an analog of [React Hooks](https://reactjs.org/docs/hooks-in
 
 ### Getting Started
 
-To use this library, install `elmish-hooks`, as well as the npm package [`stacktrace-parser`](https://github.com/errwischt/stacktrace-parser).
+To use this library, install `elmish-hooks`, as well as the npm package [stacktrace-parser](https://github.com/errwischt/stacktrace-parser).
 
 ```
 npx spago install elmish-hooks
