@@ -8,7 +8,7 @@ import Elmish.Enzyme (childAt, find, name, testElement, (>>))
 import Elmish.Enzyme as Enzyme
 import Elmish.Enzyme.Adapter as Adapter
 import Elmish.HTML.Styled as H
-import Elmish.Hooks (useEffect, useState, withHooks, (=/>), (==>))
+import Elmish.Hooks (useEffect, useState, (=/>), (==>))
 import Elmish.Hooks as Hooks
 import Elmish.Hooks.UseEffect (useEffect')
 import Test.Spec (Spec, describe, it)
@@ -32,30 +32,30 @@ spec = do
         _ <- useState ""
         Hooks.pure $ H.div "" "content"
 
-      withHooksComponent = withHooks component
+      hooksComponent = Hooks.component component
 
       wrappedComponent = H.div ""
-        [ H.div "with-hooks-1-parent" $ withHooks component
-        , H.div "with-hooks-2-parent" $ withHooks component
-        , H.div "with-hooks-3-parent" withHooksComponent
-        , H.div "with-hooks-4-parent" withHooksComponent
+        [ H.div "component-1-parent" $ Hooks.component component
+        , H.div "component-2-parent" $ Hooks.component component
+        , H.div "component-3-parent" hooksComponent
+        , H.div "component-4-parent" hooksComponent
         ]
 
-    describe "withHooks" do
+    describe "component" do
       it "has a unique name when used twice" $
         testElement wrappedComponent do
-          withHooks1Name <- find ".with-hooks-1-parent" >> childAt 0 >> name
-          withHooks2Name <- find ".with-hooks-2-parent" >> childAt 0 >> name
-          withHooks1Name `shouldContain` "WithHooks"
-          withHooks2Name `shouldContain` "WithHooks"
-          withHooks1Name `shouldNotEqual` withHooks2Name
+          component1Name <- find ".component-1-parent" >> childAt 0 >> name
+          component2Name <- find ".component-2-parent" >> childAt 0 >> name
+          component1Name `shouldContain` "HooksComponent"
+          component2Name `shouldContain` "HooksComponent"
+          component1Name `shouldNotEqual` component2Name
 
-      it "has the same when same reference used twice" $
+      it "has the same name when same reference used twice" $
         testElement wrappedComponent do
-          withHooks3Name <- find ".with-hooks-3-parent" >> childAt 0 >> name
-          withHooks4Name <- find ".with-hooks-4-parent" >> childAt 0 >> name
-          withHooks3Name `shouldContain` "WithHooks"
-          withHooks3Name `shouldEqual` withHooks4Name
+          component3Name <- find ".component-3-parent" >> childAt 0 >> name
+          component4Name <- find ".component-4-parent" >> childAt 0 >> name
+          component3Name `shouldContain` "HooksComponent"
+          component3Name `shouldEqual` component4Name
 
     describe "withHook" do
       let
@@ -72,13 +72,13 @@ spec = do
 
       it "has a unique name when used twice" $
         testElement wrappedWithHookComponent do
-          withHooks1Name <- find ".with-hook-1-parent" >> childAt 0 >> name
-          withHooks2Name <- find ".with-hook-2-parent" >> childAt 0 >> name
-          withHooks1Name `shouldContain` "WithHook"
-          withHooks2Name `shouldContain` "WithHook"
-          withHooks1Name `shouldNotEqual` withHooks2Name
+          withHook1Name <- find ".with-hook-1-parent" >> childAt 0 >> name
+          withHook2Name <- find ".with-hook-2-parent" >> childAt 0 >> name
+          withHook1Name `shouldContain` "WithHook"
+          withHook2Name `shouldContain` "WithHook"
+          withHook1Name `shouldNotEqual` withHook2Name
 
-      it "has the same when same reference used twice" $
+      it "has the same name when same reference used twice" $
         testElement wrappedWithHookComponent do
           withHook3Name <- find ".with-hook-3-parent" >> childAt 0 >> name
           withHook4Name <- find ".with-hook-4-parent" >> childAt 0 >> name
@@ -100,13 +100,13 @@ spec = do
 
       it "has a unique name when used twice" $
         testElement wrappedWithHookComponent do
-          withHooks1Name <- find ".with-hook-1-parent" >> childAt 0 >> name
-          withHooks2Name <- find ".with-hook-2-parent" >> childAt 0 >> name
-          withHooks1Name `shouldContain` "WithHookCurried"
-          withHooks2Name `shouldContain` "WithHookCurried"
-          withHooks1Name `shouldNotEqual` withHooks2Name
+          withHook1Name <- find ".with-hook-1-parent" >> childAt 0 >> name
+          withHook2Name <- find ".with-hook-2-parent" >> childAt 0 >> name
+          withHook1Name `shouldContain` "WithHookCurried"
+          withHook2Name `shouldContain` "WithHookCurried"
+          withHook1Name `shouldNotEqual` withHook2Name
 
-      it "has the same when same reference used twice" $
+      it "has the same name when same reference used twice" $
         testElement wrappedWithHookComponent do
           withHook3Name <- find ".with-hook-3-parent" >> childAt 0 >> name
           withHook4Name <- find ".with-hook-4-parent" >> childAt 0 >> name

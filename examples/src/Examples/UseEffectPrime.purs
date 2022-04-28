@@ -8,7 +8,7 @@ import Data.Tuple.Nested ((/\))
 import Effect.Class (liftEffect)
 import Elmish (ReactElement)
 import Elmish.HTML.Styled as H
-import Elmish.Hooks (useState, withHooks)
+import Elmish.Hooks (useState)
 import Elmish.Hooks as Hooks
 import Elmish.Hooks.UseEffect (useEffect')
 import Web.HTML (window)
@@ -16,7 +16,7 @@ import Web.HTML.HTMLDocument as HTMLDocument
 import Web.HTML.Window as Window
 
 view :: ReactElement
-view = withHooks Hooks.do
+view = Hooks.component Hooks.do
   count /\ setCount <- useState 0
 
   useEffect' count \c -> liftEffect do
