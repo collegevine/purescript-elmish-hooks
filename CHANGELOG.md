@@ -5,20 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+- **Breaking**: Renamed `withHooks` to `component`.
+
 ## 0.6.1
 
 ### Fixed
 
-- Fix `useRef` docs
+- Fixed `useRef` docs.
 
 ## 0.6.0
 
 ### Added
 
-- `useRef` hook
+- Added `useRef` hook.
 
 ## 0.5.3
 
 ### Added
 
-- `useEffect'` is now reexported from `Elmish.Hooks` for easy access
+- `useEffect'` is now reexported from `Elmish.Hooks` for easy access.
