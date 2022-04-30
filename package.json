@@ -38,10 +38,11 @@
     "enzyme": "^3.11.0",
     "global-jsdom": "^8.4.0",
     "jsdom": "^16.5.1",
-    "purescript": "^0.14.5",
+    "pulp": "^16.0.0",
+    "purescript": "^0.15.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "spago": "^0.20.3"
+    "spago": "^0.20.8"
   },
   "dependencies": {
     "stacktrace-parser": "^0.1.10"

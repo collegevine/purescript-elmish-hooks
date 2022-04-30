@@ -11,7 +11,7 @@ import Elmish.HTML.Styled as H
 import Elmish.Hooks (Hook, HookType, mkHook)
 import Elmish.Hooks as Hooks
 import Unsafe.Coerce (unsafeCoerce)
-import Web.HTML.HTMLElement (HTMLElement, getBoundingClientRect)
+import Web.DOM.Element (Element, getBoundingClientRect)
 
 view :: ReactElement
 view =
@@ -46,7 +46,7 @@ useMousePosition className =
     , update: \_ pos -> pure pos
     , view: \pos dispatch ->
         H.div_ className
-          { onMouseMove: unsafeCoerce $ mkEffectFn1 \(event :: { clientX :: Number, clientY :: Number, currentTarget :: HTMLElement }) -> do
+          { onMouseMove: unsafeCoerce $ mkEffectFn1 \(event :: { clientX :: Number, clientY :: Number, currentTarget :: Element }) -> do
               { top, left, width, height } <- getBoundingClientRect event.currentTarget
               let
                 x = event.clientX - left

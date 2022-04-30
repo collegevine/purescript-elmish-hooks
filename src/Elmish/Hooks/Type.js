@@ -1,6 +1,6 @@
-const stackTraceParser = require('stacktrace-parser')
+import * as stackTraceParser from 'stacktrace-parser'
 
-exports.uniqueNameFromCurrentCallStack_ = ({ skipFrames, prefix }) => {
+export function uniqueNameFromCurrentCallStack_({ skipFrames, prefix }) {
   const stack = new Error().stack
   const stackLines = stackTraceParser.parse(stack)
   const hookCallSite = stackLines[skipFrames]

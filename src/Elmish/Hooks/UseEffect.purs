@@ -14,8 +14,9 @@ import Effect.Aff (Aff)
 import Elmish (EffectFn1, ComponentDef, createElement, forkVoid, withTrace, (<?|))
 import Elmish.Component (ComponentName(..))
 import Elmish.Hooks.Type (Hook, HookType, mkHook)
-import Elmish.React.Import (ImportedReactComponent, ImportedReactComponentConstructorWithContent)
 import Elmish.Opaque (Opaque, unwrap, wrap) as Opaque
+import Elmish.React.Import (ImportedReactComponent, ImportedReactComponentConstructorWithContent)
+import Type.Proxy (Proxy(..))
 
 foreign import data UseEffect :: Type -> HookType
 
@@ -78,13 +79,13 @@ useEffect_ name f deps runEffect =
         forkVoid $ runEffect newDeps
         pure newDeps
     , view: \_ dispatch ->
-        useEffectLifeCycles
-          { componentDidUpdate: dispatch <?| \prevDeps ->
+        useEffectLifeCycles (Proxy :: _ a)
+          { componentDidUpdate: dispatch <?| \(prevDeps :: Opaque.Opaque "deps" a) ->
               if Opaque.unwrap prevDeps /= deps then
                 Just deps
               else
                 Nothing
-          , deps: Opaque.wrap deps
+          , deps: (Opaque.wrap deps :: _ "deps" _)
           } $
           render unit
     }
@@ -94,7 +95,7 @@ type Props deps =
   , deps :: Opaque.Opaque "deps" deps
   )
 
-useEffectLifeCycles :: forall deps. ImportedReactComponentConstructorWithContent (Props deps)
-useEffectLifeCycles = createElement useEffectLifeCycles_
+useEffectLifeCycles :: forall deps. Proxy deps -> ImportedReactComponentConstructorWithContent (Props deps)
+useEffectLifeCycles _ = createElement useEffectLifeCycles_
 
 foreign import useEffectLifeCycles_ :: ImportedReactComponent
