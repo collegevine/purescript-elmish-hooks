@@ -6,6 +6,7 @@
   , "maybe"
   , "prelude"
   , "tuples"
+  , "undefined-is-not-a-problem"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs" ]
