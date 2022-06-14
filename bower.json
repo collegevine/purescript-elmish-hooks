@@ -16,7 +16,7 @@
     "dependencies": {
         "purescript-aff": "^v7.0.0",
         "purescript-debug": "^v6.0.0",
-        "purescript-elmish": "^v0.8.0",
+        "purescript-elmish": "^v0.8.1",
         "purescript-maybe": "^v6.0.0",
         "purescript-prelude": "^v6.0.0",
         "purescript-tuples": "^v7.0.0",
