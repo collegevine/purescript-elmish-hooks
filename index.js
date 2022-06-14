@@ -10072,7 +10072,7 @@ var Main = (() => {
           var immediateQueueCallbackNode = null;
           var isFlushingSyncQueue = false;
           var initialTimeMs$1 = Scheduler_now$1();
-          var now = initialTimeMs$1 < 1e4 ? Scheduler_now$1 : function() {
+          var now2 = initialTimeMs$1 < 1e4 ? Scheduler_now$1 : function() {
             return Scheduler_now$1() - initialTimeMs$1;
           };
           function getCurrentPriorityLevel() {
@@ -16002,7 +16002,7 @@ var Main = (() => {
                         row = row.sibling;
                       }
                     }
-                    if (renderState.tail !== null && now() > getRenderTargetTime()) {
+                    if (renderState.tail !== null && now2() > getRenderTargetTime()) {
                       workInProgress2.flags |= DidCapture;
                       didSuspendAlready = true;
                       cutOffTailIfNeeded(renderState, false);
@@ -16033,7 +16033,7 @@ var Main = (() => {
                         }
                         return null;
                       }
-                    } else if (now() * 2 - renderState.renderingStartTime > getRenderTargetTime() && renderLanes2 !== OffscreenLane) {
+                    } else if (now2() * 2 - renderState.renderingStartTime > getRenderTargetTime() && renderLanes2 !== OffscreenLane) {
                       workInProgress2.flags |= DidCapture;
                       didSuspendAlready = true;
                       cutOffTailIfNeeded(renderState, false);
@@ -16061,7 +16061,7 @@ var Main = (() => {
                   renderState.rendering = next;
                   renderState.tail = next.sibling;
                   renderState.lastEffect = workInProgress2.lastEffect;
-                  renderState.renderingStartTime = now();
+                  renderState.renderingStartTime = now2();
                   next.sibling = null;
                   var suspenseContext = suspenseStackCursor.current;
                   if (didSuspendAlready) {
@@ -17288,7 +17288,7 @@ var Main = (() => {
           var workInProgressRootRenderTargetTime = Infinity;
           var RENDER_TIMEOUT_MS = 500;
           function resetRenderTimer() {
-            workInProgressRootRenderTargetTime = now() + RENDER_TIMEOUT_MS;
+            workInProgressRootRenderTargetTime = now2() + RENDER_TIMEOUT_MS;
           }
           function getRenderTargetTime() {
             return workInProgressRootRenderTargetTime;
@@ -17321,12 +17321,12 @@ var Main = (() => {
           }
           function requestEventTime() {
             if ((executionContext & (RenderContext | CommitContext)) !== NoContext) {
-              return now();
+              return now2();
             }
             if (currentEventTime !== NoTimestamp) {
               return currentEventTime;
             }
-            currentEventTime = now();
+            currentEventTime = now2();
             return currentEventTime;
           }
           function requestUpdateLane(fiber) {
@@ -17517,7 +17517,7 @@ var Main = (() => {
                 var fatalError = workInProgressRootFatalError;
                 prepareFreshStack(root2, NoLanes);
                 markRootSuspended$1(root2, lanes);
-                ensureRootIsScheduled(root2, now());
+                ensureRootIsScheduled(root2, now2());
                 throw fatalError;
               }
               var finishedWork = root2.current.alternate;
@@ -17525,7 +17525,7 @@ var Main = (() => {
               root2.finishedLanes = lanes;
               finishConcurrentRender(root2, exitStatus, lanes);
             }
-            ensureRootIsScheduled(root2, now());
+            ensureRootIsScheduled(root2, now2());
             if (root2.callbackNode === originalCallbackNode) {
               return performConcurrentWorkOnRoot.bind(null, root2);
             }
@@ -17548,7 +17548,7 @@ var Main = (() => {
               case RootSuspended: {
                 markRootSuspended$1(root2, lanes);
                 if (includesOnlyRetries(lanes) && !shouldForceFlushFallbacksInDEV()) {
-                  var msUntilTimeout = globalMostRecentFallbackTime + FALLBACK_THROTTLE_MS - now();
+                  var msUntilTimeout = globalMostRecentFallbackTime + FALLBACK_THROTTLE_MS - now2();
                   if (msUntilTimeout > 10) {
                     var nextLanes = getNextLanes(root2, NoLanes);
                     if (nextLanes !== NoLanes) {
@@ -17575,7 +17575,7 @@ var Main = (() => {
                 if (!shouldForceFlushFallbacksInDEV()) {
                   var mostRecentEventTime = getMostRecentEventTime(root2, lanes);
                   var eventTimeMs = mostRecentEventTime;
-                  var timeElapsedMs = now() - eventTimeMs;
+                  var timeElapsedMs = now2() - eventTimeMs;
                   var _msUntilTimeout = jnd(timeElapsedMs) - timeElapsedMs;
                   if (_msUntilTimeout > 10) {
                     root2.timeoutHandle = scheduleTimeout(commitRoot.bind(null, root2), _msUntilTimeout);
@@ -17638,14 +17638,14 @@ var Main = (() => {
               var fatalError = workInProgressRootFatalError;
               prepareFreshStack(root2, NoLanes);
               markRootSuspended$1(root2, lanes);
-              ensureRootIsScheduled(root2, now());
+              ensureRootIsScheduled(root2, now2());
               throw fatalError;
             }
             var finishedWork = root2.current.alternate;
             root2.finishedWork = finishedWork;
             root2.finishedLanes = lanes;
             commitRoot(root2);
-            ensureRootIsScheduled(root2, now());
+            ensureRootIsScheduled(root2, now2());
             return null;
           }
           function flushDiscreteUpdates() {
@@ -17666,7 +17666,7 @@ var Main = (() => {
               rootsWithPendingDiscreteUpdates = null;
               roots.forEach(function(root2) {
                 markDiscreteUpdatesExpired(root2);
-                ensureRootIsScheduled(root2, now());
+                ensureRootIsScheduled(root2, now2());
               });
             }
             flushSyncCallbackQueue();
@@ -17844,7 +17844,7 @@ var Main = (() => {
             }
           }
           function markCommitTimeOfFallback() {
-            globalMostRecentFallbackTime = now();
+            globalMostRecentFallbackTime = now2();
           }
           function markSkippedUpdateLanes(lane) {
             workInProgressRootSkippedLanes = mergeLanes(lane, workInProgressRootSkippedLanes);
@@ -18252,7 +18252,7 @@ var Main = (() => {
             {
               onCommitRoot$1();
             }
-            ensureRootIsScheduled(root2, now());
+            ensureRootIsScheduled(root2, now2());
             if (hasUncaughtError) {
               hasUncaughtError = false;
               var _error3 = firstUncaughtError;
@@ -18575,7 +18575,7 @@ var Main = (() => {
             var eventTime = requestEventTime();
             markRootPinged(root2, pingedLanes);
             if (workInProgressRoot === root2 && isSubsetOfLanes(workInProgressRootRenderLanes, pingedLanes)) {
-              if (workInProgressRootExitStatus === RootSuspendedWithDelay || workInProgressRootExitStatus === RootSuspended && includesOnlyRetries(workInProgressRootRenderLanes) && now() - globalMostRecentFallbackTime < FALLBACK_THROTTLE_MS) {
+              if (workInProgressRootExitStatus === RootSuspendedWithDelay || workInProgressRootExitStatus === RootSuspended && includesOnlyRetries(workInProgressRootRenderLanes) && now2() - globalMostRecentFallbackTime < FALLBACK_THROTTLE_MS) {
                 prepareFreshStack(root2, NoLanes);
               } else {
                 workInProgressRootPingedLanes = mergeLanes(workInProgressRootPingedLanes, pingedLanes);
@@ -24243,7 +24243,6 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   };
 
   // output/Debug/foreign.js
-  "use strict";
   var req = typeof module === "undefined" ? void 0 : module.require;
   var util = function() {
     try {
@@ -24252,6 +24251,33 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       return void 0;
     }
   }();
+  var now = function() {
+    var perf;
+    if (typeof performance !== "undefined") {
+      perf = performance;
+    } else if (req) {
+      try {
+        perf = req("perf_hooks").performance;
+      } catch (e) {
+      }
+    }
+    return function() {
+      return (perf || Date).now();
+    };
+  }();
+
+  // output/Data.Function.Uncurried/foreign.js
+  var runFn4 = function(fn) {
+    return function(a) {
+      return function(b) {
+        return function(c) {
+          return function(d) {
+            return fn(a, b, c, d);
+          };
+        };
+      };
+    };
+  };
 
   // output/Effect.Aff/foreign.js
   var Aff = function() {
@@ -26135,19 +26161,6 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     return fold(foldableArray)(dictMonoid);
   };
 
-  // output/Data.Function.Uncurried/foreign.js
-  var runFn4 = function(fn) {
-    return function(a) {
-      return function(b) {
-        return function(c) {
-          return function(d) {
-            return fn(a, b, c, d);
-          };
-        };
-      };
-    };
-  };
-
   // output/Foreign.Object.ST/foreign.js
   var newImpl = function() {
     return {};
@@ -26680,12 +26693,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   };
 
   // output/Elmish.Hooks.UseEffect/index.js
-  var useEffectLifeCycles = function(v) {
-    return function(dictReactChildren) {
+  var useEffectLifeCycles = function(dictReactChildren) {
+    return function() {
       return function() {
-        return function() {
-          return createElement()(dictReactChildren)(useEffectLifeCycles_);
-        };
+        return createElement()(dictReactChildren)(useEffectLifeCycles_);
       };
     };
   };
@@ -26708,14 +26719,14 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
                 },
                 view: function(v) {
                   return function(dispatch) {
-                    return useEffectLifeCycles($$Proxy.value)(reactChildrenSingle)()()({
+                    return useEffectLifeCycles(reactChildrenSingle)()()({
                       componentDidUpdate: handleMaybe(dispatch)(function(v1) {
-                        var $9 = notEq(dictEq)(unwrap2({
+                        var $8 = notEq(dictEq)(unwrap2({
                           reflectSymbol: function() {
                             return "deps";
                           }
                         })(v1))(deps);
-                        if ($9) {
+                        if ($8) {
                           return new Just(deps);
                         }
                         ;
