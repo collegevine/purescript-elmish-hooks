@@ -176,7 +176,7 @@ componentChildren = unsafeToForeign >>> \f -> manyChildren f <|> singleChild f #
 --
 --     * nameOfNthChildsChild div 0 == "b"   - first child's child
 --     * nameOfNthChildsChild div 1 == "a"   - second child's child
---     * nameOfNthChildsChild div 3 == ""    - there is no third child
+--     * nameOfNthChildsChild div 2 == ""    - there is no third child
 --
 nameOfNthChildsChild :: ReactElement -> Int -> String
 nameOfNthChildsChild div n = fromMaybe "" do
