@@ -37,10 +37,10 @@ spec = do
         hooksComponent = Hooks.component component
 
         wrappedComponent = H.div ""
-          [ H.div "component-1-parent" $ Hooks.component component
-          , H.div "component-2-parent" $ Hooks.component component
-          , H.div "component-3-parent" hooksComponent
-          , H.div "component-4-parent" hooksComponent
+          [ H.div "" $ Hooks.component component
+          , H.div "" $ Hooks.component component
+          , H.div "" hooksComponent
+          , H.div "" hooksComponent
           ]
 
         nthComponentName = nameOfNthChildsChild wrappedComponent
@@ -61,10 +61,10 @@ spec = do
         withHookComponent = hook ==> view
 
         wrappedWithHookComponent = H.div ""
-          [ H.div "with-hook-1-parent" $ hook ==> view
-          , H.div "with-hook-2-parent" $ hook ==> view
-          , H.div "with-hook-3-parent" withHookComponent
-          , H.div "with-hook-4-parent" withHookComponent
+          [ H.div "" $ hook ==> view
+          , H.div "" $ hook ==> view
+          , H.div "" withHookComponent
+          , H.div "" withHookComponent
           ]
 
         nthComponentName = nameOfNthChildsChild wrappedWithHookComponent
@@ -85,10 +85,10 @@ spec = do
         withHookComponent = hook =/> view
 
         wrappedWithHookComponent = H.div ""
-          [ H.div "with-hook-1-parent" $ hook =/> view
-          , H.div "with-hook-2-parent" $ hook =/> view
-          , H.div "with-hook-3-parent" withHookComponent
-          , H.div "with-hook-4-parent" withHookComponent
+          [ H.div "" $ hook =/> view
+          , H.div "" $ hook =/> view
+          , H.div "" withHookComponent
+          , H.div "" withHookComponent
           ]
 
         nthComponentName = nameOfNthChildsChild wrappedWithHookComponent
