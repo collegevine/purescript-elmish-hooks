@@ -1,7 +1,6 @@
 {
   "name": "purescript-elmish-hooks",
   "description": "React Hooks for Elmish",
-  "main": "index.js",
   "scripts": {
     "install": "spago install",
     "build": "spago build --no-psa",
@@ -34,15 +33,12 @@
   },
   "homepage": "https://github.com/collegevine/purescript-elmish-hooks#readme",
   "devDependencies": {
-    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.6",
-    "enzyme": "^3.11.0",
-    "global-jsdom": "^8.4.0",
-    "jsdom": "^16.5.1",
+    "@happy-dom/global-registrator": "7.4.0",
     "pulp": "^16.0.0",
-    "purescript": "^0.15.0",
+    "purescript": "^0.15.4",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "spago": "^0.20.8"
+    "spago": "^0.20.9"
   },
   "dependencies": {
     "stacktrace-parser": "^0.1.10"
