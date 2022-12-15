@@ -13,7 +13,7 @@ import Data.Undefined.NoProblem (Req)
 import Debug (class DebugWarning)
 import Effect.Aff (Aff)
 import Effect.Uncurried (EffectFn1)
-import Elmish (ComponentDef, createElement, forkVoid, withTrace, (<|))
+import Elmish (ComponentDef, createElement, forkVoid, withTrace, (<?|))
 import Elmish.Component (ComponentName(..))
 import Elmish.Hooks.Type (Hook, HookType, mkHook)
 import Elmish.Opaque (Opaque, unwrap, wrap) as Opaque
@@ -81,7 +81,7 @@ useEffect_ name f deps runEffect =
         pure newDeps
     , view: \_ dispatch ->
         useEffectLifeCycles
-          { componentDidUpdate: dispatch <| \(prevDeps :: Opaque.Opaque "deps" a) ->
+          { componentDidUpdate: dispatch <?| \(prevDeps :: Opaque.Opaque "deps" a) ->
               if Opaque.unwrap prevDeps /= deps then
                 Just deps
               else
