@@ -7,6 +7,7 @@ import Prelude
 import Data.Foldable (traverse_)
 import Data.Tuple.Nested ((/\))
 import Elmish (ReactElement)
+import Elmish.HTML.Events as E
 import Elmish.HTML.Styled as H
 import Elmish.Hooks (useRef)
 import Elmish.Hooks as Hooks
@@ -28,7 +29,7 @@ view = Hooks.component Hooks.do
         [ H.div "col" $
             H.input_ "form-control" { ref: inputRef, defaultValue: "" }
         , H.div "col-auto" $
-            H.button_ "btn btn-primary" { onClick: onButtonClick } "Focus the input"
+            H.button_ "btn btn-primary" { onClick: E.handleEffect onButtonClick } "Focus the input"
         ]
       ]
     ]

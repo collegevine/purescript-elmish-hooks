@@ -5,13 +5,13 @@ module Examples.UseMouseMove
 import Prelude
 
 import Data.Maybe (Maybe(..))
-import Elmish (ReactElement, mkEffectFn1, (<|))
+import Elmish (ReactElement, (<|))
 import Elmish.Component (ComponentName(..))
+import Elmish.HTML.Events as E
 import Elmish.HTML.Styled as H
 import Elmish.Hooks (Hook, HookType, mkHook)
 import Elmish.Hooks as Hooks
-import Unsafe.Coerce (unsafeCoerce)
-import Web.DOM.Element (Element, getBoundingClientRect)
+import Web.DOM.Element (getBoundingClientRect)
 
 view :: ReactElement
 view =
@@ -46,7 +46,7 @@ useMousePosition className =
     , update: \_ pos -> pure pos
     , view: \pos dispatch ->
         H.div_ className
-          { onMouseMove: unsafeCoerce $ mkEffectFn1 \(event :: { clientX :: Number, clientY :: Number, currentTarget :: Element }) -> do
+          { onMouseMove: E.handleEffect \(E.MouseEvent event) -> do
               { top, left, width, height } <- getBoundingClientRect event.currentTarget
               let
                 x = event.clientX - left

@@ -2,6 +2,7 @@
 , dependencies =
   [ "aff"
   , "debug"
+  , "effect"
   , "elmish"
   , "maybe"
   , "prelude"

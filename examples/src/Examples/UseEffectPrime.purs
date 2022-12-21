@@ -6,7 +6,7 @@ import Prelude
 
 import Data.Tuple.Nested ((/\))
 import Effect.Class (liftEffect)
-import Elmish (ReactElement)
+import Elmish (ReactElement, (<|))
 import Elmish.HTML.Styled as H
 import Elmish.Hooks (useState)
 import Elmish.Hooks as Hooks
@@ -37,6 +37,6 @@ view = Hooks.component Hooks.do
         , H.code "" "document.title"
         , H.text "."
         ]
-      , H.button_ "btn btn-primary" { onClick: setCount $ count + 1 } "Click to update title"
+      , H.button_ "btn btn-primary" { onClick: setCount <| (count + 1) } "Click to update title"
       ]
     ]
