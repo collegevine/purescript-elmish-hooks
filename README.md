@@ -61,7 +61,7 @@ useMousePosition className =
     , update: \_ pos -> pure pos
     , view: \pos dispatch ->
         H.div_ className
-          { onMouseMove: unsafeCoerce $ mkEffectFn1 \(event :: { clientX :: Number, clientY :: Number, currentTarget :: HTMLElement }) -> do
+          { onMouseMove: E.handleEffect \(E.MouseEvent event) -> do
               { top, left, width, height } <- getBoundingClientRect event.currentTarget
               let
                 x = event.clientX - left
@@ -81,7 +81,7 @@ If you’re only using a single hook, sometimes it might be more concise to use 
 ```purs
 myInput :: ReactElement
 myInput = useState "" =/> \name setName ->
-  H.input_ "" { value: name, onChange: setName <?| eventTargetValue }
+  H.input_ "" { value: name, onChange: setName <| E.inputText }
 ```
 
 ### Examples
