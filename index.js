@@ -25306,21 +25306,6 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     };
   });
 
-  // output/Safe.Coerce/index.js
-  var coerce = function() {
-    return unsafeCoerce2;
-  };
-
-  // output/Type.Equality/index.js
-  var refl = {
-    proof: function(a) {
-      return a;
-    },
-    Coercible0: function() {
-      return void 0;
-    }
-  };
-
   // output/Data.Foldable/foreign.js
   var foldrArray = function(f) {
     return function(init2) {
@@ -26613,60 +26598,45 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
 
   // output/Elmish.Dispatch/index.js
   var pure5 = /* @__PURE__ */ pure(applicativeEffect);
-  var coerce2 = /* @__PURE__ */ coerce();
-  var handleMaybeFunctionMaybe = function(dictTypeEquals) {
-    return function(dictTypeEquals1) {
-      return {
-        handleMaybe: function(dispatch) {
-          return function(f) {
-            return mkEffectFn1(function() {
-              var $21 = maybe(pure5(unit))(dispatch);
-              return function($22) {
-                return $21(coerce2(f(coerce2($22))));
-              };
-            }());
+  var handleMaybeFunctionMaybe = {
+    handleMaybe: function(dispatch) {
+      return function(f) {
+        return mkEffectFn1(function() {
+          var $13 = maybe(pure5(unit))(dispatch);
+          return function($14) {
+            return $13(f($14));
           };
-        }
+        }());
       };
-    };
-  };
-  var handleFunction = function(dictTypeEquals) {
-    return function(dictTypeEquals1) {
-      return {
-        handle: function(dispatch) {
-          return function(f) {
-            return function($23) {
-              return dispatch(coerce2(f(coerce2($23))))();
-            };
-          };
-        }
-      };
-    };
-  };
-  var handleEffectFunctionEffec = function(dictTypeEquals) {
-    return {
-      handleEffect: function(f) {
-        return function($24) {
-          return f(coerce2($24))();
-        };
-      }
-    };
-  };
-  var handleEffectEffectUnit = {
-    handleEffect: function($25) {
-      return mkEffectFn1($$const($25));
     }
   };
-  var handle1 = function(dictTypeEquals) {
-    return {
-      handle: function(dispatch) {
-        return function(msg) {
-          return function(v) {
-            return dispatch(coerce2(msg))();
-          };
+  var handleFunction = {
+    handle: function(dispatch) {
+      return function(f) {
+        return function($15) {
+          return dispatch(f($15))();
         };
-      }
-    };
+      };
+    }
+  };
+  var handleEffectFunctionEffec = {
+    handleEffect: function(f) {
+      return mkEffectFn1(f);
+    }
+  };
+  var handleEffectEffectUnit = {
+    handleEffect: function($16) {
+      return mkEffectFn1($$const($16));
+    }
+  };
+  var handle1 = {
+    handle: function(dispatch) {
+      return function(msg) {
+        return function(v) {
+          return dispatch(msg)();
+        };
+      };
+    }
   };
   var handleMaybe = function(dict) {
     return dict.handleMaybe;
@@ -26860,7 +26830,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var createElement3 = /* @__PURE__ */ createElement();
   var discard4 = /* @__PURE__ */ discard(discardUnit)(trBind);
   var pure6 = /* @__PURE__ */ pure(trApplicative);
-  var handleMaybe2 = /* @__PURE__ */ handleMaybe(/* @__PURE__ */ handleMaybeFunctionMaybe(refl)(refl));
+  var handleMaybe2 = /* @__PURE__ */ handleMaybe(handleMaybeFunctionMaybe);
   var depsIsSymbol = {
     reflectSymbol: function() {
       return "deps";
@@ -26900,8 +26870,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
                   return function(dispatch) {
                     return useEffectLifeCycles1({
                       componentDidUpdate: handleMaybe2(dispatch)(function(v1) {
-                        var $28 = notEq2(unwrap3(v1))(deps);
-                        if ($28) {
+                        var $26 = notEq2(unwrap3(v1))(deps);
+                        if ($26) {
                           return new Just(deps);
                         }
                         ;
@@ -27004,7 +26974,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var code3 = /* @__PURE__ */ code(reactChildrenString);
   var p2 = /* @__PURE__ */ p(reactChildrenArray);
   var button_2 = /* @__PURE__ */ button_(reactChildrenString)()();
-  var handle2 = /* @__PURE__ */ handle(/* @__PURE__ */ handle1(refl));
+  var handle2 = /* @__PURE__ */ handle(handle1);
   var view2 = /* @__PURE__ */ component(/* @__PURE__ */ bind3()(/* @__PURE__ */ useState(0))(function(v) {
     return discard6(useEffect$prime2(v.value0)(function(c) {
       return liftEffect4(function __do() {
@@ -27071,7 +27041,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var code4 = /* @__PURE__ */ code(reactChildrenString);
   var label_2 = /* @__PURE__ */ label_(reactChildrenArray)()();
   var input_2 = /* @__PURE__ */ input_()();
-  var handle3 = /* @__PURE__ */ handle(/* @__PURE__ */ handleFunction(refl)(refl));
+  var handle3 = /* @__PURE__ */ handle(handleFunction);
   var useLocalStorage = function(key) {
     return function(defaultValue4) {
       return bind5(useState(defaultValue4))(function(v) {
@@ -27149,8 +27119,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   // output/Examples.UseMouseMove/index.js
   var pure9 = /* @__PURE__ */ pure(trApplicative);
   var div_3 = /* @__PURE__ */ div_(reactChildrenSingle)()();
-  var handleEffect2 = /* @__PURE__ */ handleEffect(/* @__PURE__ */ handleEffectFunctionEffec(refl));
-  var handle4 = /* @__PURE__ */ handle(/* @__PURE__ */ handleFunction(refl)(refl));
+  var handleEffect2 = /* @__PURE__ */ handleEffect(handleEffectFunctionEffec);
+  var handle4 = /* @__PURE__ */ handle(handleFunction);
   var code5 = /* @__PURE__ */ code(reactChildrenString);
   var img_2 = /* @__PURE__ */ img_()();
   var useMousePosition = function(className2) {
@@ -27249,7 +27219,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var h25 = /* @__PURE__ */ h2(reactChildrenArray);
   var code7 = /* @__PURE__ */ code(reactChildrenString);
   var button_4 = /* @__PURE__ */ button_(reactChildrenString)()();
-  var handle5 = /* @__PURE__ */ handle(/* @__PURE__ */ handle1(refl));
+  var handle5 = /* @__PURE__ */ handle(handle1);
   var div_4 = /* @__PURE__ */ div_(reactChildrenSingle)()();
   var div13 = /* @__PURE__ */ div2(reactChildrenSingle);
   var h32 = /* @__PURE__ */ h3(reactChildrenString);
