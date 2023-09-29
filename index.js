@@ -9,10 +9,10 @@ var Main = (() => {
   var __commonJS = (cb, mod2) => function __require() {
     return mod2 || (0, cb[Object.keys(cb)[0]])((mod2 = { exports: {} }).exports, mod2), mod2.exports;
   };
-  var __export = (target5, all4) => {
+  var __export = (target5, all3) => {
     __markAsModule(target5);
-    for (var name15 in all4)
-      __defProp(target5, name15, { get: all4[name15], enumerable: true });
+    for (var name15 in all3)
+      __defProp(target5, name15, { get: all3[name15], enumerable: true });
   };
   var __reExport = (target5, module2, desc) => {
     if (module2 && typeof module2 === "object" || typeof module2 === "function") {
@@ -7679,15 +7679,15 @@ var Main = (() => {
               if (selection.rangeCount === 1 && selection.anchorNode === startMarker.node && selection.anchorOffset === startMarker.offset && selection.focusNode === endMarker.node && selection.focusOffset === endMarker.offset) {
                 return;
               }
-              var range3 = doc.createRange();
-              range3.setStart(startMarker.node, startMarker.offset);
+              var range2 = doc.createRange();
+              range2.setStart(startMarker.node, startMarker.offset);
               selection.removeAllRanges();
               if (start2 > end) {
-                selection.addRange(range3);
+                selection.addRange(range2);
                 selection.extend(endMarker.node, endMarker.offset);
               } else {
-                range3.setEnd(endMarker.node, endMarker.offset);
-                selection.addRange(range3);
+                range2.setEnd(endMarker.node, endMarker.offset);
+                selection.addRange(range2);
               }
             }
           }
@@ -25306,6 +25306,21 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     };
   });
 
+  // output/Safe.Coerce/index.js
+  var coerce = function() {
+    return unsafeCoerce2;
+  };
+
+  // output/Type.Equality/index.js
+  var refl = {
+    proof: function(a) {
+      return a;
+    },
+    Coercible0: function() {
+      return void 0;
+    }
+  };
+
   // output/Data.Foldable/foreign.js
   var foldrArray = function(f) {
     return function(init2) {
@@ -25573,8 +25588,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       return fiber;
     };
   };
-  var launchAff_ = function($74) {
-    return $$void2(launchAff($74));
+  var launchAff_ = function($75) {
+    return $$void2(launchAff($75));
   };
   var delay = function(v) {
     return _delay(Right.create, v);
@@ -26063,26 +26078,22 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Data.Array/foreign.js
-  var replicateFill = function(count) {
-    return function(value12) {
-      if (count < 1) {
-        return [];
-      }
-      var result = new Array(count);
-      return result.fill(value12);
-    };
+  var replicateFill = function(count, value12) {
+    if (count < 1) {
+      return [];
+    }
+    var result = new Array(count);
+    return result.fill(value12);
   };
-  var replicatePolyfill = function(count) {
-    return function(value12) {
-      var result = [];
-      var n = 0;
-      for (var i = 0; i < count; i++) {
-        result[n++] = value12;
-      }
-      return result;
-    };
+  var replicatePolyfill = function(count, value12) {
+    var result = [];
+    var n = 0;
+    for (var i = 0; i < count; i++) {
+      result[n++] = value12;
+    }
+    return result;
   };
-  var replicate = typeof Array.prototype.fill === "function" ? replicateFill : replicatePolyfill;
+  var replicateImpl = typeof Array.prototype.fill === "function" ? replicateFill : replicatePolyfill;
   var fromFoldableImpl = function() {
     function Cons2(head, tail) {
       this.head = head;
@@ -26104,10 +26115,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       }
       return result;
     }
-    return function(foldr2) {
-      return function(xs) {
-        return listToArray(foldr2(curryCons)(emptyList)(xs));
-      };
+    return function(foldr2, xs) {
+      return listToArray(foldr2(curryCons)(emptyList)(xs));
     };
   }();
   var sortByImpl = function() {
@@ -26146,17 +26155,13 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         xs1[k++] = xs2[j++];
       }
     }
-    return function(compare2) {
-      return function(fromOrdering) {
-        return function(xs) {
-          var out;
-          if (xs.length < 2)
-            return xs;
-          out = xs.slice(0);
-          mergeFromTo(compare2, fromOrdering, out, xs.slice(0), 0, xs.length);
-          return out;
-        };
-      };
+    return function(compare2, fromOrdering, xs) {
+      var out;
+      if (xs.length < 2)
+        return xs;
+      out = xs.slice(0);
+      mergeFromTo(compare2, fromOrdering, out, xs.slice(0), 0, xs.length);
+      return out;
     };
   }();
 
@@ -26197,17 +26202,11 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         xs1[k++] = xs2[j++];
       }
     }
-    return function(compare2) {
-      return function(fromOrdering) {
-        return function(xs) {
-          return function() {
-            if (xs.length < 2)
-              return xs;
-            mergeFromTo(compare2, fromOrdering, xs, xs.slice(0), 0, xs.length);
-            return xs;
-          };
-        };
-      };
+    return function(compare2, fromOrdering, xs) {
+      if (xs.length < 2)
+        return xs;
+      mergeFromTo(compare2, fromOrdering, xs, xs.slice(0), 0, xs.length);
+      return xs;
     };
   }();
 
@@ -26598,23 +26597,26 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
 
   // output/Elmish.Dispatch/index.js
   var pure5 = /* @__PURE__ */ pure(applicativeEffect);
-  var handleMaybeFunctionMaybe = {
-    handleMaybe: function(dispatch) {
-      return function(f) {
-        return mkEffectFn1(function() {
-          var $13 = maybe(pure5(unit))(dispatch);
-          return function($14) {
-            return $13(f($14));
-          };
-        }());
-      };
-    }
+  var coerce2 = /* @__PURE__ */ coerce();
+  var handleMaybeFunction = function(dictTypeEquals) {
+    return {
+      handleMaybe: function(dispatch) {
+        return function(f) {
+          return mkEffectFn1(function() {
+            var $16 = maybe(pure5(unit))(dispatch);
+            return function($17) {
+              return $16(coerce2(f($17)));
+            };
+          }());
+        };
+      }
+    };
   };
   var handleFunction = {
     handle: function(dispatch) {
       return function(f) {
-        return function($15) {
-          return dispatch(f($15))();
+        return function($18) {
+          return dispatch(f($18))();
         };
       };
     }
@@ -26625,8 +26627,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }
   };
   var handleEffectEffectUnit = {
-    handleEffect: function($16) {
-      return mkEffectFn1($$const($16));
+    handleEffect: function($19) {
+      return mkEffectFn1($$const($19));
     }
   };
   var handle1 = {
@@ -26769,7 +26771,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
                 return validateJsRecord1($$Proxy.value)(v1);
               }
               ;
-              throw new Error("Failed pattern match at Elmish.Foreign (line 235, column 9 - line 237, column 55): " + [validHead.constructor.name]);
+              throw new Error("Failed pattern match at Elmish.Foreign (line 235, column 9 - line 237, column 51): " + [validHead.constructor.name]);
             };
           }
         };
@@ -26808,21 +26810,18 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   // output/Elmish.Opaque/index.js
   var fromJust2 = /* @__PURE__ */ fromJust();
   var refName = function(dictIsSymbol) {
-    var reflectSymbol2 = reflectSymbol(dictIsSymbol);
-    return function(p3) {
-      return "ref:" + reflectSymbol2(p3);
-    };
+    return "ref:" + reflectSymbol(dictIsSymbol)($$Proxy.value);
   };
   var unwrap2 = function(dictIsSymbol) {
     var refName1 = refName(dictIsSymbol);
     return function(v) {
-      return fromJust2(lookup(refName1($$Proxy.value))(v));
+      return fromJust2(lookup(refName1)(v));
     };
   };
   var wrap3 = function(dictIsSymbol) {
     var refName1 = refName(dictIsSymbol);
     return function(a) {
-      return singleton2(refName1($$Proxy.value))(a);
+      return singleton2(refName1)(a);
     };
   };
 
@@ -26830,7 +26829,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var createElement3 = /* @__PURE__ */ createElement();
   var discard4 = /* @__PURE__ */ discard(discardUnit)(trBind);
   var pure6 = /* @__PURE__ */ pure(trApplicative);
-  var handleMaybe2 = /* @__PURE__ */ handleMaybe(handleMaybeFunctionMaybe);
+  var handleMaybe2 = /* @__PURE__ */ handleMaybe(/* @__PURE__ */ handleMaybeFunction(refl));
   var depsIsSymbol = {
     reflectSymbol: function() {
       return "deps";
@@ -26870,8 +26869,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
                   return function(dispatch) {
                     return useEffectLifeCycles1({
                       componentDidUpdate: handleMaybe2(dispatch)(function(v1) {
-                        var $26 = notEq2(unwrap3(v1))(deps);
-                        if ($26) {
+                        var $27 = notEq2(unwrap3(v1))(deps);
+                        if ($27) {
                           return new Just(deps);
                         }
                         ;
