@@ -30,15 +30,15 @@ foreign import data UseState :: Type -> HookType
 -- |         else H.empty
 -- |     ]
 -- | ```
-useState :: forall state. state -> Hook (UseState state) (state /\ Dispatch state)
+useState :: ∀ @state. state -> Hook (UseState state) (state /\ Dispatch state)
 useState state = useState' (ComponentName "UseState") identity state
 
 -- | A version of `useState` that logs messages, state changes and render times.
 -- | Intended to be used with qualified imports: `UseState.traced`.
-traced :: forall state. DebugWarning => state -> Hook (UseState state) (state /\ Dispatch state)
+traced :: ∀ @state. DebugWarning => state -> Hook (UseState state) (state /\ Dispatch state)
 traced state = useState' (ComponentName "UseState_Traced") withTrace state
 
-useState' :: forall state.
+useState' :: ∀ @state.
   ComponentName
   -> (ComponentDef state state -> ComponentDef state state)
   -> state

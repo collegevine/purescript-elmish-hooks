@@ -51,7 +51,7 @@ useEffect runEffect = useEffect_ (ComponentName "UseEffect") identity unit $ con
 -- |
 -- |   Hooks.pure H.button_ "" { onClick: setCount $ count + 1 } "Click me"
 -- | ```
-useEffect' :: forall a. Eq a => a -> (a -> Aff Unit) -> Hook (UseEffect a) Unit
+useEffect' :: ∀ @a. Eq a => a -> (a -> Aff Unit) -> Hook (UseEffect a) Unit
 useEffect' deps runEffect = useEffect_ (ComponentName "UseEffectPrime") identity deps runEffect
 
 -- | A version of `useEffect` that logs messages, state changes and render
@@ -61,10 +61,10 @@ traced runEffect = useEffect_ (ComponentName "UseEffect_Traced") withTrace unit 
 
 -- | A version of `useEffect'` that logs messages, state changes and render
 -- | times. Intended to be used with qualified imports: `UseEffect.traced'`.
-traced' :: forall a. DebugWarning => Eq a => a -> (a -> Aff Unit) -> Hook (UseEffect a) Unit
+traced' :: ∀ @a. DebugWarning => Eq a => a -> (a -> Aff Unit) -> Hook (UseEffect a) Unit
 traced' deps runEffect = useEffect_ (ComponentName "UseEffect_TracedPrime") withTrace deps runEffect
 
-useEffect_ :: forall a.
+useEffect_ :: ∀ @a.
   Eq a
   => ComponentName
   -> (ComponentDef a a -> ComponentDef a a)
