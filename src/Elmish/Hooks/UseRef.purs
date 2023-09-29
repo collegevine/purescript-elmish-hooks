@@ -30,7 +30,7 @@ type UseRef el = UseState (Maybe el)
 -- |     , H.button_ "btn btn-primary" { onClick: onButtonClick } "Focus the input"
 -- |     ]
 -- | ```
-useRef :: forall el. Hook (UseRef el) (Maybe el /\ Ref el)
+useRef :: ∀ @el. Hook (UseRef el) (Maybe el /\ Ref el)
 useRef = Hooks.do
   ref /\ setRef <- useState Nothing
   Hooks.pure $ ref /\ callbackRef ref setRef

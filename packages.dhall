@@ -1,7 +1,5 @@
 let upstream =
-      https://raw.githubusercontent.com/purescript/package-sets/psc-0.15.4-20221015/src/packages.dhall
-        sha256:4949f9f5c3626ad6a83ea6b8615999043361f50905f736bc4b7795cba6251927
+      https://raw.githubusercontent.com/purescript/package-sets/psc-0.15.10-20230926/src/packages.dhall
+        sha256:684d460e9ca2089c89535e9a4ec56b83fb8b927ddd87afa6fa764ffb60bf1488
 
 in  upstream
-  with elmish.version = "v0.9.1"
-  with elmish-html.version = "v0.8.0"
