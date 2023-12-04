@@ -3667,9 +3667,9 @@ var Main = (() => {
               while (queryRoot.parentNode) {
                 queryRoot = queryRoot.parentNode;
               }
-              var group2 = queryRoot.querySelectorAll("input[name=" + JSON.stringify("" + name15) + '][type="radio"]');
-              for (var i = 0; i < group2.length; i++) {
-                var otherNode = group2[i];
+              var group3 = queryRoot.querySelectorAll("input[name=" + JSON.stringify("" + name15) + '][type="radio"]');
+              for (var i = 0; i < group3.length; i++) {
+                var otherNode = group3[i];
                 if (otherNode === rootNode || otherNode.form !== rootNode.form) {
                   continue;
                 }
@@ -23808,6 +23808,14 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var map = function(dict) {
     return dict.map;
   };
+  var mapFlipped = function(dictFunctor) {
+    var map12 = map(dictFunctor);
+    return function(fa) {
+      return function(f) {
+        return map12(f)(fa);
+      };
+    };
+  };
   var $$void = function(dictFunctor) {
     return map(dictFunctor)($$const(unit));
   };
@@ -23829,10 +23837,37 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       };
     };
   };
+  var lift2 = function(dictApply) {
+    var apply1 = apply(dictApply);
+    var map9 = map(dictApply.Functor0());
+    return function(f) {
+      return function(a) {
+        return function(b) {
+          return apply1(map9(f)(a))(b);
+        };
+      };
+    };
+  };
 
   // output/Control.Applicative/index.js
   var pure = function(dict) {
     return dict.pure;
+  };
+  var unless = function(dictApplicative) {
+    var pure12 = pure(dictApplicative);
+    return function(v) {
+      return function(v1) {
+        if (!v) {
+          return v1;
+        }
+        ;
+        if (v) {
+          return pure12(unit);
+        }
+        ;
+        throw new Error("Failed pattern match at Control.Applicative (line 68, column 1 - line 68, column 65): " + [v.constructor.name, v1.constructor.name]);
+      };
+    };
   };
   var liftA1 = function(dictApplicative) {
     var apply2 = apply(dictApplicative.Apply0());
@@ -23907,6 +23942,13 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   };
 
   // output/Data.Semigroup/index.js
+  var semigroupUnit = {
+    append: function(v) {
+      return function(v1) {
+        return unit;
+      };
+    }
+  };
   var semigroupString = {
     append: concatString
   };
@@ -23915,6 +23957,18 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   };
   var append = function(dict) {
     return dict.append;
+  };
+  var semigroupFn = function(dictSemigroup) {
+    var append12 = append(dictSemigroup);
+    return {
+      append: function(f) {
+        return function(g) {
+          return function(x) {
+            return append12(f(x))(g(x));
+          };
+        };
+      }
+    };
   };
 
   // output/Data.Bounded/foreign.js
@@ -24099,6 +24153,17 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   };
 
   // output/Control.Monad/index.js
+  var unlessM = function(dictMonad) {
+    var bind6 = bind(dictMonad.Bind1());
+    var unless2 = unless(dictMonad.Applicative0());
+    return function(mb) {
+      return function(m) {
+        return bind6(mb)(function(b) {
+          return unless2(b)(m);
+        });
+      };
+    };
+  };
   var ap = function(dictMonad) {
     var bind6 = bind(dictMonad.Bind1());
     var pure10 = pure(dictMonad.Applicative0());
@@ -24173,6 +24238,13 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     };
   });
   var functorEffect = /* @__PURE__ */ $lazy_functorEffect(20);
+  var applyEffect = /* @__PURE__ */ $lazy_applyEffect(23);
+  var lift22 = /* @__PURE__ */ lift2(applyEffect);
+  var semigroupEffect = function(dictSemigroup) {
+    return {
+      append: lift22(append(dictSemigroup))
+    };
+  };
 
   // output/Effect.Class/index.js
   var monadEffectEffect = {
@@ -24194,9 +24266,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
 
   // output/Effect.Class.Console/index.js
   var error2 = function(dictMonadEffect) {
-    var $59 = liftEffect(dictMonadEffect);
-    return function($60) {
-      return $59(error($60));
+    var $79 = liftEffect(dictMonadEffect);
+    return function($80) {
+      return $79(error($80));
     };
   };
 
@@ -24225,10 +24297,101 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       componentDidMount() {
         this.props.componentDidMount(this)();
       }
+      componentWillUnmount() {
+        this.props.componentWillUnmount(this)();
+      }
     }
     ElmishComponent.displayName = name15 ? "Elmish_" + name15 : "ElmishRoot";
     return ElmishComponent;
   }
+
+  // output/Data.Array/foreign.js
+  var replicateFill = function(count, value12) {
+    if (count < 1) {
+      return [];
+    }
+    var result = new Array(count);
+    return result.fill(value12);
+  };
+  var replicatePolyfill = function(count, value12) {
+    var result = [];
+    var n = 0;
+    for (var i = 0; i < count; i++) {
+      result[n++] = value12;
+    }
+    return result;
+  };
+  var replicateImpl = typeof Array.prototype.fill === "function" ? replicateFill : replicatePolyfill;
+  var fromFoldableImpl = function() {
+    function Cons2(head, tail) {
+      this.head = head;
+      this.tail = tail;
+    }
+    var emptyList = {};
+    function curryCons(head) {
+      return function(tail) {
+        return new Cons2(head, tail);
+      };
+    }
+    function listToArray(list) {
+      var result = [];
+      var count = 0;
+      var xs = list;
+      while (xs !== emptyList) {
+        result[count++] = xs.head;
+        xs = xs.tail;
+      }
+      return result;
+    }
+    return function(foldr2, xs) {
+      return listToArray(foldr2(curryCons)(emptyList)(xs));
+    };
+  }();
+  var sortByImpl = function() {
+    function mergeFromTo(compare2, fromOrdering, xs1, xs2, from2, to) {
+      var mid;
+      var i;
+      var j;
+      var k;
+      var x;
+      var y;
+      var c;
+      mid = from2 + (to - from2 >> 1);
+      if (mid - from2 > 1)
+        mergeFromTo(compare2, fromOrdering, xs2, xs1, from2, mid);
+      if (to - mid > 1)
+        mergeFromTo(compare2, fromOrdering, xs2, xs1, mid, to);
+      i = from2;
+      j = mid;
+      k = from2;
+      while (i < mid && j < to) {
+        x = xs2[i];
+        y = xs2[j];
+        c = fromOrdering(compare2(x)(y));
+        if (c > 0) {
+          xs1[k++] = y;
+          ++j;
+        } else {
+          xs1[k++] = x;
+          ++i;
+        }
+      }
+      while (i < mid) {
+        xs1[k++] = xs2[i++];
+      }
+      while (j < to) {
+        xs1[k++] = xs2[j++];
+      }
+    }
+    return function(compare2, fromOrdering, xs) {
+      var out;
+      if (xs.length < 2)
+        return xs;
+      out = xs.slice(0);
+      mergeFromTo(compare2, fromOrdering, out, xs.slice(0), 0, xs.length);
+      return out;
+    };
+  }();
 
   // output/Data.Either/index.js
   var Left = /* @__PURE__ */ function() {
@@ -24270,6 +24433,256 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     return either($$const(Nothing.value))(Just.create);
   }();
 
+  // output/Effect.Ref/foreign.js
+  var _new = function(val) {
+    return function() {
+      return { value: val };
+    };
+  };
+  var read = function(ref) {
+    return function() {
+      return ref.value;
+    };
+  };
+  var write = function(val) {
+    return function(ref) {
+      return function() {
+        ref.value = val;
+      };
+    };
+  };
+
+  // output/Effect.Ref/index.js
+  var $$new = _new;
+
+  // output/Control.Monad.ST.Internal/foreign.js
+  var map_ = function(f) {
+    return function(a) {
+      return function() {
+        return f(a());
+      };
+    };
+  };
+  var pure_ = function(a) {
+    return function() {
+      return a;
+    };
+  };
+  var bind_ = function(a) {
+    return function(f) {
+      return function() {
+        return f(a())();
+      };
+    };
+  };
+
+  // output/Control.Monad.ST.Internal/index.js
+  var $runtime_lazy2 = function(name15, moduleName, init2) {
+    var state3 = 0;
+    var val;
+    return function(lineNumber) {
+      if (state3 === 2)
+        return val;
+      if (state3 === 1)
+        throw new ReferenceError(name15 + " was needed before it finished initializing (module " + moduleName + ", line " + lineNumber + ")", moduleName, lineNumber);
+      state3 = 1;
+      val = init2();
+      state3 = 2;
+      return val;
+    };
+  };
+  var functorST = {
+    map: map_
+  };
+  var monadST = {
+    Applicative0: function() {
+      return applicativeST;
+    },
+    Bind1: function() {
+      return bindST;
+    }
+  };
+  var bindST = {
+    bind: bind_,
+    Apply0: function() {
+      return $lazy_applyST(0);
+    }
+  };
+  var applicativeST = {
+    pure: pure_,
+    Apply0: function() {
+      return $lazy_applyST(0);
+    }
+  };
+  var $lazy_applyST = /* @__PURE__ */ $runtime_lazy2("applyST", "Control.Monad.ST.Internal", function() {
+    return {
+      apply: ap(monadST),
+      Functor0: function() {
+        return functorST;
+      }
+    };
+  });
+
+  // output/Data.Array.ST/foreign.js
+  var sortByImpl2 = function() {
+    function mergeFromTo(compare2, fromOrdering, xs1, xs2, from2, to) {
+      var mid;
+      var i;
+      var j;
+      var k;
+      var x;
+      var y;
+      var c;
+      mid = from2 + (to - from2 >> 1);
+      if (mid - from2 > 1)
+        mergeFromTo(compare2, fromOrdering, xs2, xs1, from2, mid);
+      if (to - mid > 1)
+        mergeFromTo(compare2, fromOrdering, xs2, xs1, mid, to);
+      i = from2;
+      j = mid;
+      k = from2;
+      while (i < mid && j < to) {
+        x = xs2[i];
+        y = xs2[j];
+        c = fromOrdering(compare2(x)(y));
+        if (c > 0) {
+          xs1[k++] = y;
+          ++j;
+        } else {
+          xs1[k++] = x;
+          ++i;
+        }
+      }
+      while (i < mid) {
+        xs1[k++] = xs2[i++];
+      }
+      while (j < to) {
+        xs1[k++] = xs2[j++];
+      }
+    }
+    return function(compare2, fromOrdering, xs) {
+      if (xs.length < 2)
+        return xs;
+      mergeFromTo(compare2, fromOrdering, xs, xs.slice(0), 0, xs.length);
+      return xs;
+    };
+  }();
+
+  // output/Data.HeytingAlgebra/foreign.js
+  var boolConj = function(b1) {
+    return function(b2) {
+      return b1 && b2;
+    };
+  };
+  var boolDisj = function(b1) {
+    return function(b2) {
+      return b1 || b2;
+    };
+  };
+  var boolNot = function(b) {
+    return !b;
+  };
+
+  // output/Data.HeytingAlgebra/index.js
+  var tt = function(dict) {
+    return dict.tt;
+  };
+  var not = function(dict) {
+    return dict.not;
+  };
+  var implies = function(dict) {
+    return dict.implies;
+  };
+  var ff = function(dict) {
+    return dict.ff;
+  };
+  var disj = function(dict) {
+    return dict.disj;
+  };
+  var heytingAlgebraBoolean = {
+    ff: false,
+    tt: true,
+    implies: function(a) {
+      return function(b) {
+        return disj(heytingAlgebraBoolean)(not(heytingAlgebraBoolean)(a))(b);
+      };
+    },
+    conj: boolConj,
+    disj: boolDisj,
+    not: boolNot
+  };
+  var conj = function(dict) {
+    return dict.conj;
+  };
+  var heytingAlgebraFunction = function(dictHeytingAlgebra) {
+    var ff1 = ff(dictHeytingAlgebra);
+    var tt1 = tt(dictHeytingAlgebra);
+    var implies1 = implies(dictHeytingAlgebra);
+    var conj1 = conj(dictHeytingAlgebra);
+    var disj1 = disj(dictHeytingAlgebra);
+    var not1 = not(dictHeytingAlgebra);
+    return {
+      ff: function(v) {
+        return ff1;
+      },
+      tt: function(v) {
+        return tt1;
+      },
+      implies: function(f) {
+        return function(g) {
+          return function(a) {
+            return implies1(f(a))(g(a));
+          };
+        };
+      },
+      conj: function(f) {
+        return function(g) {
+          return function(a) {
+            return conj1(f(a))(g(a));
+          };
+        };
+      },
+      disj: function(f) {
+        return function(g) {
+          return function(a) {
+            return disj1(f(a))(g(a));
+          };
+        };
+      },
+      not: function(f) {
+        return function(a) {
+          return not1(f(a));
+        };
+      }
+    };
+  };
+
+  // output/Data.Foldable/foreign.js
+  var foldrArray = function(f) {
+    return function(init2) {
+      return function(xs) {
+        var acc = init2;
+        var len = xs.length;
+        for (var i = len - 1; i >= 0; i--) {
+          acc = f(xs[i])(acc);
+        }
+        return acc;
+      };
+    };
+  };
+  var foldlArray = function(f) {
+    return function(init2) {
+      return function(xs) {
+        var acc = init2;
+        var len = xs.length;
+        for (var i = 0; i < len; i++) {
+          acc = f(acc)(xs[i]);
+        }
+        return acc;
+      };
+    };
+  };
+
   // output/Data.Tuple/index.js
   var Tuple = /* @__PURE__ */ function() {
     function Tuple2(value0, value1) {
@@ -24297,6 +24710,219 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     };
   };
 
+  // output/Unsafe.Coerce/foreign.js
+  var unsafeCoerce2 = function(x) {
+    return x;
+  };
+
+  // output/Safe.Coerce/index.js
+  var coerce = function() {
+    return unsafeCoerce2;
+  };
+
+  // output/Data.Foldable/index.js
+  var identity4 = /* @__PURE__ */ identity(categoryFn);
+  var foldr = function(dict) {
+    return dict.foldr;
+  };
+  var traverse_ = function(dictApplicative) {
+    var applySecond2 = applySecond(dictApplicative.Apply0());
+    var pure10 = pure(dictApplicative);
+    return function(dictFoldable) {
+      var foldr2 = foldr(dictFoldable);
+      return function(f) {
+        return foldr2(function($454) {
+          return applySecond2(f($454));
+        })(pure10(unit));
+      };
+    };
+  };
+  var sequence_ = function(dictApplicative) {
+    var traverse_1 = traverse_(dictApplicative);
+    return function(dictFoldable) {
+      return traverse_1(dictFoldable)(identity4);
+    };
+  };
+  var foldl = function(dict) {
+    return dict.foldl;
+  };
+  var foldableMaybe = {
+    foldr: function(v) {
+      return function(v1) {
+        return function(v2) {
+          if (v2 instanceof Nothing) {
+            return v1;
+          }
+          ;
+          if (v2 instanceof Just) {
+            return v(v2.value0)(v1);
+          }
+          ;
+          throw new Error("Failed pattern match at Data.Foldable (line 138, column 1 - line 144, column 27): " + [v.constructor.name, v1.constructor.name, v2.constructor.name]);
+        };
+      };
+    },
+    foldl: function(v) {
+      return function(v1) {
+        return function(v2) {
+          if (v2 instanceof Nothing) {
+            return v1;
+          }
+          ;
+          if (v2 instanceof Just) {
+            return v(v1)(v2.value0);
+          }
+          ;
+          throw new Error("Failed pattern match at Data.Foldable (line 138, column 1 - line 144, column 27): " + [v.constructor.name, v1.constructor.name, v2.constructor.name]);
+        };
+      };
+    },
+    foldMap: function(dictMonoid) {
+      var mempty2 = mempty(dictMonoid);
+      return function(v) {
+        return function(v1) {
+          if (v1 instanceof Nothing) {
+            return mempty2;
+          }
+          ;
+          if (v1 instanceof Just) {
+            return v(v1.value0);
+          }
+          ;
+          throw new Error("Failed pattern match at Data.Foldable (line 138, column 1 - line 144, column 27): " + [v.constructor.name, v1.constructor.name]);
+        };
+      };
+    }
+  };
+  var foldMapDefaultR = function(dictFoldable) {
+    var foldr2 = foldr(dictFoldable);
+    return function(dictMonoid) {
+      var append4 = append(dictMonoid.Semigroup0());
+      var mempty2 = mempty(dictMonoid);
+      return function(f) {
+        return foldr2(function(x) {
+          return function(acc) {
+            return append4(f(x))(acc);
+          };
+        })(mempty2);
+      };
+    };
+  };
+  var foldableArray = {
+    foldr: foldrArray,
+    foldl: foldlArray,
+    foldMap: function(dictMonoid) {
+      return foldMapDefaultR(foldableArray)(dictMonoid);
+    }
+  };
+  var foldMap = function(dict) {
+    return dict.foldMap;
+  };
+  var fold = function(dictFoldable) {
+    var foldMap2 = foldMap(dictFoldable);
+    return function(dictMonoid) {
+      return foldMap2(dictMonoid)(identity4);
+    };
+  };
+
+  // output/Data.Function.Uncurried/foreign.js
+  var runFn4 = function(fn) {
+    return function(a) {
+      return function(b) {
+        return function(c) {
+          return function(d) {
+            return fn(a, b, c, d);
+          };
+        };
+      };
+    };
+  };
+
+  // output/Data.FunctorWithIndex/foreign.js
+  var mapWithIndexArray = function(f) {
+    return function(xs) {
+      var l = xs.length;
+      var result = Array(l);
+      for (var i = 0; i < l; i++) {
+        result[i] = f(i)(xs[i]);
+      }
+      return result;
+    };
+  };
+
+  // output/Data.FunctorWithIndex/index.js
+  var mapWithIndex = function(dict) {
+    return dict.mapWithIndex;
+  };
+  var functorWithIndexArray = {
+    mapWithIndex: mapWithIndexArray,
+    Functor0: function() {
+      return functorArray;
+    }
+  };
+
+  // output/Data.Traversable/foreign.js
+  var traverseArrayImpl = function() {
+    function array1(a) {
+      return [a];
+    }
+    function array2(a) {
+      return function(b) {
+        return [a, b];
+      };
+    }
+    function array3(a) {
+      return function(b) {
+        return function(c) {
+          return [a, b, c];
+        };
+      };
+    }
+    function concat2(xs) {
+      return function(ys) {
+        return xs.concat(ys);
+      };
+    }
+    return function(apply2) {
+      return function(map9) {
+        return function(pure10) {
+          return function(f) {
+            return function(array) {
+              function go2(bot, top2) {
+                switch (top2 - bot) {
+                  case 0:
+                    return pure10([]);
+                  case 1:
+                    return map9(array1)(f(array[bot]));
+                  case 2:
+                    return apply2(map9(array2)(f(array[bot])))(f(array[bot + 1]));
+                  case 3:
+                    return apply2(apply2(map9(array3)(f(array[bot])))(f(array[bot + 1])))(f(array[bot + 2]));
+                  default:
+                    var pivot = bot + Math.floor((top2 - bot) / 4) * 2;
+                    return apply2(map9(concat2)(go2(bot, pivot)))(go2(pivot, top2));
+                }
+              }
+              return go2(0, array.length);
+            };
+          };
+        };
+      };
+    };
+  }();
+
+  // output/Data.Array/index.js
+  var fold1 = /* @__PURE__ */ fold(foldableArray);
+  var append2 = /* @__PURE__ */ append(semigroupArray);
+  var fold2 = function(dictMonoid) {
+    return fold1(dictMonoid);
+  };
+  var cons = function(x) {
+    return function(xs) {
+      return append2([x])(xs);
+    };
+  };
+
   // output/Debug/foreign.js
   var req = typeof module === "undefined" ? void 0 : module.require;
   var util = function() {
@@ -24320,19 +24946,6 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       return (perf || Date).now();
     };
   }();
-
-  // output/Data.Function.Uncurried/foreign.js
-  var runFn4 = function(fn) {
-    return function(a) {
-      return function(b) {
-        return function(c) {
-          return function(d) {
-            return fn(a, b, c, d);
-          };
-        };
-      };
-    };
-  };
 
   // output/Effect.Aff/foreign.js
   var Aff = function() {
@@ -25211,106 +25824,6 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   }();
   var _sequential = Aff.Seq;
 
-  // output/Effect.Ref/foreign.js
-  var _new = function(val) {
-    return function() {
-      return { value: val };
-    };
-  };
-  var read = function(ref) {
-    return function() {
-      return ref.value;
-    };
-  };
-  var write = function(val) {
-    return function(ref) {
-      return function() {
-        ref.value = val;
-      };
-    };
-  };
-
-  // output/Effect.Ref/index.js
-  var $$new = _new;
-
-  // output/Unsafe.Coerce/foreign.js
-  var unsafeCoerce2 = function(x) {
-    return x;
-  };
-
-  // output/Control.Monad.ST.Internal/foreign.js
-  var map_ = function(f) {
-    return function(a) {
-      return function() {
-        return f(a());
-      };
-    };
-  };
-  var pure_ = function(a) {
-    return function() {
-      return a;
-    };
-  };
-  var bind_ = function(a) {
-    return function(f) {
-      return function() {
-        return f(a())();
-      };
-    };
-  };
-
-  // output/Control.Monad.ST.Internal/index.js
-  var $runtime_lazy2 = function(name15, moduleName, init2) {
-    var state3 = 0;
-    var val;
-    return function(lineNumber) {
-      if (state3 === 2)
-        return val;
-      if (state3 === 1)
-        throw new ReferenceError(name15 + " was needed before it finished initializing (module " + moduleName + ", line " + lineNumber + ")", moduleName, lineNumber);
-      state3 = 1;
-      val = init2();
-      state3 = 2;
-      return val;
-    };
-  };
-  var functorST = {
-    map: map_
-  };
-  var monadST = {
-    Applicative0: function() {
-      return applicativeST;
-    },
-    Bind1: function() {
-      return bindST;
-    }
-  };
-  var bindST = {
-    bind: bind_,
-    Apply0: function() {
-      return $lazy_applyST(0);
-    }
-  };
-  var applicativeST = {
-    pure: pure_,
-    Apply0: function() {
-      return $lazy_applyST(0);
-    }
-  };
-  var $lazy_applyST = /* @__PURE__ */ $runtime_lazy2("applyST", "Control.Monad.ST.Internal", function() {
-    return {
-      apply: ap(monadST),
-      Functor0: function() {
-        return functorST;
-      }
-    };
-  });
-
-  // output/Safe.Coerce/index.js
-  var coerce = function() {
-    return unsafeCoerce2;
-  };
-
   // output/Type.Equality/index.js
   var refl = {
     proof: function(a) {
@@ -25320,178 +25833,6 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       return void 0;
     }
   };
-
-  // output/Data.Foldable/foreign.js
-  var foldrArray = function(f) {
-    return function(init2) {
-      return function(xs) {
-        var acc = init2;
-        var len = xs.length;
-        for (var i = len - 1; i >= 0; i--) {
-          acc = f(xs[i])(acc);
-        }
-        return acc;
-      };
-    };
-  };
-  var foldlArray = function(f) {
-    return function(init2) {
-      return function(xs) {
-        var acc = init2;
-        var len = xs.length;
-        for (var i = 0; i < len; i++) {
-          acc = f(acc)(xs[i]);
-        }
-        return acc;
-      };
-    };
-  };
-
-  // output/Data.Foldable/index.js
-  var identity4 = /* @__PURE__ */ identity(categoryFn);
-  var foldr = function(dict) {
-    return dict.foldr;
-  };
-  var traverse_ = function(dictApplicative) {
-    var applySecond2 = applySecond(dictApplicative.Apply0());
-    var pure10 = pure(dictApplicative);
-    return function(dictFoldable) {
-      var foldr2 = foldr(dictFoldable);
-      return function(f) {
-        return foldr2(function($454) {
-          return applySecond2(f($454));
-        })(pure10(unit));
-      };
-    };
-  };
-  var foldableMaybe = {
-    foldr: function(v) {
-      return function(v1) {
-        return function(v2) {
-          if (v2 instanceof Nothing) {
-            return v1;
-          }
-          ;
-          if (v2 instanceof Just) {
-            return v(v2.value0)(v1);
-          }
-          ;
-          throw new Error("Failed pattern match at Data.Foldable (line 138, column 1 - line 144, column 27): " + [v.constructor.name, v1.constructor.name, v2.constructor.name]);
-        };
-      };
-    },
-    foldl: function(v) {
-      return function(v1) {
-        return function(v2) {
-          if (v2 instanceof Nothing) {
-            return v1;
-          }
-          ;
-          if (v2 instanceof Just) {
-            return v(v1)(v2.value0);
-          }
-          ;
-          throw new Error("Failed pattern match at Data.Foldable (line 138, column 1 - line 144, column 27): " + [v.constructor.name, v1.constructor.name, v2.constructor.name]);
-        };
-      };
-    },
-    foldMap: function(dictMonoid) {
-      var mempty2 = mempty(dictMonoid);
-      return function(v) {
-        return function(v1) {
-          if (v1 instanceof Nothing) {
-            return mempty2;
-          }
-          ;
-          if (v1 instanceof Just) {
-            return v(v1.value0);
-          }
-          ;
-          throw new Error("Failed pattern match at Data.Foldable (line 138, column 1 - line 144, column 27): " + [v.constructor.name, v1.constructor.name]);
-        };
-      };
-    }
-  };
-  var foldMapDefaultR = function(dictFoldable) {
-    var foldr2 = foldr(dictFoldable);
-    return function(dictMonoid) {
-      var append3 = append(dictMonoid.Semigroup0());
-      var mempty2 = mempty(dictMonoid);
-      return function(f) {
-        return foldr2(function(x) {
-          return function(acc) {
-            return append3(f(x))(acc);
-          };
-        })(mempty2);
-      };
-    };
-  };
-  var foldableArray = {
-    foldr: foldrArray,
-    foldl: foldlArray,
-    foldMap: function(dictMonoid) {
-      return foldMapDefaultR(foldableArray)(dictMonoid);
-    }
-  };
-  var foldMap = function(dict) {
-    return dict.foldMap;
-  };
-  var fold = function(dictFoldable) {
-    var foldMap2 = foldMap(dictFoldable);
-    return function(dictMonoid) {
-      return foldMap2(dictMonoid)(identity4);
-    };
-  };
-
-  // output/Data.Traversable/foreign.js
-  var traverseArrayImpl = function() {
-    function array1(a) {
-      return [a];
-    }
-    function array2(a) {
-      return function(b) {
-        return [a, b];
-      };
-    }
-    function array3(a) {
-      return function(b) {
-        return function(c) {
-          return [a, b, c];
-        };
-      };
-    }
-    function concat2(xs) {
-      return function(ys) {
-        return xs.concat(ys);
-      };
-    }
-    return function(apply2) {
-      return function(map9) {
-        return function(pure10) {
-          return function(f) {
-            return function(array) {
-              function go2(bot, top2) {
-                switch (top2 - bot) {
-                  case 0:
-                    return pure10([]);
-                  case 1:
-                    return map9(array1)(f(array[bot]));
-                  case 2:
-                    return apply2(map9(array2)(f(array[bot])))(f(array[bot + 1]));
-                  case 3:
-                    return apply2(apply2(map9(array3)(f(array[bot])))(f(array[bot + 1])))(f(array[bot + 2]));
-                  default:
-                    var pivot = bot + Math.floor((top2 - bot) / 4) * 2;
-                    return apply2(map9(concat2)(go2(bot, pivot)))(go2(pivot, top2));
-                }
-              }
-              return go2(0, array.length);
-            };
-          };
-        };
-      };
-    };
-  }();
 
   // output/Partial.Unsafe/foreign.js
   var _unsafePartial = function(f) {
@@ -25629,14 +25970,347 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }
   };
 
-  // output/Data.Nullable/foreign.js
-  function nullable(a, r, f) {
-    return a == null ? r : f(a);
+  // output/Elmish.Foreign/foreign.js
+  function isString(s) {
+    return typeof s === "string";
+  }
+  function isBoolean(s) {
+    return typeof s === "boolean";
+  }
+  function isObject(s) {
+    return s instanceof Object;
+  }
+  function isFunction(s) {
+    return s instanceof Function;
+  }
+  function showForeign(x) {
+    return x === null ? "<null>" : x === void 0 ? "<undefined>" : x instanceof Date ? x.toString() : typeof Blob !== "undefined" && x instanceof Blob ? "file[" + x.name + "]" : JSON.stringify(x);
   }
 
-  // output/Data.Nullable/index.js
-  var toMaybe = function(n) {
-    return nullable(n, Nothing.value, Just.create);
+  // output/Data.FoldableWithIndex/index.js
+  var foldr8 = /* @__PURE__ */ foldr(foldableArray);
+  var mapWithIndex2 = /* @__PURE__ */ mapWithIndex(functorWithIndexArray);
+  var foldl8 = /* @__PURE__ */ foldl(foldableArray);
+  var foldrWithIndex = function(dict) {
+    return dict.foldrWithIndex;
+  };
+  var foldlWithIndex = function(dict) {
+    return dict.foldlWithIndex;
+  };
+  var foldMapWithIndexDefaultR = function(dictFoldableWithIndex) {
+    var foldrWithIndex1 = foldrWithIndex(dictFoldableWithIndex);
+    return function(dictMonoid) {
+      var append4 = append(dictMonoid.Semigroup0());
+      var mempty2 = mempty(dictMonoid);
+      return function(f) {
+        return foldrWithIndex1(function(i) {
+          return function(x) {
+            return function(acc) {
+              return append4(f(i)(x))(acc);
+            };
+          };
+        })(mempty2);
+      };
+    };
+  };
+  var foldableWithIndexArray = {
+    foldrWithIndex: function(f) {
+      return function(z) {
+        var $291 = foldr8(function(v) {
+          return function(y) {
+            return f(v.value0)(v.value1)(y);
+          };
+        })(z);
+        var $292 = mapWithIndex2(Tuple.create);
+        return function($293) {
+          return $291($292($293));
+        };
+      };
+    },
+    foldlWithIndex: function(f) {
+      return function(z) {
+        var $294 = foldl8(function(y) {
+          return function(v) {
+            return f(v.value0)(y)(v.value1);
+          };
+        })(z);
+        var $295 = mapWithIndex2(Tuple.create);
+        return function($296) {
+          return $294($295($296));
+        };
+      };
+    },
+    foldMapWithIndex: function(dictMonoid) {
+      return foldMapWithIndexDefaultR(foldableWithIndexArray)(dictMonoid);
+    },
+    Foldable0: function() {
+      return foldableArray;
+    }
+  };
+  var findMapWithIndex = function(dictFoldableWithIndex) {
+    var foldlWithIndex1 = foldlWithIndex(dictFoldableWithIndex);
+    return function(f) {
+      var go2 = function(v) {
+        return function(v1) {
+          return function(v2) {
+            if (v1 instanceof Nothing) {
+              return f(v)(v2);
+            }
+            ;
+            return v1;
+          };
+        };
+      };
+      return foldlWithIndex1(go2)(Nothing.value);
+    };
+  };
+
+  // output/Foreign/foreign.js
+  var isArray = Array.isArray || function(value12) {
+    return Object.prototype.toString.call(value12) === "[object Array]";
+  };
+
+  // output/Foreign/index.js
+  var unsafeToForeign = unsafeCoerce2;
+  var unsafeFromForeign = unsafeCoerce2;
+
+  // output/Foreign.Object/foreign.js
+  function runST(f) {
+    return f();
+  }
+  function _lookup(no, yes, k, m) {
+    return k in m ? yes(m[k]) : no;
+  }
+  function toArrayWithKey(f) {
+    return function(m) {
+      var r = [];
+      for (var k in m) {
+        if (hasOwnProperty.call(m, k)) {
+          r.push(f(k)(m[k]));
+        }
+      }
+      return r;
+    };
+  }
+  var keys = Object.keys || toArrayWithKey(function(k) {
+    return function() {
+      return k;
+    };
+  });
+
+  // output/Foreign.Object.ST/foreign.js
+  var newImpl = function() {
+    return {};
+  };
+  function poke2(k) {
+    return function(v) {
+      return function(m) {
+        return function() {
+          m[k] = v;
+          return m;
+        };
+      };
+    };
+  }
+
+  // output/Foreign.Object/index.js
+  var bindFlipped2 = /* @__PURE__ */ bindFlipped(bindST);
+  var singleton5 = function(k) {
+    return function(v) {
+      return runST(bindFlipped2(poke2(k)(v))(newImpl));
+    };
+  };
+  var lookup = /* @__PURE__ */ function() {
+    return runFn4(_lookup)(Nothing.value)(Just.create);
+  }();
+
+  // output/Elmish.Foreign/index.js
+  var heytingAlgebraFunction2 = /* @__PURE__ */ heytingAlgebraFunction(heytingAlgebraBoolean);
+  var not2 = /* @__PURE__ */ not(heytingAlgebraFunction2);
+  var findMapWithIndex2 = /* @__PURE__ */ findMapWithIndex(foldableWithIndexArray);
+  var show2 = /* @__PURE__ */ show(showInt);
+  var fold3 = /* @__PURE__ */ fold2(monoidString);
+  var Valid = /* @__PURE__ */ function() {
+    function Valid2() {
+    }
+    ;
+    Valid2.value = new Valid2();
+    return Valid2;
+  }();
+  var Invalid = /* @__PURE__ */ function() {
+    function Invalid2(value0) {
+      this.value0 = value0;
+    }
+    ;
+    Invalid2.create = function(value0) {
+      return new Invalid2(value0);
+    };
+    return Invalid2;
+  }();
+  var canReceiveFromJavaScriptR = {
+    validateJsRecord: function(v) {
+      return Valid.value;
+    }
+  };
+  var validatePrimitive = function(expected) {
+    return function(isValidType) {
+      return function(x) {
+        var $98 = isValidType(x);
+        if ($98) {
+          return Valid.value;
+        }
+        ;
+        return new Invalid({
+          path: "",
+          got: x,
+          expected
+        });
+      };
+    };
+  };
+  var canReceiveFromJavaScriptB = {
+    validateForeignType: /* @__PURE__ */ validatePrimitive("Boolean")(isBoolean)
+  };
+  var canReceiveFromJavaScriptE = {
+    validateForeignType: /* @__PURE__ */ validatePrimitive("Function")(isFunction)
+  };
+  var canReceiveFromJavaScriptS = {
+    validateForeignType: /* @__PURE__ */ validatePrimitive("String")(isString)
+  };
+  var validateJsRecord = function(dict) {
+    return dict.validateJsRecord;
+  };
+  var canReceiveFromJavaScriptR1 = function() {
+    return function(dictCanReceiveFromJavaScriptRecord) {
+      var validateJsRecord1 = validateJsRecord(dictCanReceiveFromJavaScriptRecord);
+      return {
+        validateForeignType: function(v) {
+          if (isObject(v)) {
+            return validateJsRecord1(v);
+          }
+          ;
+          if (otherwise) {
+            return new Invalid({
+              path: "",
+              expected: "Object",
+              got: v
+            });
+          }
+          ;
+          throw new Error("Failed pattern match at Elmish.Foreign (line 209, column 1 - line 212, column 69): " + [v.constructor.name]);
+        }
+      };
+    };
+  };
+  var validateForeignType = function(dict) {
+    return dict.validateForeignType;
+  };
+  var canReceiveFromJavaScriptA1 = function(dictCanReceiveFromJavaScript) {
+    var validateForeignType1 = validateForeignType(dictCanReceiveFromJavaScript);
+    return {
+      validateForeignType: function(v) {
+        if (not2(isArray)(v)) {
+          return new Invalid({
+            path: "",
+            expected: "Array",
+            got: v
+          });
+        }
+        ;
+        if (otherwise) {
+          var invalidElem = function(idx) {
+            return function(x) {
+              var v22 = validateForeignType1(x);
+              if (v22 instanceof Valid) {
+                return Nothing.value;
+              }
+              ;
+              if (v22 instanceof Invalid) {
+                return new Just({
+                  idx,
+                  invalid: v22.value0
+                });
+              }
+              ;
+              throw new Error("Failed pattern match at Elmish.Foreign (line 186, column 29 - line 188, column 51): " + [v22.constructor.name]);
+            };
+          };
+          var v2 = findMapWithIndex2(invalidElem)(unsafeFromForeign(v));
+          if (v2 instanceof Nothing) {
+            return Valid.value;
+          }
+          ;
+          if (v2 instanceof Just) {
+            return new Invalid({
+              expected: v2.value0.invalid.expected,
+              got: v2.value0.invalid.got,
+              path: "[" + (show2(v2.value0.idx) + ("]" + v2.value0.invalid.path))
+            });
+          }
+          ;
+          throw new Error("Failed pattern match at Elmish.Foreign (line 182, column 21 - line 184, column 101): " + [v2.constructor.name]);
+        }
+        ;
+        throw new Error("Failed pattern match at Elmish.Foreign (line 179, column 6 - line 188, column 51): " + [v.constructor.name]);
+      }
+    };
+  };
+  var canReceiveFromJavaScriptR3 = function(dictIsSymbol) {
+    var reflectSymbol2 = reflectSymbol(dictIsSymbol);
+    return function(dictCanReceiveFromJavaScript) {
+      var validateForeignType1 = validateForeignType(dictCanReceiveFromJavaScript);
+      return function(dictCanReceiveFromJavaScriptRecord) {
+        var validateJsRecord1 = validateJsRecord(dictCanReceiveFromJavaScriptRecord);
+        return {
+          validateJsRecord: function(v) {
+            var fieldName = reflectSymbol2($$Proxy.value);
+            var head = unsafeGet(fieldName)(unsafeFromForeign(v));
+            var validHead = validateForeignType1(head);
+            if (validHead instanceof Invalid) {
+              return new Invalid({
+                expected: validHead.value0.expected,
+                got: validHead.value0.got,
+                path: "." + (fieldName + validHead.value0.path)
+              });
+            }
+            ;
+            if (validHead instanceof Valid) {
+              return validateJsRecord1(v);
+            }
+            ;
+            throw new Error("Failed pattern match at Elmish.Foreign (line 235, column 9 - line 237, column 43): " + [validHead.constructor.name]);
+          }
+        };
+      };
+    };
+  };
+  var readForeign$prime = function(dictCanReceiveFromJavaScript) {
+    var validateForeignType1 = validateForeignType(dictCanReceiveFromJavaScript);
+    return function(v) {
+      var v1 = validateForeignType1(v);
+      if (v1 instanceof Valid) {
+        return new Right(unsafeFromForeign(v));
+      }
+      ;
+      if (v1 instanceof Invalid) {
+        return new Left(fold3([v1.value0.path, function() {
+          var $122 = v1.value0.path === "";
+          if ($122) {
+            return "Expected ";
+          }
+          ;
+          return ": expected ";
+        }(), v1.value0.expected, " but got: ", showForeign(v1.value0.got)]));
+      }
+      ;
+      throw new Error("Failed pattern match at Elmish.Foreign (line 255, column 18 - line 263, column 6): " + [v1.constructor.name]);
+    };
+  };
+  var readForeign = function(dictCanReceiveFromJavaScript) {
+    var $125 = readForeign$prime(dictCanReceiveFromJavaScript);
+    return function($126) {
+      return hush($125($126));
+    };
   };
 
   // output/Elmish.React/foreign.js
@@ -25655,6 +26329,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var render_ = import_react_dom.default.render;
   var hydrate_ = import_react_dom.default.hydrate;
   var renderToString = import_server.default && import_server.default.renderToString || ((_) => "");
+  var unmount_ = import_react_dom.default.unmountComponentAtNode;
   function createElement_(component2, props, children2) {
     return import_react2.default.createElement.apply(null, [component2, flattenDataProp(component2, props)].concat(children2));
   }
@@ -25669,6 +26344,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }
     return Object.assign({}, props, data);
   }
+  var getField_ = (field, obj) => obj[field];
+  var setField_ = (field, value12, obj) => obj[field] = value12;
 
   // output/Effect.Uncurried/foreign.js
   var mkEffectFn1 = function mkEffectFn12(fn) {
@@ -25709,6 +26386,16 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     return (b) => a === b;
   }
 
+  // output/Data.Nullable/foreign.js
+  function nullable(a, r, f) {
+    return a == null ? r : f(a);
+  }
+
+  // output/Data.Nullable/index.js
+  var toMaybe = function(n) {
+    return nullable(n, Nothing.value, Just.create);
+  };
+
   // output/Elmish.React.Ref/index.js
   var callbackRef = function(ref) {
     return function(setRef) {
@@ -25735,23 +26422,37 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   };
 
   // output/Elmish.React/index.js
-  var setState = /* @__PURE__ */ runEffectFn3(setState_);
-  var render = /* @__PURE__ */ runEffectFn2(render_);
+  var mapFlipped2 = /* @__PURE__ */ mapFlipped(functorEffect);
   var reactChildrenString = {
     asReactChildren: function(s) {
       return [s];
     }
   };
-  var reactChildrenSingle = {
+  var reactChildrenReactElement = {
     asReactChildren: function(e) {
       return [e];
     }
   };
-  var reactChildrenArray = {
+  var reactChildrenArrayReactEl = {
     asReactChildren: /* @__PURE__ */ identity(categoryFn)
   };
+  var setState = /* @__PURE__ */ runEffectFn3(setState_);
+  var setField = function() {
+    return runEffectFn3(setField_);
+  };
+  var render = /* @__PURE__ */ runEffectFn2(render_);
   var hydrate = /* @__PURE__ */ runEffectFn2(hydrate_);
   var getState = /* @__PURE__ */ runEffectFn1(getState_);
+  var getField = function(dictCanReceiveFromJavaScript) {
+    var readForeign3 = readForeign(dictCanReceiveFromJavaScript);
+    return function(field) {
+      return function(object) {
+        return mapFlipped2(function() {
+          return getField_(field, object);
+        })(readForeign3);
+      };
+    };
+  };
   var assignState = /* @__PURE__ */ runEffectFn2(assignState_);
   var asReactChildren = function(dict) {
     return dict.asReactChildren;
@@ -25768,7 +26469,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       };
     };
   };
-  var createElement1 = /* @__PURE__ */ createElement()(reactChildrenArray);
+  var createElement1 = /* @__PURE__ */ createElement()(reactChildrenArrayReactEl);
   var createElement$prime = function() {
     return function(component2) {
       return function(props) {
@@ -25822,9 +26523,18 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   }();
 
   // output/Elmish.Component/index.js
-  var append2 = /* @__PURE__ */ append(semigroupArray);
-  var discard2 = /* @__PURE__ */ discard(discardUnit)(bindAff);
+  var append3 = /* @__PURE__ */ append(semigroupArray);
+  var setField2 = /* @__PURE__ */ setField();
+  var getField2 = /* @__PURE__ */ getField(canReceiveFromJavaScriptB);
+  var map1 = /* @__PURE__ */ map(functorEffect);
+  var getField1 = /* @__PURE__ */ getField(/* @__PURE__ */ canReceiveFromJavaScriptA1(canReceiveFromJavaScriptE));
+  var discard2 = /* @__PURE__ */ discard(discardUnit);
+  var bindFlipped3 = /* @__PURE__ */ bindFlipped(bindEffect);
+  var sequence_2 = /* @__PURE__ */ sequence_(applicativeEffect)(foldableArray);
+  var discard22 = /* @__PURE__ */ discard2(bindAff);
   var liftEffect2 = /* @__PURE__ */ liftEffect(monadEffectEffect);
+  var unlessM2 = /* @__PURE__ */ unlessM(monadEffect);
+  var append1 = /* @__PURE__ */ append(/* @__PURE__ */ semigroupFn(/* @__PURE__ */ semigroupEffect(semigroupUnit)));
   var ComponentName = function(x) {
     return x;
   };
@@ -25841,40 +26551,40 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     };
     return Transition2;
   }();
-  var trFunctor = {
+  var functorTransition$prime = {
     map: function(f) {
       return function(v) {
         return new Transition(f(v.value0), v.value1);
       };
     }
   };
-  var trApply = {
+  var applyTransition$prime = {
     apply: function(v) {
       return function(v1) {
-        return new Transition(v.value0(v1.value0), append2(v.value1)(v1.value1));
+        return new Transition(v.value0(v1.value0), append3(v.value1)(v1.value1));
       };
     },
     Functor0: function() {
-      return trFunctor;
+      return functorTransition$prime;
     }
   };
-  var trBind = {
+  var bindTransition$prime = {
     bind: function(v) {
       return function(f) {
         var v1 = f(v.value0);
-        return new Transition(v1.value0, append2(v.value1)(v1.value1));
+        return new Transition(v1.value0, append3(v.value1)(v1.value1));
       };
     },
     Apply0: function() {
-      return trApply;
+      return applyTransition$prime;
     }
   };
-  var trApplicative = {
+  var applicativeTransition$prime = {
     pure: function(a) {
       return new Transition(a, []);
     },
     Apply0: function() {
-      return trApply;
+      return applyTransition$prime;
     }
   };
   var forks = function(cmd) {
@@ -25889,16 +26599,49 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         var v = stateStrategy({
           initialState: def.init.value0
         });
+        var setUnmounted = setField2("__unmounted");
+        var setSubscriptions = setField2("__subscriptions");
+        var getUnmounted = function() {
+          var $114 = map1(fromMaybe(false));
+          var $115 = getField2("__unmounted");
+          return function($116) {
+            return $114($115($116));
+          };
+        }();
+        var getSubscriptions = function() {
+          var $117 = map1(fromMaybe([]));
+          var $118 = getField1("__subscriptions");
+          return function($119) {
+            return $117($118($119));
+          };
+        }();
+        var stopSubscriptions = function(component2) {
+          return function __do() {
+            bindFlipped3(sequence_2)(getSubscriptions(component2))();
+            return setSubscriptions([])(component2)();
+          };
+        };
+        var addSubscription = function(component2) {
+          return function(sub2) {
+            return function __do() {
+              var subs = getSubscriptions(component2)();
+              return setSubscriptions(cons(launchAff_(sub2))(subs))(component2)();
+            };
+          };
+        };
         var runCmds = function(cmds) {
           return function(component2) {
             var runCmd = function(cmd) {
-              return launchAff_(discard2(delay(0))(function() {
-                return cmd(function() {
-                  var $78 = dispatchMsg(component2);
-                  return function($79) {
-                    return liftEffect2($78($79));
-                  };
-                }());
+              return launchAff_(discard22(delay(0))(function() {
+                return cmd({
+                  dispatch: function() {
+                    var $120 = dispatchMsg(component2);
+                    return function($121) {
+                      return liftEffect2($120($121));
+                    };
+                  }(),
+                  onStop: addSubscription(component2)
+                });
               }));
             };
             return foreachE(cmds)(runCmd);
@@ -25906,11 +26649,11 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         };
         var dispatchMsg = function(component2) {
           return function(msg) {
-            return function __do() {
+            return unlessM2(getUnmounted(component2))(function __do() {
               var oldState = v.getState(component2)();
               var v1 = def.update(oldState)(msg);
               return v.setState(component2)(v1.value0)(runCmds(v1.value1)(component2))();
-            };
+            });
           };
         };
         var render2 = function(component2) {
@@ -25922,7 +26665,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         return instantiateBaseComponent(cmpt, {
           init: v.initialize,
           render: render2,
-          componentDidMount: runCmds(def.init.value1)
+          componentDidMount: runCmds(def.init.value1),
+          componentWillUnmount: append1(setUnmounted(true))(stopSubscriptions)
         });
       };
     };
@@ -26052,195 +26796,6 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     });
     return bootRec.mount(v.elementId)(unit);
   };
-
-  // output/Foreign.Object/foreign.js
-  function runST(f) {
-    return f();
-  }
-  function _lookup(no, yes, k, m) {
-    return k in m ? yes(m[k]) : no;
-  }
-  function toArrayWithKey(f) {
-    return function(m) {
-      var r = [];
-      for (var k in m) {
-        if (hasOwnProperty.call(m, k)) {
-          r.push(f(k)(m[k]));
-        }
-      }
-      return r;
-    };
-  }
-  var keys = Object.keys || toArrayWithKey(function(k) {
-    return function() {
-      return k;
-    };
-  });
-
-  // output/Data.Array/foreign.js
-  var replicateFill = function(count, value12) {
-    if (count < 1) {
-      return [];
-    }
-    var result = new Array(count);
-    return result.fill(value12);
-  };
-  var replicatePolyfill = function(count, value12) {
-    var result = [];
-    var n = 0;
-    for (var i = 0; i < count; i++) {
-      result[n++] = value12;
-    }
-    return result;
-  };
-  var replicateImpl = typeof Array.prototype.fill === "function" ? replicateFill : replicatePolyfill;
-  var fromFoldableImpl = function() {
-    function Cons2(head, tail) {
-      this.head = head;
-      this.tail = tail;
-    }
-    var emptyList = {};
-    function curryCons(head) {
-      return function(tail) {
-        return new Cons2(head, tail);
-      };
-    }
-    function listToArray(list) {
-      var result = [];
-      var count = 0;
-      var xs = list;
-      while (xs !== emptyList) {
-        result[count++] = xs.head;
-        xs = xs.tail;
-      }
-      return result;
-    }
-    return function(foldr2, xs) {
-      return listToArray(foldr2(curryCons)(emptyList)(xs));
-    };
-  }();
-  var sortByImpl = function() {
-    function mergeFromTo(compare2, fromOrdering, xs1, xs2, from2, to) {
-      var mid;
-      var i;
-      var j;
-      var k;
-      var x;
-      var y;
-      var c;
-      mid = from2 + (to - from2 >> 1);
-      if (mid - from2 > 1)
-        mergeFromTo(compare2, fromOrdering, xs2, xs1, from2, mid);
-      if (to - mid > 1)
-        mergeFromTo(compare2, fromOrdering, xs2, xs1, mid, to);
-      i = from2;
-      j = mid;
-      k = from2;
-      while (i < mid && j < to) {
-        x = xs2[i];
-        y = xs2[j];
-        c = fromOrdering(compare2(x)(y));
-        if (c > 0) {
-          xs1[k++] = y;
-          ++j;
-        } else {
-          xs1[k++] = x;
-          ++i;
-        }
-      }
-      while (i < mid) {
-        xs1[k++] = xs2[i++];
-      }
-      while (j < to) {
-        xs1[k++] = xs2[j++];
-      }
-    }
-    return function(compare2, fromOrdering, xs) {
-      var out;
-      if (xs.length < 2)
-        return xs;
-      out = xs.slice(0);
-      mergeFromTo(compare2, fromOrdering, out, xs.slice(0), 0, xs.length);
-      return out;
-    };
-  }();
-
-  // output/Data.Array.ST/foreign.js
-  var sortByImpl2 = function() {
-    function mergeFromTo(compare2, fromOrdering, xs1, xs2, from2, to) {
-      var mid;
-      var i;
-      var j;
-      var k;
-      var x;
-      var y;
-      var c;
-      mid = from2 + (to - from2 >> 1);
-      if (mid - from2 > 1)
-        mergeFromTo(compare2, fromOrdering, xs2, xs1, from2, mid);
-      if (to - mid > 1)
-        mergeFromTo(compare2, fromOrdering, xs2, xs1, mid, to);
-      i = from2;
-      j = mid;
-      k = from2;
-      while (i < mid && j < to) {
-        x = xs2[i];
-        y = xs2[j];
-        c = fromOrdering(compare2(x)(y));
-        if (c > 0) {
-          xs1[k++] = y;
-          ++j;
-        } else {
-          xs1[k++] = x;
-          ++i;
-        }
-      }
-      while (i < mid) {
-        xs1[k++] = xs2[i++];
-      }
-      while (j < to) {
-        xs1[k++] = xs2[j++];
-      }
-    }
-    return function(compare2, fromOrdering, xs) {
-      if (xs.length < 2)
-        return xs;
-      mergeFromTo(compare2, fromOrdering, xs, xs.slice(0), 0, xs.length);
-      return xs;
-    };
-  }();
-
-  // output/Data.Array/index.js
-  var fold1 = /* @__PURE__ */ fold(foldableArray);
-  var fold2 = function(dictMonoid) {
-    return fold1(dictMonoid);
-  };
-
-  // output/Foreign.Object.ST/foreign.js
-  var newImpl = function() {
-    return {};
-  };
-  function poke2(k) {
-    return function(v) {
-      return function(m) {
-        return function() {
-          m[k] = v;
-          return m;
-        };
-      };
-    };
-  }
-
-  // output/Foreign.Object/index.js
-  var bindFlipped2 = /* @__PURE__ */ bindFlipped(bindST);
-  var singleton2 = function(k) {
-    return function(v) {
-      return runST(bindFlipped2(poke2(k)(v))(newImpl));
-    };
-  };
-  var lookup = /* @__PURE__ */ function() {
-    return runFn4(_lookup)(Nothing.value)(Just.create);
-  }();
 
   // output/Record.Unsafe.Union/foreign.js
   function unsafeUnionFn(r1, r2) {
@@ -26383,7 +26938,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
 
   // output/Elmish.React.DOM/index.js
   var text5 = unsafeCoerce2;
-  var fragment = /* @__PURE__ */ createElement()(reactChildrenArray)(fragment_)({});
+  var fragment = /* @__PURE__ */ createElement()(reactChildrenArrayReactEl)(fragment_)({});
   var empty3 = false;
 
   // node_modules/stacktrace-parser/dist/stack-trace-parser.esm.js
@@ -26498,7 +27053,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var cleanName = (name15) => name15.replace(/[^\d\w]+/g, "_").replace(/(^_|_$)/g, "");
 
   // output/Elmish.Hooks.Type/index.js
-  var pure1 = /* @__PURE__ */ pure(trApplicative);
+  var pure1 = /* @__PURE__ */ pure(applicativeTransition$prime);
   var identity5 = /* @__PURE__ */ identity(categoryFn);
   var Hook = /* @__PURE__ */ function() {
     function Hook2(value0) {
@@ -26650,163 +27205,6 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     return dict.handle;
   };
 
-  // output/Elmish.Foreign/foreign.js
-  function isString(s) {
-    return typeof s === "string";
-  }
-  function isObject(s) {
-    return s instanceof Object;
-  }
-  function showForeign(x) {
-    return x === null ? "<null>" : x === void 0 ? "<undefined>" : x instanceof Date ? x.toString() : typeof Blob !== "undefined" && x instanceof Blob ? "file[" + x.name + "]" : JSON.stringify(x);
-  }
-
-  // output/Foreign/foreign.js
-  var isArray = Array.isArray || function(value12) {
-    return Object.prototype.toString.call(value12) === "[object Array]";
-  };
-
-  // output/Foreign/index.js
-  var unsafeToForeign = unsafeCoerce2;
-  var unsafeFromForeign = unsafeCoerce2;
-
-  // output/Elmish.Foreign/index.js
-  var fold3 = /* @__PURE__ */ fold2(monoidString);
-  var Valid = /* @__PURE__ */ function() {
-    function Valid2() {
-    }
-    ;
-    Valid2.value = new Valid2();
-    return Valid2;
-  }();
-  var Invalid = /* @__PURE__ */ function() {
-    function Invalid2(value0) {
-      this.value0 = value0;
-    }
-    ;
-    Invalid2.create = function(value0) {
-      return new Invalid2(value0);
-    };
-    return Invalid2;
-  }();
-  var canReceiveFromJavaScriptR = {
-    validateJsRecord: function(v) {
-      return function(v1) {
-        return Valid.value;
-      };
-    }
-  };
-  var validatePrimitive = function(expected) {
-    return function(isValidType) {
-      return function(x) {
-        var $117 = isValidType(x);
-        if ($117) {
-          return Valid.value;
-        }
-        ;
-        return new Invalid({
-          path: "",
-          got: x,
-          expected
-        });
-      };
-    };
-  };
-  var canReceiveFromJavaScriptS = {
-    validateForeignType: function(v) {
-      return validatePrimitive("String")(isString);
-    }
-  };
-  var validateJsRecord = function(dict) {
-    return dict.validateJsRecord;
-  };
-  var canReceiveFromJavaScriptR1 = function() {
-    return function(dictCanReceiveFromJavaScriptRecord) {
-      var validateJsRecord1 = validateJsRecord(dictCanReceiveFromJavaScriptRecord);
-      return {
-        validateForeignType: function(v) {
-          return function(v1) {
-            if (isObject(v1)) {
-              return validateJsRecord1($$Proxy.value)(v1);
-            }
-            ;
-            if (otherwise) {
-              return new Invalid({
-                path: "",
-                expected: "Object",
-                got: v1
-              });
-            }
-            ;
-            throw new Error("Failed pattern match at Elmish.Foreign (line 209, column 1 - line 212, column 69): " + [v.constructor.name, v1.constructor.name]);
-          };
-        }
-      };
-    };
-  };
-  var validateForeignType = function(dict) {
-    return dict.validateForeignType;
-  };
-  var canReceiveFromJavaScriptR3 = function(dictIsSymbol) {
-    var reflectSymbol2 = reflectSymbol(dictIsSymbol);
-    return function(dictCanReceiveFromJavaScript) {
-      var validateForeignType1 = validateForeignType(dictCanReceiveFromJavaScript);
-      return function(dictCanReceiveFromJavaScriptRecord) {
-        var validateJsRecord1 = validateJsRecord(dictCanReceiveFromJavaScriptRecord);
-        return {
-          validateJsRecord: function(v) {
-            return function(v1) {
-              var fieldName = reflectSymbol2($$Proxy.value);
-              var head = unsafeGet(fieldName)(unsafeFromForeign(v1));
-              var validHead = validateForeignType1($$Proxy.value)(head);
-              if (validHead instanceof Invalid) {
-                return new Invalid({
-                  path: "." + (fieldName + validHead.value0.path),
-                  expected: validHead.value0.expected,
-                  got: validHead.value0.got
-                });
-              }
-              ;
-              if (validHead instanceof Valid) {
-                return validateJsRecord1($$Proxy.value)(v1);
-              }
-              ;
-              throw new Error("Failed pattern match at Elmish.Foreign (line 235, column 9 - line 237, column 51): " + [validHead.constructor.name]);
-            };
-          }
-        };
-      };
-    };
-  };
-  var readForeign$prime = function(dictCanReceiveFromJavaScript) {
-    var validateForeignType1 = validateForeignType(dictCanReceiveFromJavaScript);
-    return function(v) {
-      var v1 = validateForeignType1($$Proxy.value)(v);
-      if (v1 instanceof Valid) {
-        return new Right(unsafeFromForeign(v));
-      }
-      ;
-      if (v1 instanceof Invalid) {
-        return new Left(fold3([v1.value0.path, function() {
-          var $145 = v1.value0.path === "";
-          if ($145) {
-            return "Expected ";
-          }
-          ;
-          return ": expected ";
-        }(), v1.value0.expected, " but got: ", showForeign(v1.value0.got)]));
-      }
-      ;
-      throw new Error("Failed pattern match at Elmish.Foreign (line 255, column 18 - line 263, column 6): " + [v1.constructor.name]);
-    };
-  };
-  var readForeign = function(dictCanReceiveFromJavaScript) {
-    var $148 = readForeign$prime(dictCanReceiveFromJavaScript);
-    return function($149) {
-      return hush($148($149));
-    };
-  };
-
   // output/Elmish.Opaque/index.js
   var fromJust2 = /* @__PURE__ */ fromJust();
   var refName = function(dictIsSymbol) {
@@ -26821,14 +27219,14 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var wrap3 = function(dictIsSymbol) {
     var refName1 = refName(dictIsSymbol);
     return function(a) {
-      return singleton2(refName1)(a);
+      return singleton5(refName1)(a);
     };
   };
 
   // output/Elmish.Hooks.UseEffect/index.js
   var createElement3 = /* @__PURE__ */ createElement();
-  var discard4 = /* @__PURE__ */ discard(discardUnit)(trBind);
-  var pure6 = /* @__PURE__ */ pure(trApplicative);
+  var discard4 = /* @__PURE__ */ discard(discardUnit)(bindTransition$prime);
+  var pure6 = /* @__PURE__ */ pure(applicativeTransition$prime);
   var handleMaybe2 = /* @__PURE__ */ handleMaybe(/* @__PURE__ */ handleMaybeFunction(refl));
   var depsIsSymbol = {
     reflectSymbol: function() {
@@ -26846,7 +27244,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       };
     };
   };
-  var useEffectLifeCycles1 = /* @__PURE__ */ useEffectLifeCycles(reactChildrenSingle)()();
+  var useEffectLifeCycles1 = /* @__PURE__ */ useEffectLifeCycles(reactChildrenReactElement)()();
   var useEffect_ = function(dictEq) {
     var notEq2 = notEq(dictEq);
     return function(name15) {
@@ -26901,7 +27299,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   };
 
   // output/Elmish.Hooks.UseState/index.js
-  var pure7 = /* @__PURE__ */ pure(trApplicative);
+  var pure7 = /* @__PURE__ */ pure(applicativeTransition$prime);
   var identity7 = /* @__PURE__ */ identity(categoryFn);
   var useState$prime = function(name15) {
     return function(f) {
@@ -26928,12 +27326,12 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var discard5 = /* @__PURE__ */ discard3(discardUnit)();
   var discard1 = /* @__PURE__ */ discard(discardUnit)(bindAff);
   var liftEffect3 = /* @__PURE__ */ liftEffect(monadEffectAff);
-  var div3 = /* @__PURE__ */ div2(reactChildrenArray);
-  var h22 = /* @__PURE__ */ h2(reactChildrenArray);
+  var div3 = /* @__PURE__ */ div2(reactChildrenArrayReactEl);
+  var h22 = /* @__PURE__ */ h2(reactChildrenArrayReactEl);
   var code2 = /* @__PURE__ */ code(reactChildrenString);
   var h42 = /* @__PURE__ */ h4(reactChildrenString);
-  var div1 = /* @__PURE__ */ div2(reactChildrenSingle);
-  var div_2 = /* @__PURE__ */ div_(reactChildrenSingle)()();
+  var div1 = /* @__PURE__ */ div2(reactChildrenReactElement);
+  var div_2 = /* @__PURE__ */ div_(reactChildrenReactElement)()();
   var div22 = /* @__PURE__ */ div2(reactChildrenString);
   var map7 = /* @__PURE__ */ map(functorArray);
   var li2 = /* @__PURE__ */ li(reactChildrenString);
@@ -26966,22 +27364,22 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var discard6 = /* @__PURE__ */ discard3(discardUnit)();
   var useEffect$prime2 = /* @__PURE__ */ useEffect$prime(eqInt);
   var liftEffect4 = /* @__PURE__ */ liftEffect(monadEffectAff);
-  var bindFlipped3 = /* @__PURE__ */ bindFlipped(bindEffect);
-  var show2 = /* @__PURE__ */ show(showInt);
-  var div4 = /* @__PURE__ */ div2(reactChildrenArray);
-  var h23 = /* @__PURE__ */ h2(reactChildrenArray);
+  var bindFlipped4 = /* @__PURE__ */ bindFlipped(bindEffect);
+  var show3 = /* @__PURE__ */ show(showInt);
+  var div4 = /* @__PURE__ */ div2(reactChildrenArrayReactEl);
+  var h23 = /* @__PURE__ */ h2(reactChildrenArrayReactEl);
   var code3 = /* @__PURE__ */ code(reactChildrenString);
-  var p2 = /* @__PURE__ */ p(reactChildrenArray);
+  var p2 = /* @__PURE__ */ p(reactChildrenArrayReactEl);
   var button_2 = /* @__PURE__ */ button_(reactChildrenString)()();
   var handle2 = /* @__PURE__ */ handle(handle1);
   var view2 = /* @__PURE__ */ component(/* @__PURE__ */ bind3()(/* @__PURE__ */ useState(0))(function(v) {
     return discard6(useEffect$prime2(v.value0)(function(c) {
       return liftEffect4(function __do() {
-        var doc = bindFlipped3(document2)(windowImpl)();
-        return setTitle("You clicked " + (show2(c) + " times"))(doc)();
+        var doc = bindFlipped4(document2)(windowImpl)();
+        return setTitle("You clicked " + (show3(c) + " times"))(doc)();
       });
     }))(function() {
-      return pure4(div4("row mt-3")([div4("col-12 col-md-6 col-lg-4")([h23("")([code3("")("useEffect'"), text5(" hook")]), p2("")([text5("You clicked "), text5(show2(v.value0)), text5(" times. Clicking will also update "), code3("")("document.title"), text5(".")]), button_2("btn btn-primary")({
+      return pure4(div4("row mt-3")([div4("col-12 col-md-6 col-lg-4")([h23("")([code3("")("useEffect'"), text5(" hook")]), p2("")([text5("You clicked "), text5(show3(v.value0)), text5(" times. Clicking will also update "), code3("")("document.title"), text5(".")]), button_2("btn btn-primary")({
         onClick: handle2(v.value1)(v.value0 + 1 | 0)
       })("Click to update title")])]));
     });
@@ -27034,24 +27432,24 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var bind5 = /* @__PURE__ */ bind3();
   var discard7 = /* @__PURE__ */ discard3(discardUnit)();
   var liftEffect5 = /* @__PURE__ */ liftEffect(monadEffectAff);
-  var bindFlipped4 = /* @__PURE__ */ bindFlipped(bindEffect);
-  var div5 = /* @__PURE__ */ div2(reactChildrenArray);
-  var h43 = /* @__PURE__ */ h4(reactChildrenSingle);
+  var bindFlipped5 = /* @__PURE__ */ bindFlipped(bindEffect);
+  var div5 = /* @__PURE__ */ div2(reactChildrenArrayReactEl);
+  var h43 = /* @__PURE__ */ h4(reactChildrenReactElement);
   var code4 = /* @__PURE__ */ code(reactChildrenString);
-  var label_2 = /* @__PURE__ */ label_(reactChildrenArray)()();
+  var label_2 = /* @__PURE__ */ label_(reactChildrenArrayReactEl)()();
   var input_2 = /* @__PURE__ */ input_()();
   var handle3 = /* @__PURE__ */ handle(handleFunction);
   var useLocalStorage = function(key) {
     return function(defaultValue4) {
       return bind5(useState(defaultValue4))(function(v) {
         return discard7(useEffect(liftEffect5(function __do() {
-          var v1 = bindFlipped4(getItem(key))(bindFlipped4(localStorage)(windowImpl))();
+          var v1 = bindFlipped5(getItem(key))(bindFlipped5(localStorage)(windowImpl))();
           if (v1 instanceof Just) {
             return v.value1(v1.value0)();
           }
           ;
           if (v1 instanceof Nothing) {
-            return bindFlipped4(setItem(key)(defaultValue4))(bindFlipped4(localStorage)(windowImpl))();
+            return bindFlipped5(setItem(key)(defaultValue4))(bindFlipped5(localStorage)(windowImpl))();
           }
           ;
           throw new Error("Failed pattern match at Examples.UseLocalStorage (line 44, column 5 - line 46, column 70): " + [v1.constructor.name]);
@@ -27059,7 +27457,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           return pure4(new Tuple(v.value0, function(v1) {
             return function __do() {
               v.value1(v1)();
-              return bindFlipped4(setItem(key)(v1))(bindFlipped4(localStorage)(windowImpl))();
+              return bindFlipped5(setItem(key)(v1))(bindFlipped5(localStorage)(windowImpl))();
             };
           }));
         });
@@ -27116,8 +27514,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var childElementCount = getEffProp("childElementCount");
 
   // output/Examples.UseMouseMove/index.js
-  var pure9 = /* @__PURE__ */ pure(trApplicative);
-  var div_3 = /* @__PURE__ */ div_(reactChildrenSingle)()();
+  var pure9 = /* @__PURE__ */ pure(applicativeTransition$prime);
+  var div_3 = /* @__PURE__ */ div_(reactChildrenReactElement)()();
   var handleEffect2 = /* @__PURE__ */ handleEffect(handleEffectFunctionEffec);
   var handle4 = /* @__PURE__ */ handle(handleFunction);
   var code5 = /* @__PURE__ */ code(reactChildrenString);
@@ -27159,7 +27557,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       };
     });
   };
-  var view4 = /* @__PURE__ */ div2(reactChildrenArray)("mt-3 mb-2")([/* @__PURE__ */ h4(reactChildrenSingle)("")(/* @__PURE__ */ code5("")("useMousePosition")), /* @__PURE__ */ p(reactChildrenArray)("text-muted")([/* @__PURE__ */ text5("This example uses "), /* @__PURE__ */ code5("")("mkHook"), /* @__PURE__ */ text5(" to make a custom hook.")]), /* @__PURE__ */ div_3("w-100 py-6 rounded bg-light border position-relative overflow-hidden")({
+  var view4 = /* @__PURE__ */ div2(reactChildrenArrayReactEl)("mt-3 mb-2")([/* @__PURE__ */ h4(reactChildrenReactElement)("")(/* @__PURE__ */ code5("")("useMousePosition")), /* @__PURE__ */ p(reactChildrenArrayReactEl)("text-muted")([/* @__PURE__ */ text5("This example uses "), /* @__PURE__ */ code5("")("mkHook"), /* @__PURE__ */ text5(" to make a custom hook.")]), /* @__PURE__ */ div_3("w-100 py-6 rounded bg-light border position-relative overflow-hidden")({
     style: /* @__PURE__ */ css({
       height: 200,
       cursor: "none"
@@ -27194,10 +27592,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
 
   // output/Examples.UseRef/index.js
   var traverse_2 = /* @__PURE__ */ traverse_(applicativeEffect)(foldableMaybe);
-  var div6 = /* @__PURE__ */ div2(reactChildrenArray);
-  var h24 = /* @__PURE__ */ h2(reactChildrenArray);
+  var div6 = /* @__PURE__ */ div2(reactChildrenArrayReactEl);
+  var h24 = /* @__PURE__ */ h2(reactChildrenArrayReactEl);
   var code6 = /* @__PURE__ */ code(reactChildrenString);
-  var div12 = /* @__PURE__ */ div2(reactChildrenSingle);
+  var div12 = /* @__PURE__ */ div2(reactChildrenReactElement);
   var input_3 = /* @__PURE__ */ input_()();
   var button_3 = /* @__PURE__ */ button_(reactChildrenString)()();
   var handleEffect3 = /* @__PURE__ */ handleEffect(handleEffectEffectUnit);
@@ -27214,13 +27612,13 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   }));
 
   // output/Examples.UseState/index.js
-  var div7 = /* @__PURE__ */ div2(reactChildrenArray);
-  var h25 = /* @__PURE__ */ h2(reactChildrenArray);
+  var div7 = /* @__PURE__ */ div2(reactChildrenArrayReactEl);
+  var h25 = /* @__PURE__ */ h2(reactChildrenArrayReactEl);
   var code7 = /* @__PURE__ */ code(reactChildrenString);
   var button_4 = /* @__PURE__ */ button_(reactChildrenString)()();
   var handle5 = /* @__PURE__ */ handle(handle1);
-  var div_4 = /* @__PURE__ */ div_(reactChildrenSingle)()();
-  var div13 = /* @__PURE__ */ div2(reactChildrenSingle);
+  var div_4 = /* @__PURE__ */ div_(reactChildrenReactElement)()();
+  var div13 = /* @__PURE__ */ div2(reactChildrenReactElement);
   var h32 = /* @__PURE__ */ h3(reactChildrenString);
   var div23 = /* @__PURE__ */ div2(reactChildrenString);
   var view6 = /* @__PURE__ */ withHookCurried(/* @__PURE__ */ useState(false))(function(visible) {
@@ -27246,8 +27644,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   });
 
   // output/Main/index.js
-  var div8 = /* @__PURE__ */ div2(reactChildrenArray);
-  var h12 = /* @__PURE__ */ h1(reactChildrenArray);
+  var div8 = /* @__PURE__ */ div2(reactChildrenArrayReactEl);
+  var h12 = /* @__PURE__ */ h1(reactChildrenArrayReactEl);
   var code8 = /* @__PURE__ */ code(reactChildrenString);
   var h26 = /* @__PURE__ */ h2(reactChildrenString);
   var view7 = function(v) {
@@ -27257,7 +27655,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   };
   var main = /* @__PURE__ */ defaultMain({
     def: {
-      init: /* @__PURE__ */ pure(trApplicative)(unit),
+      init: /* @__PURE__ */ pure(applicativeTransition$prime)(unit),
       update: function(v) {
         return function(msg) {
           return absurd(msg);
