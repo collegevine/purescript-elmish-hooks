@@ -24,7 +24,7 @@ foreign import data UseState :: Type -> HookType
 -- |   visible /\ setVisible <- useState false
 -- |   Hooks.pure $
 -- |     H.fragment
--- |     [ H.button_ "" { onClick: setVisible $ not visible } "Toggle visibility"
+-- |     [ H.button_ "" { onClick: setVisible <| not visible } "Toggle visibility"
 -- |     , if visible
 -- |         then H.div "" "Content"
 -- |         else H.empty
