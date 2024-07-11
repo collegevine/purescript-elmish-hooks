@@ -20,9 +20,11 @@ module Elmish.Hooks
   , module UseEffect
   , module UseRef
   , module UseState
+  , module UseSubscription
   ) where
 
 import Elmish.Hooks.Type (Hook, HookType, type (<>), bind, component, discard, mkHook, pure, (==>), (=/>)) as Type
 import Elmish.Hooks.UseEffect (UseEffect, useEffect, useEffect') as UseEffect
 import Elmish.Hooks.UseRef (UseRef, useRef) as UseRef
 import Elmish.Hooks.UseState (UseState, useState) as UseState
+import Elmish.Hooks.UseSubscription (UseSubscription, useSubscription) as UseSubscription
