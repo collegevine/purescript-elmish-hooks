@@ -26405,6 +26405,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
           return unit;
         }
         ;
+        if (ref instanceof Just && v instanceof Nothing) {
+          return unit;
+        }
+        ;
         if (ref instanceof Just && v instanceof Just) {
           if (eqByReference(ref.value0)(v.value0)) {
             return unit;
