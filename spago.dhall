@@ -1,10 +1,12 @@
 { name = "elmish-hooks"
 , dependencies =
-  [ "debug"
+  [ "aff"
+  , "debug"
   , "effect"
   , "elmish"
   , "maybe"
   , "prelude"
+  , "tuples"
   , "undefined-is-not-a-problem"
   ]
 , packages = ./packages.dhall

@@ -3,8 +3,7 @@ let conf = ./spago.dhall
 in conf // {
   sources = conf.sources # [ "test/**/*.purs" ],
   dependencies = conf.dependencies #
-    [ "aff"
-    , "arrays"
+    [ "arrays"
     , "avar"
     , "control"
     , "datetime"
@@ -16,6 +15,5 @@ in conf // {
     , "nullable"
     , "spec"
     , "tailrec"
-    , "tuples"
     ]
 }
