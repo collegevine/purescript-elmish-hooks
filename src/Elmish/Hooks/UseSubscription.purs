@@ -6,7 +6,7 @@ module Elmish.Hooks.UseSubscription
 import Prelude
 
 import Effect.Aff (Aff)
-import Elmish.Component (ComponentName(..))
+import Elmish.Component (ComponentName(..), forkVoid)
 import Elmish.Hooks.Type (Hook, HookType, mkHook)
 import Elmish.Subscription (Subscription)
 import Elmish.Subscription as Sub
@@ -32,7 +32,12 @@ foreign import data UseSubscription :: Type -> HookType
 useSubscription :: ∀ a. Subscription Aff a -> (a -> Aff Unit) -> Hook (UseSubscription a) Unit
 useSubscription subscription onValue =
   mkHook (ComponentName "UseSubscription") \render ->
-    { init: subscription # Sub.quasiBind onValue # Sub.subscribe identity
-    , update: \_ _ -> pure unit
-    , view: \_ _ -> render unit
+    { init: do
+        Sub.subscribe identity subscription
+        pure unit
+    , update: \_ value -> do
+        forkVoid $ onValue value
+        pure unit
+    , view: \_ _ ->
+        render unit
     }

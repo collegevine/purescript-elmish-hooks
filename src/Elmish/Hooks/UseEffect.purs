@@ -81,12 +81,12 @@ useEffect_ name f deps runEffect =
         pure newDeps
     , view: \_ dispatch ->
         useEffectLifeCycles
-          { componentDidUpdate: dispatch <?| \(prevDeps :: Opaque.Opaque "deps" a) ->
-              if Opaque.unwrap prevDeps /= deps then
+          { componentDidUpdate: dispatch <?| \prevDeps ->
+              if Opaque.unwrap @"deps" prevDeps /= deps then
                 Just deps
               else
                 Nothing
-          , deps: (Opaque.wrap deps :: _ "deps" _)
+          , deps: Opaque.wrap @"deps" deps
           } $
           render unit
     }
