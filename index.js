@@ -24285,6 +24285,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     return f(mkFreshComponent());
   }
   var instantiateBaseComponent = import_react.default.createElement;
+  var instancePropDef = (component2) => () => component2.props.def;
   function mkFreshComponent(name15) {
     class ElmishComponent extends import_react.default.Component {
       constructor(props) {
@@ -26529,6 +26530,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   // output/Elmish.Component/index.js
   var append3 = /* @__PURE__ */ append(semigroupArray);
   var setField2 = /* @__PURE__ */ setField();
+  var mapFlipped1 = /* @__PURE__ */ mapFlipped(functorEffect);
   var getField2 = /* @__PURE__ */ getField(canReceiveFromJavaScriptB);
   var map1 = /* @__PURE__ */ map(functorEffect);
   var getField1 = /* @__PURE__ */ getField(/* @__PURE__ */ canReceiveFromJavaScriptA1(canReceiveFromJavaScriptE));
@@ -26598,76 +26600,106 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     return forks($$const(cmd));
   };
   var bindComponent = function(cmpt) {
-    return function(def) {
-      return function(stateStrategy) {
-        var v = stateStrategy({
-          initialState: def.init.value0
-        });
-        var setUnmounted = setField2("__unmounted");
-        var setSubscriptions = setField2("__subscriptions");
-        var getUnmounted = function() {
-          var $114 = map1(fromMaybe(false));
-          var $115 = getField2("__unmounted");
-          return function($116) {
-            return $114($115($116));
-          };
-        }();
-        var getSubscriptions = function() {
-          var $117 = map1(fromMaybe([]));
-          var $118 = getField1("__subscriptions");
-          return function($119) {
-            return $117($118($119));
-          };
-        }();
-        var stopSubscriptions = function(component2) {
-          return function __do() {
-            bindFlipped3(sequence_2)(getSubscriptions(component2))();
-            return setSubscriptions([])(component2)();
-          };
-        };
-        var addSubscription = function(component2) {
-          return function(sub2) {
+    return function(stateStrategy) {
+      var setUnmounted = setField2("__unmounted");
+      var setSubscriptions = setField2("__subscriptions");
+      var setState2 = function(component2) {
+        return function(newState) {
+          return function(callback) {
             return function __do() {
-              var subs = getSubscriptions(component2)();
-              return setSubscriptions(cons(launchAff_(sub2))(subs))(component2)();
+              var v = mapFlipped1(instancePropDef(component2))(function(v2) {
+                return v2.init;
+              })();
+              return stateStrategy({
+                initialState: v.value0
+              }).setState(component2)(newState)(callback)();
             };
           };
         };
-        var runCmds = function(cmds) {
-          return function(component2) {
-            var runCmd = function(cmd) {
-              return launchAff_(discard22(delay(0))(function() {
-                return cmd({
-                  dispatch: function() {
-                    var $120 = dispatchMsg(component2);
-                    return function($121) {
-                      return liftEffect2($120($121));
-                    };
-                  }(),
-                  onStop: addSubscription(component2)
-                });
-              }));
-            };
-            return foreachE(cmds)(runCmd);
-          };
+      };
+      var getUnmounted = function() {
+        var $125 = map1(fromMaybe(false));
+        var $126 = getField2("__unmounted");
+        return function($127) {
+          return $125($126($127));
         };
-        var dispatchMsg = function(component2) {
-          return function(msg) {
-            return unlessM2(getUnmounted(component2))(function __do() {
-              var oldState = v.getState(component2)();
-              var v1 = def.update(oldState)(msg);
-              return v.setState(component2)(v1.value0)(runCmds(v1.value1)(component2))();
-            });
-          };
+      }();
+      var getSubscriptions = function() {
+        var $128 = map1(fromMaybe([]));
+        var $129 = getField1("__subscriptions");
+        return function($130) {
+          return $128($129($130));
         };
-        var render2 = function(component2) {
+      }();
+      var stopSubscriptions = function(component2) {
+        return function __do() {
+          bindFlipped3(sequence_2)(getSubscriptions(component2))();
+          return setSubscriptions([])(component2)();
+        };
+      };
+      var getState2 = function(component2) {
+        return function __do() {
+          var v = mapFlipped1(instancePropDef(component2))(function(v2) {
+            return v2.init;
+          })();
+          return stateStrategy({
+            initialState: v.value0
+          }).getState(component2)();
+        };
+      };
+      var addSubscription = function(component2) {
+        return function(sub2) {
           return function __do() {
-            var state3 = v.getState(component2)();
-            return def.view(state3)(dispatchMsg(component2));
+            var subs = getSubscriptions(component2)();
+            return setSubscriptions(cons(launchAff_(sub2))(subs))(component2)();
           };
         };
+      };
+      var runCmds = function(cmds) {
+        return function(component2) {
+          var runCmd = function(cmd) {
+            return launchAff_(discard22(delay(0))(function() {
+              return cmd({
+                dispatch: function() {
+                  var $131 = dispatchMsg(component2);
+                  return function($132) {
+                    return liftEffect2($131($132));
+                  };
+                }(),
+                onStop: addSubscription(component2)
+              });
+            }));
+          };
+          return foreachE(cmds)(runCmd);
+        };
+      };
+      var dispatchMsg = function(component2) {
+        return function(msg) {
+          return unlessM2(getUnmounted(component2))(function __do() {
+            var oldState = getState2(component2)();
+            var update = mapFlipped1(instancePropDef(component2))(function(v2) {
+              return v2.update;
+            })();
+            var v = update(oldState)(msg);
+            return setState2(component2)(v.value0)(runCmds(v.value1)(component2))();
+          });
+        };
+      };
+      var render2 = function(component2) {
+        return function __do() {
+          var state3 = getState2(component2)();
+          var view8 = mapFlipped1(instancePropDef(component2))(function(v) {
+            return v.view;
+          })();
+          return view8(state3)(dispatchMsg(component2));
+        };
+      };
+      return function(def) {
         return instantiateBaseComponent(cmpt, {
-          init: v.initialize,
+          def,
+          init: stateStrategy({
+            initialState: def.init.value0
+          }).initialize,
           render: render2,
           componentDidMount: runCmds(def.init.value1),
           componentWillUnmount: append1(setUnmounted(true))(stopSubscriptions)
@@ -26679,15 +26711,16 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     return function __do() {
       var stateStorage = liftEffect2(dedicatedStorage)();
       return withFreshComponent(function(cmpt) {
-        return bindComponent(cmpt)(def)(stateStorage);
+        return bindComponent(cmpt)(stateStorage)(def);
       });
     };
   };
   var wrapWithLocalState = function(name15) {
     return function(mkDef) {
       return withCachedComponent(name15, function(cmpt) {
-        return function(args) {
-          return bindComponent(cmpt)(mkDef(args))(localState);
+        var $133 = bindComponent(cmpt)(localState);
+        return function($134) {
+          return $133(mkDef($134));
         };
       });
     };
@@ -27270,9 +27303,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
                 view: function(v) {
                   return function(dispatch) {
                     return useEffectLifeCycles1({
-                      componentDidUpdate: handleMaybe2(dispatch)(function(v1) {
-                        var $27 = notEq2(unwrap3(v1))(deps);
-                        if ($27) {
+                      componentDidUpdate: handleMaybe2(dispatch)(function(prevDeps) {
+                        var $25 = notEq2(unwrap3(prevDeps))(deps);
+                        if ($25) {
                           return new Just(deps);
                         }
                         ;
