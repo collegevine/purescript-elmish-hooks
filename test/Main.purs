@@ -21,12 +21,17 @@ import Test.Spec.Assertions (shouldEqual, shouldNotEqual)
 import Test.Spec.Assertions.String (shouldContain)
 import Test.Spec.Reporter.Spec (specReporter)
 import Test.Spec.Runner (runSpec)
+import Test.UseEffect as UseEffect
+import Test.UseSubscription as UseSubscription
 
 main :: Effect Unit
 main = launchAff_ $ runSpec [specReporter] spec
 
 spec :: Spec Unit
 spec = do
+  UseEffect.spec
+  UseSubscription.spec
+
   describe "naming" do
     describe "component" do
       let
