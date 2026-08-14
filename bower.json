@@ -17,7 +17,7 @@
         "purescript-aff": "^v8.0.0",
         "purescript-debug": "^v6.0.2",
         "purescript-effect": "^v4.0.0",
-        "purescript-elmish": "^v0.13.0",
+        "purescript-elmish": "^v0.15.0",
         "purescript-maybe": "^v6.0.0",
         "purescript-prelude": "^v6.0.2",
         "purescript-tuples": "^v7.0.0",

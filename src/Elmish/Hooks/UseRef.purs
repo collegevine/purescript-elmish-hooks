@@ -27,7 +27,7 @@ type UseRef el = UseState (Maybe el)
 -- |   Hooks.pure $
 -- |     H.fragment
 -- |     [ H.input_ "form-control" { ref: inputRef, defaultValue: "" }
--- |     , H.button_ "btn btn-primary" { onClick: onButtonClick } "Focus the input"
+-- |     , H.button_ "btn btn-primary" { onClick: H.handle \_ -> onButtonClick } "Focus the input"
 -- |     ]
 -- | ```
 useRef :: ∀ @el. Hook (UseRef el) (Maybe el /\ Ref el)

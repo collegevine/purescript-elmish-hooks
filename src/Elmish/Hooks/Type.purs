@@ -156,7 +156,7 @@ mkHook name mkDef =
 -- | view :: ReactElement
 -- | view = Hooks.component Hooks.do
 -- |   name /\ setName <- useState ""
--- |   Hooks.pure $ H.input_ "" { value: name, onChange: setName <?| eventTargetValue }
+-- |   Hooks.pure $ H.input_ "" { value: name, onChange: H.handle \e -> setName $ E.inputText e }
 -- | ```
 component :: forall t. Hook' t ReactElement -> ReactElement
 component hook = component' name hook
@@ -180,7 +180,7 @@ component' name (Hook hook) =
 -- | ```purs
 -- | view :: ReactElement
 -- | view = useState "" ==> \(name /\ setName) ->
--- |   H.input_ "" { value: name, onChange: setName <?| eventTargetValue }
+-- |   H.input_ "" { value: name, onChange: H.handle \e -> setName $ E.inputText e }
 -- | ```
 withHook :: forall t a. Hook' t a -> (a -> ReactElement) -> ReactElement
 withHook hook = \render -> component' name $ render <$> hook
@@ -197,7 +197,7 @@ infixl 1 withHook as ==>
 -- | ```purs
 -- | view :: ReactElement
 -- | view = useState "" =/> \name setName ->
--- |   H.input_ "" { value: name, onChange: setName <?| eventTargetValue }
+-- |   H.input_ "" { value: name, onChange: H.handle \e -> setName $ E.inputText e }
 -- | ```
 withHookCurried :: forall t a b. Hook' t (a /\ b) -> (a -> b -> ReactElement) -> ReactElement
 withHookCurried hook = \render -> component' name $ (uncurry render) <$> hook

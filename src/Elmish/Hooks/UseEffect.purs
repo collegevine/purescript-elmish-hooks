@@ -8,12 +8,10 @@ module Elmish.Hooks.UseEffect
 
 import Prelude
 
-import Data.Maybe (Maybe(..))
 import Data.Undefined.NoProblem (Req)
 import Debug (class DebugWarning)
 import Effect.Aff (Aff)
-import Effect.Uncurried (EffectFn1)
-import Elmish (ComponentDef, createElement, forkVoid, withTrace, (<?|))
+import Elmish (ComponentDef, EventHandler, createElement, forkVoid, handle, withTrace)
 import Elmish.Component (ComponentName(..))
 import Elmish.Hooks.Type (Hook, HookType, mkHook)
 import Elmish.Opaque (Opaque, unwrap, wrap) as Opaque
@@ -49,7 +47,7 @@ useEffect runEffect = useEffect_ (ComponentName "UseEffect") identity unit $ con
 -- |   useEffect' count \c -> liftEffect $
 -- |     HTMLDocument.setTitle ("You clicked " <> show c <> " times") =<< document =<< window
 -- |
--- |   Hooks.pure H.button_ "" { onClick: setCount $ count + 1 } "Click me"
+-- |   Hooks.pure $ H.button_ "" { onClick: H.handle \_ -> setCount $ count + 1 } "Click me"
 -- | ```
 useEffect' :: ∀ @a. Eq a => a -> (a -> Aff Unit) -> Hook (UseEffect a) Unit
 useEffect' deps runEffect = useEffect_ (ComponentName "UseEffectPrime") identity deps runEffect
@@ -81,18 +79,16 @@ useEffect_ name f deps runEffect =
         pure newDeps
     , view: \_ dispatch ->
         useEffectLifeCycles
-          { componentDidUpdate: dispatch <?| \prevDeps ->
-              if Opaque.unwrap @"deps" prevDeps /= deps then
-                Just deps
-              else
-                Nothing
+          { componentDidUpdate: handle \prevDeps ->
+              when (Opaque.unwrap @"deps" prevDeps /= deps) $
+                dispatch deps
           , deps: Opaque.wrap @"deps" deps
           } $
           render unit
     }
 
 type Props deps =
-  ( componentDidUpdate :: Req (EffectFn1 (Opaque.Opaque "deps" deps) Unit)
+  ( componentDidUpdate :: Req (EventHandler (Opaque.Opaque "deps" deps))
   , deps :: Req (Opaque.Opaque "deps" deps)
   )
 

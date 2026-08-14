@@ -7,7 +7,7 @@ import Prelude
 import Data.Maybe (Maybe(..))
 import Data.Tuple.Nested (type (/\), (/\))
 import Effect.Class (liftEffect)
-import Elmish (Dispatch, ReactElement, (<|))
+import Elmish (Dispatch, ReactElement)
 import Elmish.HTML.Events as E
 import Elmish.HTML.Styled as H
 import Elmish.Hooks (type (<>), Hook, UseEffect, UseState, useEffect, useState)
@@ -29,7 +29,7 @@ view = Hooks.component Hooks.do
           [ H.text "Typing here will update the state and save to "
           , H.code "" "localStorage"
           ]
-        , H.input_ "form-control" { value: foo, onChange: setFoo <| E.inputText, id: "foo" }
+        , H.input_ "form-control" { value: foo, onChange: H.handle \e -> setFoo $ E.inputText e, id: "foo" }
         ]
       ]
     ]

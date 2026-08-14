@@ -61,14 +61,14 @@ useMousePosition className =
     , update: \_ pos -> pure pos
     , view: \pos dispatch ->
         H.div_ className
-          { onMouseMove: E.handleEffect \(E.MouseEvent event) -> do
+          { onMouseMove: H.handle \(E.MouseEvent event) -> do
               { top, left, width, height } <- getBoundingClientRect event.currentTarget
               let
                 x = event.clientX - left
                 y = event.clientY - top
                 mouseLeft = x < 0.0 || y < 0.0 || y > height || x > width
               dispatch if mouseLeft then Nothing else Just { x, y }
-          , onMouseLeave: dispatch <| const Nothing
+          , onMouseLeave: H.handle \_ -> dispatch Nothing
           } $
           render pos
     }
@@ -81,7 +81,7 @@ If you’re only using a single hook, sometimes it might be more concise to use 
 ```purs
 myInput :: ReactElement
 myInput = useState "" =/> \name setName ->
-  H.input_ "" { value: name, onChange: setName <| E.inputText }
+  H.input_ "" { value: name, onChange: H.handle \e -> setName $ E.inputText e }
 ```
 
 ### Examples

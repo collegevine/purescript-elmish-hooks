@@ -7,7 +7,6 @@ import Data.Tuple.Nested ((/\))
 import Effect.Aff (delay)
 import Effect.Aff.Class (liftAff)
 import Effect.Class (liftEffect)
-import Elmish ((<|))
 import Elmish.HTML.Styled as H
 import Elmish.Hooks as Hk
 import Elmish.Test (click, find, testElement, text, (>>))
@@ -39,7 +38,7 @@ spec = do
             Hk.pure $ H.fragment
               [ H.div "clicks" $ show clicks
               , H.div "effectRuns" $ show effectRuns
-              , H.button_ "" { onClick: setClicks <| clicks + 1 } ""
+              , H.button_ "" { onClick: H.handle \_ -> setClicks $ clicks + 1 } ""
               ]
 
           assertOutput expected = do

@@ -7,7 +7,7 @@ import Prelude
 
 import Effect (Effect)
 import Elmish (Dispatch, ReactElement)
-import Elmish.Boot (defaultMain)
+import Elmish.HTML.Boot (defaultMain)
 import Elmish.HTML.Styled as H
 import Examples.UseEffect as UseEffect
 import Examples.UseEffectPrime as UseEffectPrime

@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Upgraded to Spago 1.0.3
 - Moved examples to a package in the same Spago workspace.
+- **Breaking**: Upgraded to elmish 0.15.0, elmish-html 0.13.0.
 
 ## 0.10.3
 

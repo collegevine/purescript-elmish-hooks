@@ -5,7 +5,7 @@ module Examples.UseMouseMove
 import Prelude
 
 import Data.Maybe (Maybe(..))
-import Elmish (ReactElement, (<|))
+import Elmish (ReactElement)
 import Elmish.Component (ComponentName(..))
 import Elmish.HTML.Events as E
 import Elmish.HTML.Styled as H
@@ -46,14 +46,14 @@ useMousePosition className =
     , update: \_ pos -> pure pos
     , view: \pos dispatch ->
         H.div_ className
-          { onMouseMove: E.handleEffect \(E.MouseEvent event) -> do
+          { onMouseMove: H.handle \(E.MouseEvent event) -> do
               { top, left, width, height } <- getBoundingClientRect event.currentTarget
               let
                 x = event.clientX - left
                 y = event.clientY - top
                 mouseLeft = x < 0.0 || y < 0.0 || y > height || x > width
               dispatch if mouseLeft then Nothing else Just { x, y }
-          , onMouseLeave: dispatch <| const Nothing
+          , onMouseLeave: H.handle \_ -> dispatch Nothing
           } $
           render pos
     }
