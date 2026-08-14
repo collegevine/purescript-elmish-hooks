@@ -5,26 +5,26 @@ var Main = (() => {
   var __getOwnPropNames = Object.getOwnPropertyNames;
   var __getProtoOf = Object.getPrototypeOf;
   var __hasOwnProp = Object.prototype.hasOwnProperty;
-  var __markAsModule = (target5) => __defProp(target5, "__esModule", { value: true });
   var __commonJS = (cb, mod2) => function __require() {
-    return mod2 || (0, cb[Object.keys(cb)[0]])((mod2 = { exports: {} }).exports, mod2), mod2.exports;
+    return mod2 || (0, cb[__getOwnPropNames(cb)[0]])((mod2 = { exports: {} }).exports, mod2), mod2.exports;
   };
   var __export = (target5, all3) => {
-    __markAsModule(target5);
     for (var name15 in all3)
       __defProp(target5, name15, { get: all3[name15], enumerable: true });
   };
-  var __reExport = (target5, module2, desc) => {
-    if (module2 && typeof module2 === "object" || typeof module2 === "function") {
-      for (let key of __getOwnPropNames(module2))
-        if (!__hasOwnProp.call(target5, key) && key !== "default")
-          __defProp(target5, key, { get: () => module2[key], enumerable: !(desc = __getOwnPropDesc(module2, key)) || desc.enumerable });
+  var __copyProps = (to, from2, except, desc) => {
+    if (from2 && typeof from2 === "object" || typeof from2 === "function") {
+      for (let key of __getOwnPropNames(from2))
+        if (!__hasOwnProp.call(to, key) && key !== except)
+          __defProp(to, key, { get: () => from2[key], enumerable: !(desc = __getOwnPropDesc(from2, key)) || desc.enumerable });
     }
-    return target5;
+    return to;
   };
-  var __toModule = (module2) => {
-    return __reExport(__markAsModule(__defProp(module2 != null ? __create(__getProtoOf(module2)) : {}, "default", module2 && module2.__esModule && "default" in module2 ? { get: () => module2.default, enumerable: true } : { value: module2, enumerable: true })), module2);
-  };
+  var __toESM = (mod2, isNodeMode, target5) => (target5 = mod2 != null ? __create(__getProtoOf(mod2)) : {}, __copyProps(
+    isNodeMode || !mod2 || !mod2.__esModule ? __defProp(target5, "default", { value: mod2, enumerable: true }) : target5,
+    mod2
+  ));
+  var __toCommonJS = (mod2) => __copyProps(__defProp({}, "__esModule", { value: true }), mod2);
 
   // node_modules/object-assign/index.js
   var require_object_assign = __commonJS({
@@ -678,7 +678,10 @@ var Main = (() => {
                 });
               } else if (mappedChild != null) {
                 if (isValidElement(mappedChild)) {
-                  mappedChild = cloneAndReplaceKey(mappedChild, escapedPrefix + (mappedChild.key && (!_child || _child.key !== mappedChild.key) ? escapeUserProvidedKey("" + mappedChild.key) + "/" : "") + childKey);
+                  mappedChild = cloneAndReplaceKey(
+                    mappedChild,
+                    escapedPrefix + (mappedChild.key && (!_child || _child.key !== mappedChild.key) ? escapeUserProvidedKey("" + mappedChild.key) + "/" : "") + childKey
+                  );
                 }
                 array.push(mappedChild);
               }
@@ -2493,7 +2496,7 @@ var Main = (() => {
           var HostPortal = 4;
           var HostComponent = 5;
           var HostText = 6;
-          var Fragment2 = 7;
+          var Fragment = 7;
           var Mode = 8;
           var ContextConsumer = 9;
           var ContextProvider = 10;
@@ -2656,17 +2659,49 @@ var Main = (() => {
             "style"
           ];
           reservedProps.forEach(function(name15) {
-            properties[name15] = new PropertyInfoRecord(name15, RESERVED, false, name15, null, false, false);
+            properties[name15] = new PropertyInfoRecord(
+              name15,
+              RESERVED,
+              false,
+              name15,
+              null,
+              false,
+              false
+            );
           });
           [["acceptCharset", "accept-charset"], ["className", "class"], ["htmlFor", "for"], ["httpEquiv", "http-equiv"]].forEach(function(_ref) {
             var name15 = _ref[0], attributeName = _ref[1];
-            properties[name15] = new PropertyInfoRecord(name15, STRING, false, attributeName, null, false, false);
+            properties[name15] = new PropertyInfoRecord(
+              name15,
+              STRING,
+              false,
+              attributeName,
+              null,
+              false,
+              false
+            );
           });
           ["contentEditable", "draggable", "spellCheck", "value"].forEach(function(name15) {
-            properties[name15] = new PropertyInfoRecord(name15, BOOLEANISH_STRING, false, name15.toLowerCase(), null, false, false);
+            properties[name15] = new PropertyInfoRecord(
+              name15,
+              BOOLEANISH_STRING,
+              false,
+              name15.toLowerCase(),
+              null,
+              false,
+              false
+            );
           });
           ["autoReverse", "externalResourcesRequired", "focusable", "preserveAlpha"].forEach(function(name15) {
-            properties[name15] = new PropertyInfoRecord(name15, BOOLEANISH_STRING, false, name15, null, false, false);
+            properties[name15] = new PropertyInfoRecord(
+              name15,
+              BOOLEANISH_STRING,
+              false,
+              name15,
+              null,
+              false,
+              false
+            );
           });
           [
             "allowFullScreen",
@@ -2693,7 +2728,15 @@ var Main = (() => {
             "seamless",
             "itemScope"
           ].forEach(function(name15) {
-            properties[name15] = new PropertyInfoRecord(name15, BOOLEAN, false, name15.toLowerCase(), null, false, false);
+            properties[name15] = new PropertyInfoRecord(
+              name15,
+              BOOLEAN,
+              false,
+              name15.toLowerCase(),
+              null,
+              false,
+              false
+            );
           });
           [
             "checked",
@@ -2701,13 +2744,29 @@ var Main = (() => {
             "muted",
             "selected"
           ].forEach(function(name15) {
-            properties[name15] = new PropertyInfoRecord(name15, BOOLEAN, true, name15, null, false, false);
+            properties[name15] = new PropertyInfoRecord(
+              name15,
+              BOOLEAN,
+              true,
+              name15,
+              null,
+              false,
+              false
+            );
           });
           [
             "capture",
             "download"
           ].forEach(function(name15) {
-            properties[name15] = new PropertyInfoRecord(name15, OVERLOADED_BOOLEAN, false, name15, null, false, false);
+            properties[name15] = new PropertyInfoRecord(
+              name15,
+              OVERLOADED_BOOLEAN,
+              false,
+              name15,
+              null,
+              false,
+              false
+            );
           });
           [
             "cols",
@@ -2715,10 +2774,26 @@ var Main = (() => {
             "size",
             "span"
           ].forEach(function(name15) {
-            properties[name15] = new PropertyInfoRecord(name15, POSITIVE_NUMERIC, false, name15, null, false, false);
+            properties[name15] = new PropertyInfoRecord(
+              name15,
+              POSITIVE_NUMERIC,
+              false,
+              name15,
+              null,
+              false,
+              false
+            );
           });
           ["rowSpan", "start"].forEach(function(name15) {
-            properties[name15] = new PropertyInfoRecord(name15, NUMERIC, false, name15.toLowerCase(), null, false, false);
+            properties[name15] = new PropertyInfoRecord(
+              name15,
+              NUMERIC,
+              false,
+              name15.toLowerCase(),
+              null,
+              false,
+              false
+            );
           });
           var CAMELIZE = /[\-\:]([a-z])/g;
           var capitalize = function(token) {
@@ -2800,7 +2875,15 @@ var Main = (() => {
             "x-height"
           ].forEach(function(attributeName) {
             var name15 = attributeName.replace(CAMELIZE, capitalize);
-            properties[name15] = new PropertyInfoRecord(name15, STRING, false, attributeName, null, false, false);
+            properties[name15] = new PropertyInfoRecord(
+              name15,
+              STRING,
+              false,
+              attributeName,
+              null,
+              false,
+              false
+            );
           });
           [
             "xlink:actuate",
@@ -2811,7 +2894,15 @@ var Main = (() => {
             "xlink:type"
           ].forEach(function(attributeName) {
             var name15 = attributeName.replace(CAMELIZE, capitalize);
-            properties[name15] = new PropertyInfoRecord(name15, STRING, false, attributeName, "http://www.w3.org/1999/xlink", false, false);
+            properties[name15] = new PropertyInfoRecord(
+              name15,
+              STRING,
+              false,
+              attributeName,
+              "http://www.w3.org/1999/xlink",
+              false,
+              false
+            );
           });
           [
             "xml:base",
@@ -2819,15 +2910,47 @@ var Main = (() => {
             "xml:space"
           ].forEach(function(attributeName) {
             var name15 = attributeName.replace(CAMELIZE, capitalize);
-            properties[name15] = new PropertyInfoRecord(name15, STRING, false, attributeName, "http://www.w3.org/XML/1998/namespace", false, false);
+            properties[name15] = new PropertyInfoRecord(
+              name15,
+              STRING,
+              false,
+              attributeName,
+              "http://www.w3.org/XML/1998/namespace",
+              false,
+              false
+            );
           });
           ["tabIndex", "crossOrigin"].forEach(function(attributeName) {
-            properties[attributeName] = new PropertyInfoRecord(attributeName, STRING, false, attributeName.toLowerCase(), null, false, false);
+            properties[attributeName] = new PropertyInfoRecord(
+              attributeName,
+              STRING,
+              false,
+              attributeName.toLowerCase(),
+              null,
+              false,
+              false
+            );
           });
           var xlinkHref = "xlinkHref";
-          properties[xlinkHref] = new PropertyInfoRecord("xlinkHref", STRING, false, "xlink:href", "http://www.w3.org/1999/xlink", true, false);
+          properties[xlinkHref] = new PropertyInfoRecord(
+            "xlinkHref",
+            STRING,
+            false,
+            "xlink:href",
+            "http://www.w3.org/1999/xlink",
+            true,
+            false
+          );
           ["src", "href", "action", "formAction"].forEach(function(attributeName) {
-            properties[attributeName] = new PropertyInfoRecord(attributeName, STRING, false, attributeName.toLowerCase(), null, true, true);
+            properties[attributeName] = new PropertyInfoRecord(
+              attributeName,
+              STRING,
+              false,
+              attributeName.toLowerCase(),
+              null,
+              true,
+              true
+            );
           });
           var isJavaScriptProtocol = /^[\u0000-\u001F ]*j[\r\n\t]*a[\r\n\t]*v[\r\n\t]*a[\r\n\t]*s[\r\n\t]*c[\r\n\t]*r[\r\n\t]*i[\r\n\t]*p[\r\n\t]*t[\r\n\t]*\:/i;
           var didWarn = false;
@@ -4158,7 +4281,11 @@ var Main = (() => {
                 return;
               }
               warnedStyleNames[name15] = true;
-              error5("Unsupported style property %s. Did you mean %s?", name15, camelize(name15.replace(msPattern$1, "ms-")));
+              error5(
+                "Unsupported style property %s. Did you mean %s?",
+                name15,
+                camelize(name15.replace(msPattern$1, "ms-"))
+              );
             };
             var warnBadVendoredStyleName = function(name15) {
               if (warnedStyleNames.hasOwnProperty(name15) && warnedStyleNames[name15]) {
@@ -6664,7 +6791,13 @@ var Main = (() => {
               allowReplay = (eventSystemFlags & IS_CAPTURE_PHASE) === 0;
             }
             if (allowReplay && hasQueuedDiscreteEvents() && isReplayableDiscreteEvent(domEventName)) {
-              queueDiscreteEvent(null, domEventName, eventSystemFlags, targetContainer, nativeEvent);
+              queueDiscreteEvent(
+                null,
+                domEventName,
+                eventSystemFlags,
+                targetContainer,
+                nativeEvent
+              );
               return;
             }
             var blockedOn = attemptToDispatchEvent(domEventName, eventSystemFlags, targetContainer, nativeEvent);
@@ -11677,7 +11810,7 @@ var Main = (() => {
               }
             }
             function updateFragment2(returnFiber, current2, fragment2, lanes, key) {
-              if (current2 === null || current2.tag !== Fragment2) {
+              if (current2 === null || current2.tag !== Fragment) {
                 var created = createFiberFromFragment(fragment2, returnFiber.mode, lanes, key);
                 created.return = returnFiber;
                 return created;
@@ -12045,7 +12178,7 @@ var Main = (() => {
               while (child !== null) {
                 if (child.key === key) {
                   switch (child.tag) {
-                    case Fragment2: {
+                    case Fragment: {
                       if (element.type === REACT_FRAGMENT_TYPE) {
                         deleteRemainingChildren(returnFiber, child.sibling);
                         var existing = useFiber(child, element.props.children);
@@ -13208,7 +13341,7 @@ var Main = (() => {
           }
           function mountEffect(create3, deps) {
             {
-              if (typeof jest !== "undefined") {
+              if ("undefined" !== typeof jest) {
                 warnIfNotCurrentlyActingEffectsInDEV(currentlyRenderingFiber$1);
               }
             }
@@ -13216,7 +13349,7 @@ var Main = (() => {
           }
           function updateEffect(create3, deps) {
             {
-              if (typeof jest !== "undefined") {
+              if ("undefined" !== typeof jest) {
                 warnIfNotCurrentlyActingEffectsInDEV(currentlyRenderingFiber$1);
               }
             }
@@ -13501,7 +13634,7 @@ var Main = (() => {
                 }
               }
               {
-                if (typeof jest !== "undefined") {
+                if ("undefined" !== typeof jest) {
                   warnIfNotScopedWithMatchingAct(fiber);
                   warnIfNotCurrentlyActingUpdatesInDev(fiber);
                 }
@@ -14321,7 +14454,12 @@ var Main = (() => {
               if (workInProgress2.type !== workInProgress2.elementType) {
                 var innerPropTypes = Component.propTypes;
                 if (innerPropTypes) {
-                  checkPropTypes(innerPropTypes, nextProps, "prop", getComponentName(Component));
+                  checkPropTypes(
+                    innerPropTypes,
+                    nextProps,
+                    "prop",
+                    getComponentName(Component)
+                  );
                 }
               }
             }
@@ -14369,7 +14507,12 @@ var Main = (() => {
               {
                 var innerPropTypes = type.propTypes;
                 if (innerPropTypes) {
-                  checkPropTypes(innerPropTypes, nextProps, "prop", getComponentName(type));
+                  checkPropTypes(
+                    innerPropTypes,
+                    nextProps,
+                    "prop",
+                    getComponentName(type)
+                  );
                 }
               }
               var child = createFiberFromTypeAndProps(Component.type, null, nextProps, workInProgress2, workInProgress2.mode, renderLanes2);
@@ -14382,7 +14525,12 @@ var Main = (() => {
               var _type = Component.type;
               var _innerPropTypes = _type.propTypes;
               if (_innerPropTypes) {
-                checkPropTypes(_innerPropTypes, nextProps, "prop", getComponentName(_type));
+                checkPropTypes(
+                  _innerPropTypes,
+                  nextProps,
+                  "prop",
+                  getComponentName(_type)
+                );
               }
             }
             var currentChild = current2.child;
@@ -14416,7 +14564,12 @@ var Main = (() => {
                   }
                   var outerPropTypes = outerMemoType && outerMemoType.propTypes;
                   if (outerPropTypes) {
-                    checkPropTypes(outerPropTypes, nextProps, "prop", getComponentName(outerMemoType));
+                    checkPropTypes(
+                      outerPropTypes,
+                      nextProps,
+                      "prop",
+                      getComponentName(outerMemoType)
+                    );
                   }
                 }
               }
@@ -14519,7 +14672,12 @@ var Main = (() => {
               if (workInProgress2.type !== workInProgress2.elementType) {
                 var innerPropTypes = Component.propTypes;
                 if (innerPropTypes) {
-                  checkPropTypes(innerPropTypes, nextProps, "prop", getComponentName(Component));
+                  checkPropTypes(
+                    innerPropTypes,
+                    nextProps,
+                    "prop",
+                    getComponentName(Component)
+                  );
                 }
               }
             }
@@ -14557,7 +14715,12 @@ var Main = (() => {
               if (workInProgress2.type !== workInProgress2.elementType) {
                 var innerPropTypes = Component.propTypes;
                 if (innerPropTypes) {
-                  checkPropTypes(innerPropTypes, nextProps, "prop", getComponentName(Component));
+                  checkPropTypes(
+                    innerPropTypes,
+                    nextProps,
+                    "prop",
+                    getComponentName(Component)
+                  );
                 }
               }
             }
@@ -14762,11 +14925,23 @@ var Main = (() => {
                   if (workInProgress2.type !== workInProgress2.elementType) {
                     var outerPropTypes = Component.propTypes;
                     if (outerPropTypes) {
-                      checkPropTypes(outerPropTypes, resolvedProps, "prop", getComponentName(Component));
+                      checkPropTypes(
+                        outerPropTypes,
+                        resolvedProps,
+                        "prop",
+                        getComponentName(Component)
+                      );
                     }
                   }
                 }
-                child = updateMemoComponent(null, workInProgress2, Component, resolveDefaultProps(Component.type, resolvedProps), updateLanes, renderLanes2);
+                child = updateMemoComponent(
+                  null,
+                  workInProgress2,
+                  Component,
+                  resolveDefaultProps(Component.type, resolvedProps),
+                  updateLanes,
+                  renderLanes2
+                );
                 return child;
               }
             }
@@ -15334,7 +15509,14 @@ var Main = (() => {
                     tail = lastContentRow.sibling;
                     lastContentRow.sibling = null;
                   }
-                  initSuspenseListRenderState(workInProgress2, false, tail, lastContentRow, tailMode, workInProgress2.lastEffect);
+                  initSuspenseListRenderState(
+                    workInProgress2,
+                    false,
+                    tail,
+                    lastContentRow,
+                    tailMode,
+                    workInProgress2.lastEffect
+                  );
                   break;
                 }
                 case "backwards": {
@@ -15352,11 +15534,25 @@ var Main = (() => {
                     _tail = row;
                     row = nextRow;
                   }
-                  initSuspenseListRenderState(workInProgress2, true, _tail, null, tailMode, workInProgress2.lastEffect);
+                  initSuspenseListRenderState(
+                    workInProgress2,
+                    true,
+                    _tail,
+                    null,
+                    tailMode,
+                    workInProgress2.lastEffect
+                  );
                   break;
                 }
                 case "together": {
-                  initSuspenseListRenderState(workInProgress2, false, null, null, void 0, workInProgress2.lastEffect);
+                  initSuspenseListRenderState(
+                    workInProgress2,
+                    false,
+                    null,
+                    null,
+                    void 0,
+                    workInProgress2.lastEffect
+                  );
                   break;
                 }
                 default: {
@@ -15649,7 +15845,7 @@ var Main = (() => {
                 var _resolvedProps2 = workInProgress2.elementType === type ? _unresolvedProps2 : resolveDefaultProps(type, _unresolvedProps2);
                 return updateForwardRef(current2, workInProgress2, type, _resolvedProps2, renderLanes2);
               }
-              case Fragment2:
+              case Fragment:
                 return updateFragment(current2, workInProgress2, renderLanes2);
               case Mode:
                 return updateMode(current2, workInProgress2, renderLanes2);
@@ -15667,7 +15863,12 @@ var Main = (() => {
                   if (workInProgress2.type !== workInProgress2.elementType) {
                     var outerPropTypes = _type2.propTypes;
                     if (outerPropTypes) {
-                      checkPropTypes(outerPropTypes, _resolvedProps3, "prop", getComponentName(_type2));
+                      checkPropTypes(
+                        outerPropTypes,
+                        _resolvedProps3,
+                        "prop",
+                        getComponentName(_type2)
+                      );
                     }
                   }
                 }
@@ -15816,7 +16017,7 @@ var Main = (() => {
               case SimpleMemoComponent:
               case FunctionComponent:
               case ForwardRef:
-              case Fragment2:
+              case Fragment:
               case Mode:
               case Profiler:
               case ContextConsumer:
@@ -19037,7 +19238,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
                 return;
               }
               if (failedBoundaries === null) {
-                failedBoundaries = new WeakSet();
+                failedBoundaries = /* @__PURE__ */ new WeakSet();
               }
               failedBoundaries.add(fiber);
             }
@@ -19520,7 +19721,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
             return fiber;
           }
           function createFiberFromFragment(elements, mode, lanes, key) {
-            var fiber = createFiber(Fragment2, elements, key, mode);
+            var fiber = createFiber(Fragment, elements, key, mode);
             fiber.lanes = lanes;
             return fiber;
           }
@@ -19786,7 +19987,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
             var current$1 = container.current;
             var eventTime = requestEventTime();
             {
-              if (typeof jest !== "undefined") {
+              if ("undefined" !== typeof jest) {
                 warnIfUnmockedScheduler(current$1);
                 warnIfNotScopedWithMatchingAct(current$1);
               }
@@ -19934,7 +20135,12 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
                   delete updated[oldKey];
                 }
               } else {
-                updated[oldKey] = copyWithRenameImpl(obj[oldKey], oldPath, newPath, index4 + 1);
+                updated[oldKey] = copyWithRenameImpl(
+                  obj[oldKey],
+                  oldPath,
+                  newPath,
+                  index4 + 1
+                );
               }
               return updated;
             };
@@ -21102,17 +21308,49 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
             "style"
           ];
           reservedProps.forEach(function(name15) {
-            properties[name15] = new PropertyInfoRecord(name15, RESERVED, false, name15, null, false, false);
+            properties[name15] = new PropertyInfoRecord(
+              name15,
+              RESERVED,
+              false,
+              name15,
+              null,
+              false,
+              false
+            );
           });
           [["acceptCharset", "accept-charset"], ["className", "class"], ["htmlFor", "for"], ["httpEquiv", "http-equiv"]].forEach(function(_ref) {
             var name15 = _ref[0], attributeName = _ref[1];
-            properties[name15] = new PropertyInfoRecord(name15, STRING, false, attributeName, null, false, false);
+            properties[name15] = new PropertyInfoRecord(
+              name15,
+              STRING,
+              false,
+              attributeName,
+              null,
+              false,
+              false
+            );
           });
           ["contentEditable", "draggable", "spellCheck", "value"].forEach(function(name15) {
-            properties[name15] = new PropertyInfoRecord(name15, BOOLEANISH_STRING, false, name15.toLowerCase(), null, false, false);
+            properties[name15] = new PropertyInfoRecord(
+              name15,
+              BOOLEANISH_STRING,
+              false,
+              name15.toLowerCase(),
+              null,
+              false,
+              false
+            );
           });
           ["autoReverse", "externalResourcesRequired", "focusable", "preserveAlpha"].forEach(function(name15) {
-            properties[name15] = new PropertyInfoRecord(name15, BOOLEANISH_STRING, false, name15, null, false, false);
+            properties[name15] = new PropertyInfoRecord(
+              name15,
+              BOOLEANISH_STRING,
+              false,
+              name15,
+              null,
+              false,
+              false
+            );
           });
           [
             "allowFullScreen",
@@ -21139,7 +21377,15 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
             "seamless",
             "itemScope"
           ].forEach(function(name15) {
-            properties[name15] = new PropertyInfoRecord(name15, BOOLEAN, false, name15.toLowerCase(), null, false, false);
+            properties[name15] = new PropertyInfoRecord(
+              name15,
+              BOOLEAN,
+              false,
+              name15.toLowerCase(),
+              null,
+              false,
+              false
+            );
           });
           [
             "checked",
@@ -21147,13 +21393,29 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
             "muted",
             "selected"
           ].forEach(function(name15) {
-            properties[name15] = new PropertyInfoRecord(name15, BOOLEAN, true, name15, null, false, false);
+            properties[name15] = new PropertyInfoRecord(
+              name15,
+              BOOLEAN,
+              true,
+              name15,
+              null,
+              false,
+              false
+            );
           });
           [
             "capture",
             "download"
           ].forEach(function(name15) {
-            properties[name15] = new PropertyInfoRecord(name15, OVERLOADED_BOOLEAN, false, name15, null, false, false);
+            properties[name15] = new PropertyInfoRecord(
+              name15,
+              OVERLOADED_BOOLEAN,
+              false,
+              name15,
+              null,
+              false,
+              false
+            );
           });
           [
             "cols",
@@ -21161,10 +21423,26 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
             "size",
             "span"
           ].forEach(function(name15) {
-            properties[name15] = new PropertyInfoRecord(name15, POSITIVE_NUMERIC, false, name15, null, false, false);
+            properties[name15] = new PropertyInfoRecord(
+              name15,
+              POSITIVE_NUMERIC,
+              false,
+              name15,
+              null,
+              false,
+              false
+            );
           });
           ["rowSpan", "start"].forEach(function(name15) {
-            properties[name15] = new PropertyInfoRecord(name15, NUMERIC, false, name15.toLowerCase(), null, false, false);
+            properties[name15] = new PropertyInfoRecord(
+              name15,
+              NUMERIC,
+              false,
+              name15.toLowerCase(),
+              null,
+              false,
+              false
+            );
           });
           var CAMELIZE = /[\-\:]([a-z])/g;
           var capitalize = function(token) {
@@ -21246,7 +21524,15 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
             "x-height"
           ].forEach(function(attributeName) {
             var name15 = attributeName.replace(CAMELIZE, capitalize);
-            properties[name15] = new PropertyInfoRecord(name15, STRING, false, attributeName, null, false, false);
+            properties[name15] = new PropertyInfoRecord(
+              name15,
+              STRING,
+              false,
+              attributeName,
+              null,
+              false,
+              false
+            );
           });
           [
             "xlink:actuate",
@@ -21257,7 +21543,15 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
             "xlink:type"
           ].forEach(function(attributeName) {
             var name15 = attributeName.replace(CAMELIZE, capitalize);
-            properties[name15] = new PropertyInfoRecord(name15, STRING, false, attributeName, "http://www.w3.org/1999/xlink", false, false);
+            properties[name15] = new PropertyInfoRecord(
+              name15,
+              STRING,
+              false,
+              attributeName,
+              "http://www.w3.org/1999/xlink",
+              false,
+              false
+            );
           });
           [
             "xml:base",
@@ -21265,15 +21559,47 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
             "xml:space"
           ].forEach(function(attributeName) {
             var name15 = attributeName.replace(CAMELIZE, capitalize);
-            properties[name15] = new PropertyInfoRecord(name15, STRING, false, attributeName, "http://www.w3.org/XML/1998/namespace", false, false);
+            properties[name15] = new PropertyInfoRecord(
+              name15,
+              STRING,
+              false,
+              attributeName,
+              "http://www.w3.org/XML/1998/namespace",
+              false,
+              false
+            );
           });
           ["tabIndex", "crossOrigin"].forEach(function(attributeName) {
-            properties[attributeName] = new PropertyInfoRecord(attributeName, STRING, false, attributeName.toLowerCase(), null, false, false);
+            properties[attributeName] = new PropertyInfoRecord(
+              attributeName,
+              STRING,
+              false,
+              attributeName.toLowerCase(),
+              null,
+              false,
+              false
+            );
           });
           var xlinkHref = "xlinkHref";
-          properties[xlinkHref] = new PropertyInfoRecord("xlinkHref", STRING, false, "xlink:href", "http://www.w3.org/1999/xlink", true, false);
+          properties[xlinkHref] = new PropertyInfoRecord(
+            "xlinkHref",
+            STRING,
+            false,
+            "xlink:href",
+            "http://www.w3.org/1999/xlink",
+            true,
+            false
+          );
           ["src", "href", "action", "formAction"].forEach(function(attributeName) {
-            properties[attributeName] = new PropertyInfoRecord(attributeName, STRING, false, attributeName.toLowerCase(), null, true, true);
+            properties[attributeName] = new PropertyInfoRecord(
+              attributeName,
+              STRING,
+              false,
+              attributeName.toLowerCase(),
+              null,
+              true,
+              true
+            );
           });
           var isJavaScriptProtocol = /^[\u0000-\u001F ]*j[\r\n\t]*a[\r\n\t]*v[\r\n\t]*a[\r\n\t]*s[\r\n\t]*c[\r\n\t]*r[\r\n\t]*i[\r\n\t]*p[\r\n\t]*t[\r\n\t]*\:/i;
           var didWarn = false;
@@ -21501,7 +21827,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
             {
               currentHookNameInDev = "useState";
             }
-            return useReducer(basicStateReducer, initialState);
+            return useReducer(
+              basicStateReducer,
+              initialState
+            );
           }
           function useReducer(reducer, initialArg, init2) {
             {
@@ -21887,7 +22216,11 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
                 return;
               }
               warnedStyleNames[name15] = true;
-              error5("Unsupported style property %s. Did you mean %s?", name15, camelize(name15.replace(msPattern$1, "ms-")));
+              error5(
+                "Unsupported style property %s. Did you mean %s?",
+                name15,
+                camelize(name15.replace(msPattern$1, "ms-"))
+              );
             };
             var warnBadVendoredStyleName = function(name15) {
               if (warnedStyleNames.hasOwnProperty(name15) && warnedStyleNames[name15]) {
@@ -23025,7 +23358,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
                     if (inst.componentWillMount.__suppressDeprecationWarning !== true) {
                       var _componentName4 = getComponentName(Component2) || "Unknown";
                       if (!didWarnAboutDeprecatedWillMount[_componentName4]) {
-                        warn2("componentWillMount has been renamed, and is not recommended for use. See https://reactjs.org/link/unsafe-component-lifecycles for details.\n\n* Move code from componentWillMount to componentDidMount (preferred in most cases) or the constructor.\n\nPlease update the following components: %s", _componentName4);
+                        warn2(
+                          "componentWillMount has been renamed, and is not recommended for use. See https://reactjs.org/link/unsafe-component-lifecycles for details.\n\n* Move code from componentWillMount to componentDidMount (preferred in most cases) or the constructor.\n\nPlease update the following components: %s",
+                          _componentName4
+                        );
                         didWarnAboutDeprecatedWillMount[_componentName4] = true;
                       }
                     }
@@ -23869,6 +24205,22 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       };
     };
   };
+  var when = function(dictApplicative) {
+    var pure12 = pure(dictApplicative);
+    return function(v) {
+      return function(v1) {
+        if (v) {
+          return v1;
+        }
+        ;
+        if (!v) {
+          return pure12(unit);
+        }
+        ;
+        throw new Error("Failed pattern match at Control.Applicative (line 63, column 1 - line 63, column 63): " + [v.constructor.name, v1.constructor.name]);
+      };
+    };
+  };
   var liftA1 = function(dictApplicative) {
     var apply2 = apply(dictApplicative.Apply0());
     var pure12 = pure(dictApplicative);
@@ -23897,6 +24249,60 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     return spin(a);
   };
 
+  // output/Elmish.Component/foreign.js
+  var import_react = __toESM(require_react(), 1);
+  var withCachedComponent = function() {
+    const cache = {};
+    return function(name15, f) {
+      const c = cache[name15] || (cache[name15] = mkFreshComponent(name15));
+      return f(c);
+    };
+  }();
+  function withFreshComponent(f) {
+    return f(mkFreshComponent());
+  }
+  var instantiateBaseComponent = import_react.default.createElement;
+  var instancePropDef = (component2) => () => component2.props.def;
+  function mkFreshComponent(name15) {
+    class ElmishComponent extends import_react.default.Component {
+      constructor(props) {
+        super(props);
+        props.init && props.init(this)();
+      }
+      render() {
+        return this.props.render(this)();
+      }
+      componentDidMount() {
+        this.props.componentDidMount(this)();
+      }
+      componentWillUnmount() {
+        this.props.componentWillUnmount(this)();
+      }
+    }
+    ElmishComponent.displayName = name15 ? "Elmish_" + name15 : "ElmishRoot";
+    return ElmishComponent;
+  }
+
+  // output/Control.Bind/foreign.js
+  var arrayBind = typeof Array.prototype.flatMap === "function" ? function(arr) {
+    return function(f) {
+      return arr.flatMap(f);
+    };
+  } : function(arr) {
+    return function(f) {
+      var result = [];
+      var l = arr.length;
+      for (var i = 0; i < l; i++) {
+        var xs = f(arr[i]);
+        var k = xs.length;
+        for (var j = 0; j < k; j++) {
+          result.push(xs[j]);
+        }
+      }
+      return result;
+    };
+  };
+
   // output/Control.Bind/index.js
   var discard = function(dict) {
     return dict.discard;
@@ -23912,6 +24318,120 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       return bind(dictBind);
     }
   };
+
+  // output/Control.Monad/index.js
+  var unlessM = function(dictMonad) {
+    var bind6 = bind(dictMonad.Bind1());
+    var unless2 = unless(dictMonad.Applicative0());
+    return function(mb) {
+      return function(m) {
+        return bind6(mb)(function(b) {
+          return unless2(b)(m);
+        });
+      };
+    };
+  };
+  var ap = function(dictMonad) {
+    var bind6 = bind(dictMonad.Bind1());
+    var pure9 = pure(dictMonad.Applicative0());
+    return function(f) {
+      return function(a) {
+        return bind6(f)(function(f$prime) {
+          return bind6(a)(function(a$prime) {
+            return pure9(f$prime(a$prime));
+          });
+        });
+      };
+    };
+  };
+
+  // output/Data.Array/foreign.js
+  var replicateFill = function(count, value12) {
+    if (count < 1) {
+      return [];
+    }
+    var result = new Array(count);
+    return result.fill(value12);
+  };
+  var replicatePolyfill = function(count, value12) {
+    var result = [];
+    var n = 0;
+    for (var i = 0; i < count; i++) {
+      result[n++] = value12;
+    }
+    return result;
+  };
+  var replicateImpl = typeof Array.prototype.fill === "function" ? replicateFill : replicatePolyfill;
+  var fromFoldableImpl = function() {
+    function Cons2(head, tail) {
+      this.head = head;
+      this.tail = tail;
+    }
+    var emptyList = {};
+    function curryCons(head) {
+      return function(tail) {
+        return new Cons2(head, tail);
+      };
+    }
+    function listToArray(list) {
+      var result = [];
+      var count = 0;
+      var xs = list;
+      while (xs !== emptyList) {
+        result[count++] = xs.head;
+        xs = xs.tail;
+      }
+      return result;
+    }
+    return function(foldr2, xs) {
+      return listToArray(foldr2(curryCons)(emptyList)(xs));
+    };
+  }();
+  var sortByImpl = function() {
+    function mergeFromTo(compare2, fromOrdering, xs1, xs2, from2, to) {
+      var mid;
+      var i;
+      var j;
+      var k;
+      var x;
+      var y;
+      var c;
+      mid = from2 + (to - from2 >> 1);
+      if (mid - from2 > 1)
+        mergeFromTo(compare2, fromOrdering, xs2, xs1, from2, mid);
+      if (to - mid > 1)
+        mergeFromTo(compare2, fromOrdering, xs2, xs1, mid, to);
+      i = from2;
+      j = mid;
+      k = from2;
+      while (i < mid && j < to) {
+        x = xs2[i];
+        y = xs2[j];
+        c = fromOrdering(compare2(x)(y));
+        if (c > 0) {
+          xs1[k++] = y;
+          ++j;
+        } else {
+          xs1[k++] = x;
+          ++i;
+        }
+      }
+      while (i < mid) {
+        xs1[k++] = xs2[i++];
+      }
+      while (j < to) {
+        xs1[k++] = xs2[j++];
+      }
+    }
+    return function(compare2, fromOrdering, xs) {
+      var out;
+      if (xs.length < 2)
+        return xs;
+      out = xs.slice(0);
+      mergeFromTo(compare2, fromOrdering, out, xs.slice(0), 0, xs.length);
+      return out;
+    };
+  }();
 
   // output/Data.Semigroup/foreign.js
   var concatString = function(s1) {
@@ -24129,6 +24649,57 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     };
   }();
 
+  // output/Data.Either/index.js
+  var Left = /* @__PURE__ */ function() {
+    function Left2(value0) {
+      this.value0 = value0;
+    }
+    ;
+    Left2.create = function(value0) {
+      return new Left2(value0);
+    };
+    return Left2;
+  }();
+  var Right = /* @__PURE__ */ function() {
+    function Right2(value0) {
+      this.value0 = value0;
+    }
+    ;
+    Right2.create = function(value0) {
+      return new Right2(value0);
+    };
+    return Right2;
+  }();
+  var either = function(v) {
+    return function(v1) {
+      return function(v2) {
+        if (v2 instanceof Left) {
+          return v(v2.value0);
+        }
+        ;
+        if (v2 instanceof Right) {
+          return v1(v2.value0);
+        }
+        ;
+        throw new Error("Failed pattern match at Data.Either (line 208, column 1 - line 208, column 64): " + [v.constructor.name, v1.constructor.name, v2.constructor.name]);
+      };
+    };
+  };
+  var hush = /* @__PURE__ */ function() {
+    return either($$const(Nothing.value))(Just.create);
+  }();
+
+  // output/Data.Monoid/index.js
+  var monoidString = {
+    mempty: "",
+    Semigroup0: function() {
+      return semigroupString;
+    }
+  };
+  var mempty = function(dict) {
+    return dict.mempty;
+  };
+
   // output/Effect/foreign.js
   var pureE = function(a) {
     return function() {
@@ -24150,43 +24721,6 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         }
       };
     };
-  };
-
-  // output/Control.Monad/index.js
-  var unlessM = function(dictMonad) {
-    var bind6 = bind(dictMonad.Bind1());
-    var unless2 = unless(dictMonad.Applicative0());
-    return function(mb) {
-      return function(m) {
-        return bind6(mb)(function(b) {
-          return unless2(b)(m);
-        });
-      };
-    };
-  };
-  var ap = function(dictMonad) {
-    var bind6 = bind(dictMonad.Bind1());
-    var pure10 = pure(dictMonad.Applicative0());
-    return function(f) {
-      return function(a) {
-        return bind6(f)(function(f$prime) {
-          return bind6(a)(function(a$prime) {
-            return pure10(f$prime(a$prime));
-          });
-        });
-      };
-    };
-  };
-
-  // output/Data.Monoid/index.js
-  var monoidString = {
-    mempty: "",
-    Semigroup0: function() {
-      return semigroupString;
-    }
-  };
-  var mempty = function(dict) {
-    return dict.mempty;
   };
 
   // output/Effect/index.js
@@ -24245,194 +24779,6 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       append: lift22(append(dictSemigroup))
     };
   };
-
-  // output/Effect.Class/index.js
-  var monadEffectEffect = {
-    liftEffect: /* @__PURE__ */ identity(categoryFn),
-    Monad0: function() {
-      return monadEffect;
-    }
-  };
-  var liftEffect = function(dict) {
-    return dict.liftEffect;
-  };
-
-  // output/Effect.Console/foreign.js
-  var error = function(s) {
-    return function() {
-      console.error(s);
-    };
-  };
-
-  // output/Effect.Class.Console/index.js
-  var error2 = function(dictMonadEffect) {
-    var $79 = liftEffect(dictMonadEffect);
-    return function($80) {
-      return $79(error($80));
-    };
-  };
-
-  // output/Elmish.Component/foreign.js
-  var import_react = __toModule(require_react());
-  var withCachedComponent = function() {
-    const cache = {};
-    return function(name15, f) {
-      const c = cache[name15] || (cache[name15] = mkFreshComponent(name15));
-      return f(c);
-    };
-  }();
-  function withFreshComponent(f) {
-    return f(mkFreshComponent());
-  }
-  var instantiateBaseComponent = import_react.default.createElement;
-  var instancePropDef = (component2) => () => component2.props.def;
-  function mkFreshComponent(name15) {
-    class ElmishComponent extends import_react.default.Component {
-      constructor(props) {
-        super(props);
-        props.init && props.init(this)();
-      }
-      render() {
-        return this.props.render(this)();
-      }
-      componentDidMount() {
-        this.props.componentDidMount(this)();
-      }
-      componentWillUnmount() {
-        this.props.componentWillUnmount(this)();
-      }
-    }
-    ElmishComponent.displayName = name15 ? "Elmish_" + name15 : "ElmishRoot";
-    return ElmishComponent;
-  }
-
-  // output/Data.Array/foreign.js
-  var replicateFill = function(count, value12) {
-    if (count < 1) {
-      return [];
-    }
-    var result = new Array(count);
-    return result.fill(value12);
-  };
-  var replicatePolyfill = function(count, value12) {
-    var result = [];
-    var n = 0;
-    for (var i = 0; i < count; i++) {
-      result[n++] = value12;
-    }
-    return result;
-  };
-  var replicateImpl = typeof Array.prototype.fill === "function" ? replicateFill : replicatePolyfill;
-  var fromFoldableImpl = function() {
-    function Cons2(head, tail) {
-      this.head = head;
-      this.tail = tail;
-    }
-    var emptyList = {};
-    function curryCons(head) {
-      return function(tail) {
-        return new Cons2(head, tail);
-      };
-    }
-    function listToArray(list) {
-      var result = [];
-      var count = 0;
-      var xs = list;
-      while (xs !== emptyList) {
-        result[count++] = xs.head;
-        xs = xs.tail;
-      }
-      return result;
-    }
-    return function(foldr2, xs) {
-      return listToArray(foldr2(curryCons)(emptyList)(xs));
-    };
-  }();
-  var sortByImpl = function() {
-    function mergeFromTo(compare2, fromOrdering, xs1, xs2, from2, to) {
-      var mid;
-      var i;
-      var j;
-      var k;
-      var x;
-      var y;
-      var c;
-      mid = from2 + (to - from2 >> 1);
-      if (mid - from2 > 1)
-        mergeFromTo(compare2, fromOrdering, xs2, xs1, from2, mid);
-      if (to - mid > 1)
-        mergeFromTo(compare2, fromOrdering, xs2, xs1, mid, to);
-      i = from2;
-      j = mid;
-      k = from2;
-      while (i < mid && j < to) {
-        x = xs2[i];
-        y = xs2[j];
-        c = fromOrdering(compare2(x)(y));
-        if (c > 0) {
-          xs1[k++] = y;
-          ++j;
-        } else {
-          xs1[k++] = x;
-          ++i;
-        }
-      }
-      while (i < mid) {
-        xs1[k++] = xs2[i++];
-      }
-      while (j < to) {
-        xs1[k++] = xs2[j++];
-      }
-    }
-    return function(compare2, fromOrdering, xs) {
-      var out;
-      if (xs.length < 2)
-        return xs;
-      out = xs.slice(0);
-      mergeFromTo(compare2, fromOrdering, out, xs.slice(0), 0, xs.length);
-      return out;
-    };
-  }();
-
-  // output/Data.Either/index.js
-  var Left = /* @__PURE__ */ function() {
-    function Left2(value0) {
-      this.value0 = value0;
-    }
-    ;
-    Left2.create = function(value0) {
-      return new Left2(value0);
-    };
-    return Left2;
-  }();
-  var Right = /* @__PURE__ */ function() {
-    function Right2(value0) {
-      this.value0 = value0;
-    }
-    ;
-    Right2.create = function(value0) {
-      return new Right2(value0);
-    };
-    return Right2;
-  }();
-  var either = function(v) {
-    return function(v1) {
-      return function(v2) {
-        if (v2 instanceof Left) {
-          return v(v2.value0);
-        }
-        ;
-        if (v2 instanceof Right) {
-          return v1(v2.value0);
-        }
-        ;
-        throw new Error("Failed pattern match at Data.Either (line 208, column 1 - line 208, column 64): " + [v.constructor.name, v1.constructor.name, v2.constructor.name]);
-      };
-    };
-  };
-  var hush = /* @__PURE__ */ function() {
-    return either($$const(Nothing.value))(Just.create);
-  }();
 
   // output/Effect.Ref/foreign.js
   var _new = function(val) {
@@ -24716,11 +25062,6 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     return x;
   };
 
-  // output/Safe.Coerce/index.js
-  var coerce = function() {
-    return unsafeCoerce2;
-  };
-
   // output/Data.Foldable/index.js
   var identity4 = /* @__PURE__ */ identity(categoryFn);
   var foldr = function(dict) {
@@ -24728,13 +25069,13 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   };
   var traverse_ = function(dictApplicative) {
     var applySecond2 = applySecond(dictApplicative.Apply0());
-    var pure10 = pure(dictApplicative);
+    var pure9 = pure(dictApplicative);
     return function(dictFoldable) {
       var foldr2 = foldr(dictFoldable);
       return function(f) {
         return foldr2(function($454) {
           return applySecond2(f($454));
-        })(pure10(unit));
+        })(pure9(unit));
       };
     };
   };
@@ -24886,13 +25227,13 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     }
     return function(apply2) {
       return function(map9) {
-        return function(pure10) {
+        return function(pure9) {
           return function(f) {
             return function(array) {
               function go2(bot, top2) {
                 switch (top2 - bot) {
                   case 0:
-                    return pure10([]);
+                    return pure9([]);
                   case 1:
                     return map9(array1)(f(array[bot]));
                   case 2:
@@ -25825,14 +26166,15 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   }();
   var _sequential = Aff.Seq;
 
-  // output/Type.Equality/index.js
-  var refl = {
-    proof: function(a) {
-      return a;
-    },
-    Coercible0: function() {
-      return void 0;
+  // output/Effect.Class/index.js
+  var monadEffectEffect = {
+    liftEffect: /* @__PURE__ */ identity(categoryFn),
+    Monad0: function() {
+      return monadEffect;
     }
+  };
+  var liftEffect = function(dict) {
+    return dict.liftEffect;
   };
 
   // output/Partial.Unsafe/foreign.js
@@ -26295,8 +26637,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       ;
       if (v1 instanceof Invalid) {
         return new Left(fold3([v1.value0.path, function() {
-          var $122 = v1.value0.path === "";
-          if ($122) {
+          var $123 = v1.value0.path === "";
+          if ($123) {
             return "Expected ";
           }
           ;
@@ -26308,43 +26650,13 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     };
   };
   var readForeign = function(dictCanReceiveFromJavaScript) {
-    var $125 = readForeign$prime(dictCanReceiveFromJavaScript);
-    return function($126) {
-      return hush($125($126));
+    var $126 = readForeign$prime(dictCanReceiveFromJavaScript);
+    return function($127) {
+      return hush($126($127));
     };
   };
 
-  // output/Elmish.React/foreign.js
-  var import_react2 = __toModule(require_react());
-  var import_react_dom = __toModule(require_react_dom());
-  var import_server = __toModule(require_server_browser());
-  function getState_(component2) {
-    return component2.state && component2.state.s;
-  }
-  function setState_(component2, state3, callback) {
-    return component2.setState({ s: state3 }, callback);
-  }
-  function assignState_(component2, state3) {
-    return component2.state = { s: state3 };
-  }
-  var render_ = import_react_dom.default.render;
-  var hydrate_ = import_react_dom.default.hydrate;
-  var renderToString = import_server.default && import_server.default.renderToString || ((_) => "");
-  var unmount_ = import_react_dom.default.unmountComponentAtNode;
-  function createElement_(component2, props, children2) {
-    return import_react2.default.createElement.apply(null, [component2, flattenDataProp(component2, props)].concat(children2));
-  }
-  function flattenDataProp(component2, props) {
-    if (typeof component2 !== "string" || props._data == null) {
-      return props;
-    }
-    var data = { _data: void 0 };
-    for (var key in props._data) {
-      var value12 = props._data[key];
-      data["data-" + key] = value12;
-    }
-    return Object.assign({}, props, data);
-  }
+  // output/Elmish.React.Internal/foreign.js
   var getField_ = (field, obj) => obj[field];
   var setField_ = (field, value12, obj) => obj[field] = value12;
 
@@ -26382,10 +26694,36 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     };
   };
 
-  // output/Elmish.React.Ref/foreign.js
-  function eqByReference(a) {
-    return (b) => a === b;
-  }
+  // output/Elmish.React.Internal/index.js
+  var mapFlipped2 = /* @__PURE__ */ mapFlipped(functorEffect);
+  var Field = /* @__PURE__ */ function() {
+    function Field2() {
+    }
+    ;
+    Field2.value = new Field2();
+    return Field2;
+  }();
+  var setField = function() {
+    return function(dictIsSymbol) {
+      var reflectSymbol2 = reflectSymbol(dictIsSymbol);
+      return function(v) {
+        return runEffectFn3(setField_)(reflectSymbol2($$Proxy.value));
+      };
+    };
+  };
+  var getField = function(dictCanReceiveFromJavaScript) {
+    var readForeign3 = readForeign(dictCanReceiveFromJavaScript);
+    return function(dictIsSymbol) {
+      var reflectSymbol2 = reflectSymbol(dictIsSymbol);
+      return function(v) {
+        return function(object) {
+          return mapFlipped2(function() {
+            return getField_(reflectSymbol2($$Proxy.value), object);
+          })(readForeign3);
+        };
+      };
+    };
+  };
 
   // output/Data.Nullable/foreign.js
   function nullable(a, r, f) {
@@ -26396,6 +26734,41 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var toMaybe = function(n) {
     return nullable(n, Nothing.value, Just.create);
   };
+
+  // output/Elmish.React/foreign.js
+  var import_react2 = __toESM(require_react(), 1);
+  function getState_(component2) {
+    return component2.state && component2.state.s;
+  }
+  function setState_(component2, state3, callback) {
+    return component2.setState({ s: state3 }, callback);
+  }
+  function assignState_(component2, state3) {
+    return component2.state = { s: state3 };
+  }
+  var fragment_ = import_react2.default.Fragment;
+  function createElement_(component2, props, children2) {
+    return import_react2.default.createElement.apply(
+      null,
+      [component2, flattenDataProp(component2, props)].concat(children2)
+    );
+  }
+  function flattenDataProp(component2, props) {
+    if (typeof component2 !== "string" || props._data == null) {
+      return props;
+    }
+    var data = { _data: void 0 };
+    for (var key in props._data) {
+      var value12 = props._data[key];
+      data["data-" + key] = value12;
+    }
+    return Object.assign({}, props, data);
+  }
+
+  // output/Elmish.React.Ref/foreign.js
+  function eqByReference(a) {
+    return (b) => a === b;
+  }
 
   // output/Elmish.React.Ref/index.js
   var callbackRef = function(ref) {
@@ -26427,7 +26800,6 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   };
 
   // output/Elmish.React/index.js
-  var mapFlipped2 = /* @__PURE__ */ mapFlipped(functorEffect);
   var reactChildrenString = {
     asReactChildren: function(s) {
       return [s];
@@ -26441,23 +26813,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var reactChildrenArrayReactEl = {
     asReactChildren: /* @__PURE__ */ identity(categoryFn)
   };
+  var text = unsafeCoerce2;
   var setState = /* @__PURE__ */ runEffectFn3(setState_);
-  var setField = function() {
-    return runEffectFn3(setField_);
-  };
-  var render = /* @__PURE__ */ runEffectFn2(render_);
-  var hydrate = /* @__PURE__ */ runEffectFn2(hydrate_);
   var getState = /* @__PURE__ */ runEffectFn1(getState_);
-  var getField = function(dictCanReceiveFromJavaScript) {
-    var readForeign3 = readForeign(dictCanReceiveFromJavaScript);
-    return function(field) {
-      return function(object) {
-        return mapFlipped2(function() {
-          return getField_(field, object);
-        })(readForeign3);
-      };
-    };
-  };
+  var empty3 = false;
   var assignState = /* @__PURE__ */ runEffectFn2(assignState_);
   var asReactChildren = function(dict) {
     return dict.asReactChildren;
@@ -26482,6 +26841,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       };
     };
   };
+  var fragment = /* @__PURE__ */ createElement1(fragment_)({});
 
   // output/Elmish.State/index.js
   var map3 = /* @__PURE__ */ map(functorEffect);
@@ -26530,10 +26890,22 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   // output/Elmish.Component/index.js
   var append3 = /* @__PURE__ */ append(semigroupArray);
   var setField2 = /* @__PURE__ */ setField();
+  var __unmountedIsSymbol = {
+    reflectSymbol: function() {
+      return "__unmounted";
+    }
+  };
+  var setField1 = /* @__PURE__ */ setField2(__unmountedIsSymbol);
+  var __subscriptionsIsSymbol = {
+    reflectSymbol: function() {
+      return "__subscriptions";
+    }
+  };
+  var setField22 = /* @__PURE__ */ setField2(__subscriptionsIsSymbol);
   var mapFlipped1 = /* @__PURE__ */ mapFlipped(functorEffect);
-  var getField2 = /* @__PURE__ */ getField(canReceiveFromJavaScriptB);
+  var getField2 = /* @__PURE__ */ getField(canReceiveFromJavaScriptB)(__unmountedIsSymbol);
   var map1 = /* @__PURE__ */ map(functorEffect);
-  var getField1 = /* @__PURE__ */ getField(/* @__PURE__ */ canReceiveFromJavaScriptA1(canReceiveFromJavaScriptE));
+  var getField1 = /* @__PURE__ */ getField(/* @__PURE__ */ canReceiveFromJavaScriptA1(canReceiveFromJavaScriptE))(__subscriptionsIsSymbol);
   var discard2 = /* @__PURE__ */ discard(discardUnit);
   var bindFlipped3 = /* @__PURE__ */ bindFlipped(bindEffect);
   var sequence_2 = /* @__PURE__ */ sequence_(applicativeEffect)(foldableArray);
@@ -26601,8 +26973,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   };
   var bindComponent = function(cmpt) {
     return function(stateStrategy) {
-      var setUnmounted = setField2("__unmounted");
-      var setSubscriptions = setField2("__subscriptions");
+      var setUnmounted = setField1(Field.value);
+      var setSubscriptions = setField22(Field.value);
       var setState2 = function(component2) {
         return function(newState) {
           return function(callback) {
@@ -26618,17 +26990,17 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         };
       };
       var getUnmounted = function() {
-        var $125 = map1(fromMaybe(false));
-        var $126 = getField2("__unmounted");
-        return function($127) {
-          return $125($126($127));
+        var $132 = map1(fromMaybe(false));
+        var $133 = getField2(Field.value);
+        return function($134) {
+          return $132($133($134));
         };
       }();
       var getSubscriptions = function() {
-        var $128 = map1(fromMaybe([]));
-        var $129 = getField1("__subscriptions");
-        return function($130) {
-          return $128($129($130));
+        var $135 = map1(fromMaybe([]));
+        var $136 = getField1(Field.value);
+        return function($137) {
+          return $135($136($137));
         };
       }();
       var stopSubscriptions = function(component2) {
@@ -26661,9 +27033,9 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
             return launchAff_(discard22(delay(0))(function() {
               return cmd({
                 dispatch: function() {
-                  var $131 = dispatchMsg(component2);
-                  return function($132) {
-                    return liftEffect2($131($132));
+                  var $138 = dispatchMsg(component2);
+                  return function($139) {
+                    return liftEffect2($138($139));
                   };
                 }(),
                 onStop: addSubscription(component2)
@@ -26718,13 +27090,40 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var wrapWithLocalState = function(name15) {
     return function(mkDef) {
       return withCachedComponent(name15, function(cmpt) {
-        var $133 = bindComponent(cmpt)(localState);
-        return function($134) {
-          return $133(mkDef($134));
+        var $140 = bindComponent(cmpt)(localState);
+        return function($141) {
+          return $140(mkDef($141));
         };
       });
     };
   };
+
+  // output/Effect.Console/foreign.js
+  var error2 = function(s) {
+    return function() {
+      console.error(s);
+    };
+  };
+
+  // output/Effect.Class.Console/index.js
+  var error3 = function(dictMonadEffect) {
+    var $79 = liftEffect(dictMonadEffect);
+    return function($80) {
+      return $79(error2($80));
+    };
+  };
+
+  // output/Elmish.HTML.DOM/foreign.js
+  var import_react_dom = __toESM(require_react_dom(), 1);
+  var import_server = __toESM(require_server_browser(), 1);
+  var render_ = import_react_dom.default.render;
+  var hydrate_ = import_react_dom.default.hydrate;
+  var renderToString = import_server.default && import_server.default.renderToString || ((_) => "");
+  var unmount_ = import_react_dom.default.unmountComponentAtNode;
+
+  // output/Elmish.HTML.DOM/index.js
+  var render = /* @__PURE__ */ runEffectFn2(render_);
+  var hydrate = /* @__PURE__ */ runEffectFn2(hydrate_);
 
   // output/Web.DOM.NonElementParentNode/foreign.js
   function _getElementById(id2) {
@@ -26787,11 +27186,11 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     };
   }
 
-  // output/Elmish.Boot/index.js
+  // output/Elmish.HTML.Boot/index.js
   var pure3 = /* @__PURE__ */ pure(applicativeEffect);
   var bind2 = /* @__PURE__ */ bind(bindEffect);
   var map5 = /* @__PURE__ */ map(functorEffect);
-  var error4 = /* @__PURE__ */ error2(monadEffectEffect);
+  var error4 = /* @__PURE__ */ error3(monadEffectEffect);
   var boot = function(mkDef) {
     var renderToString2 = function(props) {
       var def = mkDef(props);
@@ -26816,7 +27215,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
               return f(render2)(v.value0)();
             }
             ;
-            throw new Error("Failed pattern match at Elmish.Boot (line 117, column 11 - line 122, column 21): " + [v.constructor.name]);
+            throw new Error("Failed pattern match at Elmish.HTML.Boot (line 117, column 11 - line 122, column 21): " + [v.constructor.name]);
           };
         };
       };
@@ -26968,15 +27367,6 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       };
     };
   };
-
-  // output/Elmish.React.DOM/foreign.js
-  var import_react3 = __toModule(require_react());
-  var fragment_ = import_react3.Fragment;
-
-  // output/Elmish.React.DOM/index.js
-  var text5 = unsafeCoerce2;
-  var fragment = /* @__PURE__ */ createElement()(reactChildrenArrayReactEl)(fragment_)({});
-  var empty3 = false;
 
   // node_modules/stacktrace-parser/dist/stack-trace-parser.esm.js
   var UNKNOWN_FUNCTION = "<unknown>";
@@ -27176,8 +27566,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   };
 
   // output/Elmish.Hooks.UseEffect/foreign.js
-  var import_react4 = __toModule(require_react());
-  var UseEffectLifeCycles = class extends import_react4.default.Component {
+  var import_react3 = __toESM(require_react(), 1);
+  var UseEffectLifeCycles = class extends import_react3.default.Component {
     componentDidUpdate(prevProps) {
       this.props.componentDidUpdate(prevProps.deps);
     }
@@ -27188,58 +27578,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var useEffectLifeCycles_ = UseEffectLifeCycles;
 
   // output/Elmish.Dispatch/index.js
-  var pure5 = /* @__PURE__ */ pure(applicativeEffect);
-  var coerce2 = /* @__PURE__ */ coerce();
-  var handleMaybeFunction = function(dictTypeEquals) {
-    return {
-      handleMaybe: function(dispatch) {
-        return function(f) {
-          return mkEffectFn1(function() {
-            var $16 = maybe(pure5(unit))(dispatch);
-            return function($17) {
-              return $16(coerce2(f($17)));
-            };
-          }());
-        };
-      }
-    };
-  };
-  var handleFunction = {
-    handle: function(dispatch) {
-      return function(f) {
-        return function($18) {
-          return dispatch(f($18))();
-        };
-      };
-    }
-  };
-  var handleEffectFunctionEffec = {
-    handleEffect: function(f) {
-      return mkEffectFn1(f);
-    }
-  };
-  var handleEffectEffectUnit = {
-    handleEffect: function($19) {
-      return mkEffectFn1($$const($19));
-    }
-  };
-  var handle1 = {
-    handle: function(dispatch) {
-      return function(msg) {
-        return function(v) {
-          return dispatch(msg)();
-        };
-      };
-    }
-  };
-  var handleMaybe = function(dict) {
-    return dict.handleMaybe;
-  };
-  var handleEffect = function(dict) {
-    return dict.handleEffect;
-  };
-  var handle = function(dict) {
-    return dict.handle;
+  var handle = function(dispatch) {
+    return mkEffectFn1(dispatch);
   };
 
   // output/Elmish.Opaque/index.js
@@ -27263,8 +27603,8 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   // output/Elmish.Hooks.UseEffect/index.js
   var createElement3 = /* @__PURE__ */ createElement();
   var discard4 = /* @__PURE__ */ discard(discardUnit)(bindTransition$prime);
-  var pure6 = /* @__PURE__ */ pure(applicativeTransition$prime);
-  var handleMaybe2 = /* @__PURE__ */ handleMaybe(/* @__PURE__ */ handleMaybeFunction(refl));
+  var pure5 = /* @__PURE__ */ pure(applicativeTransition$prime);
+  var when2 = /* @__PURE__ */ when(applicativeEffect);
   var depsIsSymbol = {
     reflectSymbol: function() {
       return "deps";
@@ -27291,25 +27631,20 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
             return mkHook(name15)(function(render2) {
               return f({
                 init: discard4(forkVoid(runEffect(deps)))(function() {
-                  return pure6(deps);
+                  return pure5(deps);
                 }),
                 update: function(v) {
                   return function(newDeps) {
                     return discard4(forkVoid(runEffect(newDeps)))(function() {
-                      return pure6(newDeps);
+                      return pure5(newDeps);
                     });
                   };
                 },
                 view: function(v) {
                   return function(dispatch) {
                     return useEffectLifeCycles1({
-                      componentDidUpdate: handleMaybe2(dispatch)(function(prevDeps) {
-                        var $25 = notEq2(unwrap3(prevDeps))(deps);
-                        if ($25) {
-                          return new Just(deps);
-                        }
-                        ;
-                        return Nothing.value;
+                      componentDidUpdate: handle(function(prevDeps) {
+                        return when2(notEq2(unwrap3(prevDeps))(deps))(dispatch(deps));
                       }),
                       deps: wrap4(deps)
                     })(render2(unit));
@@ -27336,17 +27671,17 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   };
 
   // output/Elmish.Hooks.UseState/index.js
-  var pure7 = /* @__PURE__ */ pure(applicativeTransition$prime);
+  var pure6 = /* @__PURE__ */ pure(applicativeTransition$prime);
   var identity7 = /* @__PURE__ */ identity(categoryFn);
   var useState$prime = function(name15) {
     return function(f) {
       return function(initialState) {
         return mkHook(name15)(function(render2) {
           return f({
-            init: pure7(initialState),
+            init: pure6(initialState),
             update: function(v) {
               return function(newState) {
-                return pure7(newState);
+                return pure6(newState);
               };
             },
             view: curry(render2)
@@ -27377,7 +27712,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       return discard5(useEffect(discard1(delay(2e3))(function() {
         return liftEffect3(v.value1(new Just(["Do thing", "Do another thing", "Some more stuff"])));
       })))(function() {
-        return pure4(div3("row")([div3("col-12 col-md-6 col-lg-4")([h22("")([code2("")("useEffect"), text5(" hook")]), h42("mb-3")("Todos"), function() {
+        return pure4(div3("row")([div3("col-12 col-md-6 col-lg-4")([h22("")([code2("")("useEffect"), text(" hook")]), h42("mb-3")("Todos"), function() {
           if (v.value0 instanceof Nothing) {
             return div3("")([div1("progress")(div_2("progress-bar progress-bar-striped progress-bar-animated")({
               role: "progressbar",
@@ -27408,7 +27743,6 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var code3 = /* @__PURE__ */ code(reactChildrenString);
   var p2 = /* @__PURE__ */ p(reactChildrenArrayReactEl);
   var button_2 = /* @__PURE__ */ button_(reactChildrenString)()();
-  var handle2 = /* @__PURE__ */ handle(handle1);
   var view2 = /* @__PURE__ */ component(/* @__PURE__ */ bind3()(/* @__PURE__ */ useState(0))(function(v) {
     return discard6(useEffect$prime2(v.value0)(function(c) {
       return liftEffect4(function __do() {
@@ -27416,8 +27750,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
         return setTitle("You clicked " + (show3(c) + " times"))(doc)();
       });
     }))(function() {
-      return pure4(div4("row mt-3")([div4("col-12 col-md-6 col-lg-4")([h23("")([code3("")("useEffect'"), text5(" hook")]), p2("")([text5("You clicked "), text5(show3(v.value0)), text5(" times. Clicking will also update "), code3("")("document.title"), text5(".")]), button_2("btn btn-primary")({
-        onClick: handle2(v.value1)(v.value0 + 1 | 0)
+      return pure4(div4("row mt-3")([div4("col-12 col-md-6 col-lg-4")([h23("")([code3("")("useEffect'"), text(" hook")]), p2("")([text("You clicked "), text(show3(v.value0)), text(" times. Clicking will also update "), code3("")("document.title"), text(".")]), button_2("btn btn-primary")({
+        onClick: handle(function(v1) {
+          return v.value1(v.value0 + 1 | 0);
+        })
       })("Click to update title")])]));
     });
   }));
@@ -27430,10 +27766,10 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
       return "value";
     }
   })(canReceiveFromJavaScriptS)(canReceiveFromJavaScriptR)));
-  var pure8 = /* @__PURE__ */ pure(applicativeMaybe);
+  var pure7 = /* @__PURE__ */ pure(applicativeMaybe);
   var inputText = function(v) {
     return fromMaybe("")(bind4(readForeign2(unsafeToForeign(v.target)))(function(v1) {
-      return pure8(v1.value);
+      return pure7(v1.value);
     }));
   };
 
@@ -27475,7 +27811,6 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var code4 = /* @__PURE__ */ code(reactChildrenString);
   var label_2 = /* @__PURE__ */ label_(reactChildrenArrayReactEl)()();
   var input_2 = /* @__PURE__ */ input_()();
-  var handle3 = /* @__PURE__ */ handle(handleFunction);
   var useLocalStorage = function(key) {
     return function(defaultValue4) {
       return bind5(useState(defaultValue4))(function(v) {
@@ -27504,9 +27839,11 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var view3 = /* @__PURE__ */ component(/* @__PURE__ */ bind5(/* @__PURE__ */ useLocalStorage("foo")(""))(function(v) {
     return pure4(div5("row")([div5("col-12 col-md-6 col-lg-4")([h43("")(code4("")("useLocalStorage")), div5("form-group")([label_2("form-label")({
       htmlFor: "foo"
-    })([text5("Typing here will update the state and save to "), code4("")("localStorage")]), input_2("form-control")({
+    })([text("Typing here will update the state and save to "), code4("")("localStorage")]), input_2("form-control")({
       value: v.value0,
-      onChange: handle3(v.value1)(inputText),
+      onChange: handle(function(e) {
+        return v.value1(inputText(e));
+      }),
       id: "foo"
     })])])]));
   }));
@@ -27551,25 +27888,23 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var childElementCount = getEffProp("childElementCount");
 
   // output/Examples.UseMouseMove/index.js
-  var pure9 = /* @__PURE__ */ pure(applicativeTransition$prime);
+  var pure8 = /* @__PURE__ */ pure(applicativeTransition$prime);
   var div_3 = /* @__PURE__ */ div_(reactChildrenReactElement)()();
-  var handleEffect2 = /* @__PURE__ */ handleEffect(handleEffectFunctionEffec);
-  var handle4 = /* @__PURE__ */ handle(handleFunction);
   var code5 = /* @__PURE__ */ code(reactChildrenString);
   var img_2 = /* @__PURE__ */ img_()();
   var useMousePosition = function(className2) {
     return mkHook("UseMouseMove")(function(render2) {
       return {
-        init: pure9(Nothing.value),
+        init: pure8(Nothing.value),
         update: function(v) {
           return function(pos) {
-            return pure9(pos);
+            return pure8(pos);
           };
         },
         view: function(pos) {
           return function(dispatch) {
             return div_3(className2)({
-              onMouseMove: handleEffect2(function(v) {
+              onMouseMove: handle(function(v) {
                 return function __do() {
                   var v1 = getBoundingClientRect(v.currentTarget)();
                   var y = v.clientY - v1.top;
@@ -27587,14 +27922,16 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
                   }())();
                 };
               }),
-              onMouseLeave: handle4(dispatch)($$const(Nothing.value))
+              onMouseLeave: handle(function(v) {
+                return dispatch(Nothing.value);
+              })
             })(render2(pos));
           };
         }
       };
     });
   };
-  var view4 = /* @__PURE__ */ div2(reactChildrenArrayReactEl)("mt-3 mb-2")([/* @__PURE__ */ h4(reactChildrenReactElement)("")(/* @__PURE__ */ code5("")("useMousePosition")), /* @__PURE__ */ p(reactChildrenArrayReactEl)("text-muted")([/* @__PURE__ */ text5("This example uses "), /* @__PURE__ */ code5("")("mkHook"), /* @__PURE__ */ text5(" to make a custom hook.")]), /* @__PURE__ */ div_3("w-100 py-6 rounded bg-light border position-relative overflow-hidden")({
+  var view4 = /* @__PURE__ */ div2(reactChildrenArrayReactEl)("mt-3 mb-2")([/* @__PURE__ */ h4(reactChildrenReactElement)("")(/* @__PURE__ */ code5("")("useMousePosition")), /* @__PURE__ */ p(reactChildrenArrayReactEl)("text-muted")([/* @__PURE__ */ text("This example uses "), /* @__PURE__ */ code5("")("mkHook"), /* @__PURE__ */ text(" to make a custom hook.")]), /* @__PURE__ */ div_3("w-100 py-6 rounded bg-light border position-relative overflow-hidden")({
     style: /* @__PURE__ */ css({
       height: 200,
       cursor: "none"
@@ -27635,16 +27972,17 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var div12 = /* @__PURE__ */ div2(reactChildrenReactElement);
   var input_3 = /* @__PURE__ */ input_()();
   var button_3 = /* @__PURE__ */ button_(reactChildrenString)()();
-  var handleEffect3 = /* @__PURE__ */ handleEffect(handleEffectEffectUnit);
   var view5 = /* @__PURE__ */ component(/* @__PURE__ */ bind3()(useRef)(function(v) {
     var onButtonClick = traverse_2(function($18) {
       return focus(toHTMLElement($18));
     })(v.value0);
-    return pure4(div6("row mt-3")([div6("col-12 col-md-6 col-lg-4")([h24("")([code6("")("useRef"), text5(" hook")]), div6("row")([div12("col")(input_3("form-control")({
+    return pure4(div6("row mt-3")([div6("col-12 col-md-6 col-lg-4")([h24("")([code6("")("useRef"), text(" hook")]), div6("row")([div12("col")(input_3("form-control")({
       ref: v.value1,
       defaultValue: ""
     })), div12("col-auto")(button_3("btn btn-primary")({
-      onClick: handleEffect3(onButtonClick)
+      onClick: handle(function(v1) {
+        return onButtonClick;
+      })
     })("Focus the input"))])])]));
   }));
 
@@ -27653,15 +27991,16 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var h25 = /* @__PURE__ */ h2(reactChildrenArrayReactEl);
   var code7 = /* @__PURE__ */ code(reactChildrenString);
   var button_4 = /* @__PURE__ */ button_(reactChildrenString)()();
-  var handle5 = /* @__PURE__ */ handle(handle1);
   var div_4 = /* @__PURE__ */ div_(reactChildrenReactElement)()();
   var div13 = /* @__PURE__ */ div2(reactChildrenReactElement);
   var h32 = /* @__PURE__ */ h3(reactChildrenString);
   var div23 = /* @__PURE__ */ div2(reactChildrenString);
   var view6 = /* @__PURE__ */ withHookCurried(/* @__PURE__ */ useState(false))(function(visible) {
     return function(setVisible) {
-      return div7("")([h25("")([code7("")("useState"), text5(" hook")]), button_4("btn btn-primary")({
-        onClick: handle5(setVisible)(!visible)
+      return div7("")([h25("")([code7("")("useState"), text(" hook")]), button_4("btn btn-primary")({
+        onClick: handle(function(v) {
+          return setVisible(!visible);
+        })
       })("Show"), function() {
         if (visible) {
           return fragment([div_4("modal fade show d-block")({
@@ -27669,9 +28008,13 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
               pointerEvents: "none"
             })
           })(div13("modal-dialog")(div13("modal-content")(div7("modal-body")([div7("row")([div13("col")(h32("header-title")("Modal")), div13("col-auto")(button_4("btn btn-icon btn-lg p-0 text-muted")({
-            onClick: handle5(setVisible)(false)
+            onClick: handle(function(v) {
+              return setVisible(false);
+            })
           })("\xD7"))]), div23("py-4")("Content")])))), div_4("modal-backdrop fade show")({
-            onClick: handle5(setVisible)(false)
+            onClick: handle(function(v) {
+              return setVisible(false);
+            })
           })(empty3)]);
         }
         ;
@@ -27687,7 +28030,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
   var h26 = /* @__PURE__ */ h2(reactChildrenString);
   var view7 = function(v) {
     return function(v1) {
-      return div8("container mt-4")([h12("")([code8("")("elmish-hooks"), text5(" examples")]), hr("my-4"), view6, hr("my-4"), view, hr("my-4"), view2, hr("my-4"), view5, hr("my-4"), h26("")("Custom hooks"), view3, view4]);
+      return div8("container mt-4")([h12("")([code8("")("elmish-hooks"), text(" examples")]), hr("my-4"), view6, hr("my-4"), view, hr("my-4"), view2, hr("my-4"), view5, hr("my-4"), h26("")("Custom hooks"), view3, view4]);
     };
   };
   var main = /* @__PURE__ */ defaultMain({
@@ -27702,7 +28045,7 @@ For more info, visit https://reactjs.org/link/mock-scheduler`);
     },
     elementId: "app"
   });
-  return Main_exports;
+  return __toCommonJS(Main_exports);
 })();
 /*
 object-assign
