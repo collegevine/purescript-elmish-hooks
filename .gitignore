@@ -8,3 +8,6 @@
 /.purs*
 /.psa*
 /.spago
+/.spec-results
+/examples/public/
+/.vscode/

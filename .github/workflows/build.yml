@@ -12,17 +12,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/cache@v2
+    - uses: actions/checkout@v4
+    - uses: actions/cache@v4
       with:
         path: |
           .spago
           output
           node_modules
-        key: build-atrifacts-v3-${{ hashFiles('package-lock.json', 'spago.dhall', 'packages.dhall') }}
-    - uses: actions/setup-node@v1
+        key: build-artifacts-v4-${{ hashFiles('package-lock.json', 'spago.yaml', 'spago.lock') }}
+    - uses: actions/setup-node@v4
       with:
-        node-version: 16.15.1
+        node-version: 24.13.0
     - run: npm i
     - run: npm run build
     - run: npm run test

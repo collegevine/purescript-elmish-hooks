@@ -1,0 +1,14 @@
+package:
+  name: elmish-hooks-examples
+  dependencies:
+    - effect
+    - elmish
+    - elmish-hooks
+    - elmish-html
+    - foldable-traversable
+    - maybe
+    - prelude
+    - tuples
+    - web-dom
+    - web-html
+    - web-storage

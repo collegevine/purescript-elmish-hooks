@@ -12,24 +12,24 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         with:
           path: |
-            examples/.spago
-            examples/output
-            examples/node_modules
-          key: build-atrifacts-v2-${{ hashFiles('package-lock.json', 'spago.dhall', 'packages.dhall', 'examples/package-lock.json', 'examples/spago.dhall', 'examples/packages.dhall') }}
+            .spago
+            output
+            node_modules
+          key: gh-pages-artifacts-v4-${{ hashFiles('package-lock.json', 'spago.yaml', 'spago.lock') }}
 
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v4
         with:
-          node-version: 16.15.1
-      - run: cd examples && npm i
-      - run: cd examples && npm run build
+          node-version: 24.13.0
+      - run: npm i
+      - run: npm run build:examples
 
       - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         if: ${{ github.ref == 'refs/heads/main' }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

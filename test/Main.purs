@@ -8,7 +8,7 @@ import Data.Foldable (indexl)
 import Data.Maybe (Maybe, fromMaybe)
 import Data.Nullable as N
 import Effect (Effect)
-import Effect.Aff (Aff, launchAff_)
+import Effect.Aff (Aff)
 import Elmish (ReactElement)
 import Elmish.Foreign (readForeign)
 import Elmish.HTML.Styled as H
@@ -19,13 +19,13 @@ import Foreign (unsafeFromForeign, unsafeToForeign)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual, shouldNotEqual)
 import Test.Spec.Assertions.String (shouldContain)
-import Test.Spec.Reporter.Spec (specReporter)
-import Test.Spec.Runner (runSpec)
+import Test.Spec.Reporter (specReporter)
+import Test.Spec.Runner.Node (runSpecAndExitProcess)
 import Test.UseEffect as UseEffect
 import Test.UseSubscription as UseSubscription
 
 main :: Effect Unit
-main = launchAff_ $ runSpec [specReporter] spec
+main = runSpecAndExitProcess [specReporter] spec
 
 spec :: Spec Unit
 spec = do

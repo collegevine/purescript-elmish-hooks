@@ -2,9 +2,11 @@
   "name": "purescript-elmish-hooks",
   "description": "React Hooks for Elmish",
   "scripts": {
-    "install": "spago install",
-    "build": "spago build --no-psa",
-    "test": "spago -x test.dhall test"
+    "postinstall": "spago install",
+    "build": "spago build",
+    "test": "spago test -p elmish-hooks",
+    "build:examples": "spago build -p elmish-hooks-examples && esbuild output/Main/index.js --bundle --outfile=examples/public/index.js --global-name=Main && cp examples/gh-pages.html examples/public/index.html",
+    "start:examples": "spago build -p elmish-hooks-examples && esbuild output/Main/index.js --bundle --serve --servedir=examples --outfile=examples/output/index.js --global-name=Main"
   },
   "repository": {
     "type": "git",
@@ -34,11 +36,12 @@
   "homepage": "https://github.com/collegevine/purescript-elmish-hooks#readme",
   "devDependencies": {
     "@happy-dom/global-registrator": "7.4.0",
+    "esbuild": "^0.14.1",
     "pulp": "^16.0.0",
     "purescript": "^0.15.15",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "spago": "^0.21.0"
+    "spago": "^1.0.3"
   },
   "dependencies": {
     "stacktrace-parser": "^0.1.10"
