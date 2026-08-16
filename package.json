@@ -36,11 +36,12 @@
   "homepage": "https://github.com/collegevine/purescript-elmish-hooks#readme",
   "devDependencies": {
     "@happy-dom/global-registrator": "7.4.0",
+    "@testing-library/dom": "^10.4.1",
     "esbuild": "^0.14.1",
     "pulp": "^16.0.0",
     "purescript": "^0.15.15",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
     "spago": "^1.0.3"
   },
   "dependencies": {
